@@ -8,11 +8,6 @@
 #include <stdlib.h>
 #endif
 
-#ifndef GAME_STRUCTS
-#define GAME_STRUCTS
-#include "game_structs.h"
-#endif
-
 #ifndef FUNCS
 #define FUNCS
 #include "funcs.h"

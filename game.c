@@ -39,7 +39,13 @@
 #include <stdbool.h>
 #endif
 
-bool moveAgent(char dir, Grid *grid);
+#ifndef PROBLEM
+#define PROBLEM
+#include "problem.h"
+#endif
+
+Location *moveAgent(char dir, Location *start, Grid *grid);
+bool checkForWin(Location *location, Grid *grid);
 
 int main(void)
 {
@@ -53,41 +59,100 @@ int main(void)
     placeGoal(goal, grid);
 
     printGrid(grid);
+
+    char *moves = getLegalActions(agent, grid);
+    int total_moves = 0;
+    if (moves != NULL)
+    {
+        while(moves[total_moves] != '\0')
+        {
+            total_moves += 1;
+        }
+    }
+    printf("total moves; %d\n", total_moves);
+
+    while 
     
     /*
-    char dirs[7] = { 'N','S','E','W','4','T','5' };
-    for (int i = 0; i < 7; i += 1)
+    if (moves != NULL)
     {
-        char dir = dirs[i];
-        if (moveAgent(dir, grid)) {
-            printf("%c\n", dir);
-        } else {
-            printf("NOT A DIRECTION\n");
+        char move = 'X';
+        int index = 0;
+        while (moves[index] != '\0')
+        {
+            move = moves[index];
+            printf("%c,%d\n",move,index);
+            if (moveAgent(move, grid)) {
+                printf("%c\n", move);
+            } else {
+                printf("NOT A DIRECTION\n");
+            }
+            index += 1;
         }
-
     }
     */
 
+    free(moves);
     free(grid);
     free(agent);
     free(goal);
 }
 
-bool moveAgent(char dir, Grid *grid)
+Location *moveAgent(char dir, Location *start, Grid *grid)
 {
+    int new_x, new_y;
+    int x = start->x;
+    int y = start->y;
+    char mark;
     switch (dir)
     {
         case 'N':
+            new_x = x;
+            new_y = y - 1;
+            mark = '^';
             break;
         case 'S':
+            new_x = x;
+            new_y = y + 1;
+            mark = 'v';
             break;
         case 'E':
+            new_x = x + 1;
+            new_y = y;
+            mark = '>';
             break;
         case 'W':
+            new_x = x - 1;
+            new_y = y;
+            mark = '<';
             break;
         default:
-            return false;
+            return NULL;
     }
 
-    return true;
+    Location *new = malloc(sizeof(Location));
+    new-> x = new_x;
+    new-> y = new_y;
+
+    if (checkForWin(new, grid))
+    {
+        *grid[new->x][new->y] = 'O'; 
+        printf("WIN!!!\n");
+    } else {
+        *grid[new->x][new->y] = mark; 
+    }
+
+    free(start);
+
+    return new;
+}
+
+bool checkForWin(Location *location, Grid *grid)
+{
+    if (*grid[location->x][location->y] == 'G')
+    {
+        return true;
+    } else {
+        return false;
+    }
 }
