@@ -1,3 +1,8 @@
+#ifndef LOCATION
+#define LOCATION
+#include "location.h"
+#endif
+
 typedef char Grid[WIDTH][HEIGHT]; 
 
 void buildLayout(Grid* grid);

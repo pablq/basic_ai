@@ -53,7 +53,8 @@ int main(void)
     placeGoal(goal, grid);
 
     printGrid(grid);
-
+    
+    /*
     char dirs[7] = { 'N','S','E','W','4','T','5' };
     for (int i = 0; i < 7; i += 1)
     {
@@ -65,6 +66,7 @@ int main(void)
         }
 
     }
+    */
 
     free(grid);
     free(agent);

@@ -17,5 +17,5 @@ int randInRange(int low, int high)
     srand(time(NULL) + offset);
 
     r = rand();
-    return low + (r % (high - low));
+    return low + (r % (high + 1 - low));
 }
