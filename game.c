@@ -44,8 +44,9 @@
 #include "problem.h"
 #endif
 
-Location *moveAgent(char dir, Location *start, Grid *grid);
+void drawPath(char *actions, Location *start, Grid *grid);
 bool checkForWin(Location *location, Grid *grid);
+Location *getNextLocation(char action, Location *start, Grid *grid);
 
 int main(void)
 {
@@ -60,6 +61,9 @@ int main(void)
 
     printGrid(grid);
 
+    drawPath("NSSE", agent, grid);
+
+    /*
     char *moves = getLegalActions(agent, grid);
     int total_moves = 0;
     if (moves != NULL)
@@ -71,88 +75,67 @@ int main(void)
     }
     printf("total moves; %d\n", total_moves);
 
-    while 
-    
-    /*
-    if (moves != NULL)
-    {
-        char move = 'X';
-        int index = 0;
-        while (moves[index] != '\0')
-        {
-            move = moves[index];
-            printf("%c,%d\n",move,index);
-            if (moveAgent(move, grid)) {
-                printf("%c\n", move);
-            } else {
-                printf("NOT A DIRECTION\n");
-            }
-            index += 1;
-        }
-    }
     */
 
-    free(moves);
+    // free(moves);
     free(grid);
     free(agent);
     free(goal);
 }
 
-Location *moveAgent(char dir, Location *start, Grid *grid)
+Location *getNextLocation(char action, Location *start, Grid *grid)
 {
     int new_x, new_y;
     int x = start->x;
     int y = start->y;
-    char mark;
-    switch (dir)
-    {
+    switch (action) {
         case 'N':
             new_x = x;
             new_y = y - 1;
-            mark = '^';
             break;
         case 'S':
             new_x = x;
             new_y = y + 1;
-            mark = 'v';
             break;
         case 'E':
             new_x = x + 1;
             new_y = y;
-            mark = '>';
             break;
         case 'W':
             new_x = x - 1;
             new_y = y;
-            mark = '<';
             break;
         default:
             return NULL;
     }
 
-    Location *new = malloc(sizeof(Location));
-    new-> x = new_x;
-    new-> y = new_y;
-
-    if (checkForWin(new, grid))
-    {
-        *grid[new->x][new->y] = 'O'; 
-        printf("WIN!!!\n");
-    } else {
-        *grid[new->x][new->y] = mark; 
-    }
-
-    free(start);
-
-    return new;
+    // note that we create a new struct and return it.
+    // WE DO NOT FREE THE OLD STRUCT HERE
+    Location *nextLocation = malloc(sizeof(Location));
+    nextLocation->x = new_x;
+    nextLocation->y = new_y;
+    return nextLocation;
 }
 
-bool checkForWin(Location *location, Grid *grid)
+
+void drawPath(char *actions, Location *start, Grid *grid)
 {
-    if (*grid[location->x][location->y] == 'G')
+    Location *last = malloc(sizeof(Location));
+    last->x = start->x;
+    last->y = start->y;
+
+    int i = 0;
+    while(actions[i] != '\0')
     {
-        return true;
-    } else {
-        return false;
+        char action = actions[i];
+        Location *next = getNextLocation(action, last, grid);
+        if (next != NULL)
+        {
+            *grid[next->x][next->y] = '%';
+        }
+        free(last);
+        last = next;
     }
+    free(last);
 }
+        

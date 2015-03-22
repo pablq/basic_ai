@@ -58,3 +58,66 @@ char *getLegalActions(Location *agent, Grid *grid)
         return moves;
     }
 }
+
+
+/*
+Location *moveAgent(char dir, Location *start, Grid *grid)
+{
+    int new_x, new_y;
+    int x = start->x;
+    int y = start->y;
+    char mark;
+    switch (dir)
+    {
+        case 'N':
+            new_x = x;
+            new_y = y - 1;
+            mark = '^';
+            break;
+        case 'S':
+            new_x = x;
+            new_y = y + 1;
+            mark = 'v';
+            break;
+        case 'E':
+            new_x = x + 1;
+            new_y = y;
+            mark = '>';
+            break;
+        case 'W':
+            new_x = x - 1;
+            new_y = y;
+            mark = '<';
+            break;
+        default:
+            return NULL;
+    }
+
+    Location *new = malloc(sizeof(Location));
+    new-> x = new_x;
+    new-> y = new_y;
+
+    if (checkForWin(new, grid))
+    {
+        *grid[new->x][new->y] = 'O'; 
+        printf("WIN!!!\n");
+    } else {
+        *grid[new->x][new->y] = mark; 
+    }
+
+    free(start);
+
+    return new;
+}
+
+*/
+
+bool checkForWin(Location *location, Grid *grid)
+{
+    if (*grid[location->x][location->y] == 'G')
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
