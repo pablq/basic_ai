@@ -39,9 +39,10 @@
 #include "problem.h"
 #endif
 
-void drawPath(char *actions, Location *start, Grid *grid);
-bool checkForWin(Location *location, Grid *grid);
-Location *getNextLocation(char action, Location *start, Grid *grid);
+#ifndef GAME
+#define GAME
+#include "game.h"
+#endif
 
 int main(void)
 {
@@ -61,21 +62,6 @@ int main(void)
 
     printGrid(grid);
 
-    /*
-    char *moves = getLegalActions(agent, grid);
-    int total_moves = 0;
-    if (moves != NULL)
-    {
-        while(moves[total_moves] != '\0')
-        {
-            total_moves += 1;
-        }
-    }
-    printf("total moves; %d\n", total_moves);
-
-    */
-
-    // free(moves);
     free(grid);
     free(agent);
     free(goal);
