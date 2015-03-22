@@ -8,11 +8,6 @@
 #include <stdlib.h>
 #endif
 
-#ifndef GAME_STRUCTS
-#define GAME_STRUCTS
-#include "game_structs.h"
-#endif
-
 #ifndef FUNCS
 #define FUNCS
 #include "funcs.h"
@@ -61,7 +56,7 @@ int main(void)
 
     printGrid(grid);
 
-    char path[] = { 'N', 'S', 'S', 'E', '\0' };
+    char path[] = { 'N', 'N', 'W', 'W', '\0' };
     drawPath(path, agent, grid);
 
     printGrid(grid);
@@ -121,6 +116,24 @@ Location *getNextLocation(char action, Location *start, Grid *grid)
     return nextLocation;
 }
 
+bool isLegal(Location *location, Grid *grid)
+{
+    int x = location-> x;
+    int y = location-> y;
+    if (x > WIDTH - 1 || x < 0 || y > HEIGHT - 1 || y < 0) 
+    {
+        return false;
+    }
+    if (*grid[x][y] == 'X') {
+        return false;
+    }
+    return true;
+}
+
+bool isOccupied(Location *location, Grid *grid)
+{
+    return false;
+}
 
 void drawPath(char *actions, Location *start, Grid *grid)
 {
@@ -134,12 +147,27 @@ void drawPath(char *actions, Location *start, Grid *grid)
     {
         char action = actions[i];
         Location *next = getNextLocation(action, last, grid);
-        printf("last x: %d, last y: %d, action: %c\n", last->x, last->y, action);
-        printf("next x: %d, next y: %d\n", next->x, next->y);
-        if (next != NULL)
+        if (next != NULL && isLegal(next, grid))
         {
-            printf("draw now!\n");
-            *grid[next->x][next->y] = 'z';
+            char mark;
+            switch(action) {
+                case 'N':
+                    mark = '^';
+                    break;
+                case 'S':
+                    mark = 'v';
+                    break;
+                case 'E':
+                    mark = '>';
+                    break;
+                case 'W':
+                    mark = '<';
+                    break;
+            }
+            *grid[next->x][next->y] = mark;
+        } else {
+            printf("ILLEGAL ACTION ATTEMPTED. ABORTING DRAW\n");
+            break;
         }
         free(last);
         last = next;
