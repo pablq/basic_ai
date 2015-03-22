@@ -14,6 +14,4 @@ typedef struct AgentStruct
     char moves[];
 } Agent;
 
-typedef char Grid[50][50];
-
 #endif
