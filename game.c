@@ -61,7 +61,8 @@ int main(void)
 
     printGrid(grid);
 
-    drawPath("NSSE", agent, grid);
+    char path[] = { 'N', 'S', 'S', 'E', '\0' };
+    drawPath(path, agent, grid);
 
     /*
     char *moves = getLegalActions(agent, grid);
@@ -85,6 +86,7 @@ int main(void)
 
 Location *getNextLocation(char action, Location *start, Grid *grid)
 {
+    printf("getNextLocation\n");
     int new_x, new_y;
     int x = start->x;
     int y = start->y;
@@ -120,6 +122,7 @@ Location *getNextLocation(char action, Location *start, Grid *grid)
 
 void drawPath(char *actions, Location *start, Grid *grid)
 {
+    printf("drawPath\n");
     Location *last = malloc(sizeof(Location));
     last->x = start->x;
     last->y = start->y;
@@ -135,6 +138,7 @@ void drawPath(char *actions, Location *start, Grid *grid)
         }
         free(last);
         last = next;
+        i += 1;
     }
     free(last);
 }
