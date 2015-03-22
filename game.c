@@ -64,6 +64,8 @@ int main(void)
     char path[] = { 'N', 'S', 'S', 'E', '\0' };
     drawPath(path, agent, grid);
 
+    printGrid(grid);
+
     /*
     char *moves = getLegalActions(agent, grid);
     int total_moves = 0;
@@ -132,9 +134,12 @@ void drawPath(char *actions, Location *start, Grid *grid)
     {
         char action = actions[i];
         Location *next = getNextLocation(action, last, grid);
+        printf("last x: %d, last y: %d, action: %c\n", last->x, last->y, action);
+        printf("next x: %d, next y: %d\n", next->x, next->y);
         if (next != NULL)
         {
-            *grid[next->x][next->y] = '%';
+            printf("draw now!\n");
+            *grid[next->x][next->y] = 'z';
         }
         free(last);
         last = next;
