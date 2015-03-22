@@ -34,6 +34,11 @@
 #include "location.h"
 #endif
 
+#ifndef BOOL
+#define BOOL
+#include <stdbool.h>
+#endif
+
 void buildLayout(Grid *grid)
 {
     // this is the basic build. it just populates the outside with walls
@@ -50,38 +55,50 @@ void buildLayout(Grid *grid)
         }
     }
 
-    // Add some interior walls
+    // Add some interior walls:
+    
     int num_walls = randInRange(15,30);
     for (int i = 0; i < num_walls; i += 1)
     {
-        int x, y, is_horiz, len = randInRange(2,5);
+        int len = randInRange(2,5);
+        int x, y;
 
-        is_horiz = randInRange(0,1);
+        // decide whether wall will be horizontal or vertical.
+        // we'll draw the wall by either incrementing y or x depending on
+        // whether the wall is horizontal or vertical. so, we have to make 
+        // sure we save enough space to not overwrite the array
+        // also, we make sure a wall that is parallel to the outside wall
+        // has at least a buffer of 1 space
+        int is_horiz = randInRange(0,1);
         if(is_horiz) 
         {
-            x = randInRange(1, WIDTH - (len + 1)); // we avoid overlap with border wall and out of bounds error
-            y = randInRange(6, HEIGHT - 6); // make sure there are at least 5 spaces between wall and border wall
+            x = randInRange(1, WIDTH - (len + 1));
+            y = randInRange(2, HEIGHT - 3);
     
         } else {
-            x = randInRange(6, WIDTH - 6);
-            y = randInRange(1, HEIGHT - (len + 1));
+            x = randInRange(2, WIDTH - 3);
+            y = randInRange(2, HEIGHT - (len + 1));
         }
 
+        // here we actually draw the wall
         for (int j = 0; j < len; j += 1)
         {
+            // draw the wall!
             *grid[x][y] = 'X';
-            if (is_horiz) {
-                if ((j > 0 && j < len - 1) && (*grid[x][y+1] == 'X' || *grid[x][y-1] == 'X'))
+            if (is_horiz) { // for horizontal walls
+                // if the next block is already an 'X' or there is an 'X' above or below, we're done with this wall
+                if ((j > 0 && j < len - 1) && (*grid[x+1][y] == 'X' || *grid[x][y+1] == 'X' || *grid[x][y-1] == 'X'))
                 {
                     break;
-                } else {
+                } else { // otherwise, advance to the next block
                     x += 1;
                 }
-            } else {
+            } else { // for vertical walls
+                // if the next block is already an 'X' or there is an 'X' to the right or left, we're done with this wall
                 if ((j > 0 && j < len - 1) && (*grid[x+1][y] == 'X' || *grid[x][x-1] == 'X'))
                 {
                     break;
-                } else {
+                } else { // otherwise, advance to the next block
                     y += 1;
                 }
             }
@@ -103,7 +120,7 @@ void printGrid(Grid *grid)
 
 void placeAgent(Location *agent, Grid *grid)
 {
-    int placed = 0;
+    bool placed = false;
     while (!placed)
     {
         int x = randInRange(0,WIDTH - 1);
@@ -115,15 +132,14 @@ void placeAgent(Location *agent, Grid *grid)
 
             agent->x = x;
             agent->y = y;
-            placed += 1;
-            printf("placed agent at %d,%d\n",x,y);
+            placed = true;
         }
     }
 }
 
 void placeGoal(Location *goal, Grid *grid)
 {
-    int placed = 0;
+    bool placed = false;
     while (!placed)
     {
         int x = randInRange(0,WIDTH - 1);
@@ -132,11 +148,9 @@ void placeGoal(Location *goal, Grid *grid)
         if (*grid[x][y] != 'X' && *grid[x][y] != 'A')
         {
             *grid[x][y] = 'G';
-
             goal->x = x;
             goal->y = y;
-            placed += 1;
-            printf("placed goal at %d,%d\n",x,y);
+            placed = true;
         }
     }
 }
