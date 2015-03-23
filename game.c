@@ -44,7 +44,7 @@ Game *newGame(void)
     return game;
 }
 
-void play(char *actions, Game *game)
+void playGame(char *actions, Game *game)
 {
     bool winner = false;
     int i = 0;
