@@ -28,12 +28,15 @@
 #include "problem.h"
 #endif
 
-char *getLegalActions(Location *agent, Grid *grid)
+Location *getNeighbor(char action, Location *loc);
+
+// note this function mallocs a char *!!
+char *getLegalActions(Location *loc, Grid *grid)
 {
-    bool n = *grid[agent->x][agent->y - 1] != 'X' ? true : false;
-    bool s = *grid[agent->x][agent->y + 1] != 'X' ? true : false;
-    bool e = *grid[agent->x + 1][agent->y] != 'X' ? true : false;
-    bool w = *grid[agent->x - 1][agent->y] != 'X' ? true : false;
+    bool n = *grid[loc->x][loc->y - 1] != 'X' ? true : false;
+    bool s = *grid[loc->x][loc->y + 1] != 'X' ? true : false;
+    bool e = *grid[loc->x + 1][loc->y] != 'X' ? true : false;
+    bool w = *grid[loc->x - 1][loc->y] != 'X' ? true : false;
 
     char *moves = malloc(sizeof(char) * 5); // we will null terminate the string with max length of 4
 
@@ -65,10 +68,10 @@ char *getLegalActions(Location *agent, Grid *grid)
 }
 
 // note that this function creates Nodes but does not free anything!
-Node *getSuccessor(char action, Node node)
+Node *getSuccessor(char action, Node *node)
 {
-    oldLength = node->path->length;
-    newLength = oldLength + 1;
+    int oldLength = node->path->length;
+    int newLength = oldLength + 1;
     
     char *oldActions = node->path->actions;
     char *newActions = malloc(sizeof(char) * newLength);
@@ -82,7 +85,11 @@ Node *getSuccessor(char action, Node node)
     newActions[i] = '\0';
     newActions[0] = action;
 
+    // Location oldLocation = node->loc;
+    Location *newLocation = getNeighbor(action, node->loc);
+
     Node *successor = malloc(sizeof(Node));
+    successor->loc = newLocation;
     Path *successorPath = malloc(sizeof(Path));
     successorPath->length = newLength;
     successorPath->actions = newActions;
@@ -96,6 +103,42 @@ void deleteNode(Node *node)
     free(node->path);
     free(node->loc);
     free(node);
+}
+
+// must check for null after call
+Location *getNeighbor(char action, Location *loc)
+{
+    int new_x, new_y;
+    int x = loc->x;
+    int y = loc->y;
+
+    switch (action) 
+    {
+        case 'N':
+            new_x = x;
+            new_y = y - 1;
+            break;
+        case 'S':
+            new_x = x;
+            new_y = y + 1;
+            break;
+        case 'E':
+            new_x = x + 1;
+            new_y = y;
+            break;
+        case 'W':
+            new_x = x - 1;
+            new_y = y;
+            break;
+        default:
+            return NULL;
+    }
+    
+    Location *new_loc = malloc(sizeof(Location));
+    new_loc->x = new_x;
+    new_loc->y = new_y;
+    
+    return new_loc;
 }
 
 bool checkForWin(Location *location, Grid *grid)

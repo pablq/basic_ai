@@ -162,7 +162,6 @@ void play(char *actions, Game *game)
 
     if (winner)
     {
-        game->is
         drawWinner(game->agent, game->grid);
         printf("WINNER!\n");
     } else {
