@@ -1,6 +1,6 @@
-#ifndef LOCATION
-#define LOCATION
-#include "location.h"
+#ifndef BOOL
+#define BOOL
+#include <stdbool.h>
 #endif
 
 #ifndef GRID_DIMS
@@ -13,6 +13,8 @@ typedef char Grid[GRID_WIDTH][GRID_HEIGHT];
 
 void buildLayout(Grid* grid);
 
-void drawCharToGrid(char c, Location *loc, Grid* grid);
+bool drawCharToGrid(char c, int x, int y, Grid* grid);
 
 void printGrid(Grid *grid);
+
+bool isLegal(int x, int y, Grid *grid);

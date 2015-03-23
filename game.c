@@ -8,20 +8,15 @@
 #include <stdlib.h>
 #endif
 
-#ifndef FUNCS
-#define FUNCS
-#include "funcs.h"
-#endif
-
-#ifndef WH
-#define WH
-#define WIDTH 50
-#define HEIGHT 25
-#endif
-
 #ifndef GRID
 #define GRID
 #include "grid.h"
+#endif
+
+#ifndef GRID_DIMS
+#define GRID_DIMS
+#define GRID_WIDTH 50
+#define GRID_HEIGHT 25
 #endif
 
 #ifndef LOCATION
@@ -34,9 +29,9 @@
 #include <stdbool.h>
 #endif
 
-#ifndef PROBLEM
-#define PROBLEM
-#include "problem.h"
+#ifndef UTIL
+#define UTIL
+#include "util.h"
 #endif
 
 #ifndef GAME
@@ -48,14 +43,17 @@ void placeGoal(Location *goal, Grid *grid);
 
 void placeStart(Location *start, Grid *grid);
 
-bool isLegal(int x, int y, Grid *grid);
-
 bool isWin(Game *game);
 
 bool sameLocation(Location *a, Location *b);
 
+void drawMove(char move, Location *agent, Grid *grid);
+
+void drawWinner(Location *winner, Grid *grid);
+
 Game *newGame(void)
 {
+
     Grid *grid = malloc(sizeof(Grid));
     buildLayout(grid);
 
@@ -83,6 +81,7 @@ void deleteGame(Game *game)
     free(game->grid);
     free(game->start);
     free(game->goal);
+    free(game->agent);
     free(game);
 }
 
@@ -111,30 +110,20 @@ bool moveAgent(char action, Game *game)
             new_y = y;
             break;
         default:
+            printf("UNRECOGNIZED ACTION: %c\n", action);
             return false;
     }
-    
+
     if (!isLegal(new_x, new_y, game->grid)) 
     {
+        printf("ILLEGAL MOVE: (%d,%d)->(%d,%d) with action %c\n",x,y,new_x,new_y,action);
         return false;
     }
 
     game->agent->x = new_x;
     game->agent->y = new_y;
 
-    return true;
-}
-
-bool isLegal(int x, int y, Grid *grid)
-{
-    if (x > WIDTH - 1 || x < 0 || y > HEIGHT - 1 || y < 0) 
-    {
-        return false;
-    }
-    if (*grid[x][y] == 'X') 
-    {
-        return false;
-    }
+    printf("SUCCESSFUL MOVE: (%d,%d)->(%d,%d) with action %c\n",x,y,new_x,new_y,action);
     return true;
 }
 
@@ -164,31 +153,75 @@ void play(char *actions, Game *game)
 
         if (!moveAgent(action, game))
         {
-            printf("ILLEGAL ACTION ATTEMPTED. ABORTING GAME\n");
             break;
         }
+
+        drawMove(action, game->agent, game->grid);
+
+        i += 1;
     }
 
     if (winner)
     {
+        drawWinner(game->agent, game->grid);
         printf("WINNER!\n");
     } else {
         printf("GAME OVER.\n");
     }
 }
+
+// the below functions all use the grid api's drawCharToGrid function to actually draw on the grid
+
+void drawMove(char move, Location *agent, Grid *grid)
+{
+    int x = agent->x;
+    int y = agent->y;
+    char mark = '?';
+    switch (move)
+    {
+        case 'N':
+            mark = '^';
+            break;
+        case 'S':
+            mark = 'v';
+            break;
+        case 'E':
+            mark = '>';
+            break;
+        case 'W':
+            mark = '<';
+            break;
+    }
+
+    if (isLegal(x,y,grid))
+    {
+        drawCharToGrid(mark,x,y,grid);
+    }
+}
+
+void drawWinner(Location *winner, Grid *grid)
+{
+    int x = winner->x;
+    int y = winner->y;
+    if (isLegal(x,y,grid))
+    {
+        drawCharToGrid('W',x,y,grid);
+    }
+}
+
+// these two are special because they draw to the grid AND populate Location structs
         
 void placeStart(Location *start, Grid *grid)
 {
     bool placed = false;
     while (!placed)
     {
-        int x = randInRange(0,WIDTH - 1);
-        int y = randInRange(0,HEIGHT - 1);
+        int x = randInRange(0,GRID_WIDTH - 1);
+        int y = randInRange(0,GRID_HEIGHT - 1);
 
-        if (*grid[x][y] != 'X' && *grid[x][y] != 'G')
+        if (isLegal(x,y,grid) && *grid[x][y] != 'G')
         {
-            *grid[x][y] = 'A';
-
+            drawCharToGrid('S',x,y,grid);
             start->x = x;
             start->y = y;
             placed = true;
@@ -201,12 +234,12 @@ void placeGoal(Location *goal, Grid *grid)
     bool placed = false;
     while (!placed)
     {
-        int x = randInRange(0,WIDTH - 1);
-        int y = randInRange(0,HEIGHT - 1);
+        int x = randInRange(0,GRID_WIDTH - 1);
+        int y = randInRange(0,GRID_HEIGHT - 1);
 
-        if (*grid[x][y] != 'X' && *grid[x][y] != 'A')
+        if (isLegal(x,y, grid) && *grid[x][y] != 'S')
         {
-            *grid[x][y] = 'G';
+            drawCharToGrid('G',x,y,grid);
             goal->x = x;
             goal->y = y;
             placed = true;

@@ -8,11 +8,6 @@
 #include <stdlib.h>
 #endif
 
-#ifndef FUNCS
-#define FUNCS
-#include "funcs.h"
-#endif
-
 #ifndef GRID_DIMS
 #define GRID_DIMS
 #define GRID_WIDTH 50
@@ -22,6 +17,11 @@
 #ifndef GRID
 #define GRID
 #include "grid.h"
+#endif
+
+#ifndef UTIL
+#define UTIL
+#include "util.h"
 #endif
 
 void buildLayout(Grid *grid)
@@ -103,11 +103,25 @@ void printGrid(Grid *grid)
     }
 }
 
-void drawCharToGrid(char c, Location *loc, Grid* grid)
+bool isLegal(int x, int y, Grid *grid)
 {
-    int x = loc->x, y = loc->y;
-    if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT)
+    if (!(x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT))
     {
-        *grid[loc->x][loc->y] = c;
+        return false;
     }
+    if (*grid[x][y] == 'X') 
+    {
+        return false;
+    }
+    return true;
+}
+
+bool drawCharToGrid(char c, int x, int y, Grid* grid)
+{
+    if (isLegal(x, y, grid))
+    {
+        *grid[x][y] = c;
+        return true;
+    }
+    return false;
 }
