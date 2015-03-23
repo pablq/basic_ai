@@ -8,7 +8,7 @@ int main (void)
 
     printGrid(game->grid);
 
-    char moves[] = {'N','E','E','E','S','W','S','\0'};
+    char moves[] = {'n','e','e','e','s','w','s','\0'};
 
     // printf("N E E E S W S \\O\n");
 

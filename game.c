@@ -93,19 +93,19 @@ bool moveAgent(char action, Game *game)
 
     switch (action) 
     {
-        case 'N':
+        case 'n':
             new_x = x;
             new_y = y - 1;
             break;
-        case 'S':
+        case 's':
             new_x = x;
             new_y = y + 1;
             break;
-        case 'E':
+        case 'e':
             new_x = x + 1;
             new_y = y;
             break;
-        case 'W':
+        case 'w':
             new_x = x - 1;
             new_y = y;
             break;
@@ -146,16 +146,16 @@ void drawMove(char move, Location *agent, Grid *grid)
     char mark = '?';
     switch (move)
     {
-        case 'N':
+        case 'n':
             mark = '^';
             break;
-        case 'S':
+        case 's':
             mark = 'v';
             break;
-        case 'E':
+        case 'e':
             mark = '>';
             break;
-        case 'W':
+        case 'w':
             mark = '<';
             break;
     }
