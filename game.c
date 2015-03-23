@@ -22,7 +22,6 @@ void placeGoal(Location *goal, Grid *grid);
 
 Game *newGame(void)
 {
-
     Grid *grid = malloc(sizeof(Grid));
     buildLayout(grid);
 
@@ -50,12 +49,6 @@ void playGame(char *actions, Game *game)
     int i = 0;
     while(actions[i] != '\0')
     {
-        if (isWin(game)) 
-        {
-            winner = true;
-            break;
-        }
-
         char action = actions[i];
 
         if (!moveAgent(action, game))
@@ -64,6 +57,12 @@ void playGame(char *actions, Game *game)
         }
 
         drawMove(action, game->agent, game->grid);
+
+        if (isWin(game)) 
+        {
+            winner = true;
+            break;
+        }
 
         i += 1;
     }

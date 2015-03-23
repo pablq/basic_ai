@@ -14,7 +14,7 @@ typedef struct Game {
 
 Game *newGame(void);
 
-void play(char *actions, Game *game);
+void playGame(char *actions, Game *game);
 
 void deleteGame(Game *game);
 
