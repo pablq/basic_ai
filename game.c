@@ -71,7 +71,6 @@ Game *newGame(void)
     game->start = start;
     game->agent = agent;
     game->goal = goal;
-    game->isWin = false;
 
     return game;
 }
@@ -163,6 +162,7 @@ void play(char *actions, Game *game)
 
     if (winner)
     {
+        game->is
         drawWinner(game->agent, game->grid);
         printf("WINNER!\n");
     } else {

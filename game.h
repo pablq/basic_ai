@@ -18,7 +18,6 @@ typedef struct Game {
     Location *start;
     Location *goal;
     Location *agent;
-    bool isWin;
 } Game;
 
 Game *newGame(void);

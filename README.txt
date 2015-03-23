@@ -9,29 +9,35 @@ The efficiency of the algorithms will be determined by:
     - amount of memory used
 
 TODO:
-1. Build container grid for game in which to run algorithms.
-    - Generate grid (of size ?)
-    - Generate grid with exterior walls
-    - Generate grid with exterior walls, Agent location, and Goal location
-    - Generate grid with exterior walls, interior walls, Agent location, and Goal location
-2. Build logic for moving agent / advancing game state
-    - Function to determine legal moves (accepts Agent loc, direction)
-    - Function to actually move Agent (change val at new loc, change val at former loc)
-        -> Accepts a direction and Agent location
-    - Agent move advances game one tick
-    - Agent moves fed as an array of directions
-    - Random functions required:
-        -> check for end game
-        -> find the agent
-        -> find the squares adjacent to agent
-        -> find the goal
-3. Build logic for exploring hypothetical game states (getSuccessorState, getSuccessorNode)
-    - Gamestate consists of full grid? ACTUALLY, maybe we just need the agent's location?! 
-    - This will be the hard part. A LOT more detail is required.
-4. Much more, I have enough to work on for now. 
-    - Building the Grid and Game mechanics is first priority and plenty for now.
+1. Build logic for exploring hypothetical game states (getSuccessorState, getSuccessorNode)
+    - Game has grid, start loc, goal loc, agent loc, (and will have isWin function?)
+    - In this case it's feasible for my model to be an actual copy of the game.
+        -> i can expose a few functions in the api to use in the problem.
+    - But, what is the absolute minimum i can use for my gameState?
+        -> i definitely need the grid, i need the agent's location, i need a goal check.
+            ^ i should just use a copy of the game struct
+        -> it would be helpful tto have the moveagent function too.
+        -> i WONT need play.
+    - I'll try to keep problem simple (i'll have access to a copy of the game that i can modify, but i won't duplicate it (i just care about walls and goal))
+        -> getLegalActions(Location) returns [legal actions \0]
+        -> getSuccessorState(action, this_node) returns NODE
+        -> NODE consists of { Location, [actions taken to get here \0] }... what else? i don't think anything
+            ^ i'd rather not have to copy the game for each successor state.
+            ^ i just need to be able to check for legal moves and isWin per location.
+    - if game->isWin() checks it's own member's, i can just modify my fake game's agent location and check it. that way i can use the game's
+        actual mechanics without re-implementing.
+    - the Problem might be able to just live in the search agent to keep things simpler.
+2. build SearchAgent with logic to open gamestates and check if that gamestate == win.
+    - I'll have to think up efficeint logic to extend char arrays by one char only. it might be worth creating a new struct that holds the 
+        array's length and a pointer the array itself.
+3. implement search functions that return a list of directions
+    - they are given access to the problem? and the game? or the agent? (still to be determined)
+    - WILL BE GRAPH SEARCH -> i'll store already explored states in a hash table (with linked list?)
+4. implement in basic_ai.c a situation where an agent is given a game and plays it using a,b, or c search algorithm.
+    this will be 'main'
+5. DONT FORGET TO FREE MEMORY USED (bust out valgrind)
 
-CS188 structure:
+Rough CS188 structure: (FOR REFERENCE)
 - There's a GAME which is the environment for the exercise, and is what will execute the movements of the AGENT
     -> provides a Start State
     -> provides and recognizes a Goal State
