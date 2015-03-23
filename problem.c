@@ -23,6 +23,11 @@
 #include <stdio.h>
 #endif
 
+#ifndef PROBLEM
+#define PROBLEM
+#include "problem.h"
+#endif
+
 char *getLegalActions(Location *agent, Grid *grid)
 {
     bool n = *grid[agent->x][agent->y - 1] != 'X' ? true : false;
@@ -59,58 +64,39 @@ char *getLegalActions(Location *agent, Grid *grid)
     }
 }
 
-
-/*
-Location *moveAgent(char dir, Location *start, Grid *grid)
+// note that this function creates Nodes but does not free anything!
+Node *getSuccessor(char action, Node node)
 {
-    int new_x, new_y;
-    int x = start->x;
-    int y = start->y;
-    char mark;
-    switch (dir)
+    oldLength = node->path->length;
+    newLength = oldLength + 1;
+    
+    char *oldActions = node->path->actions;
+    char *newActions = malloc(sizeof(char) * newLength);
+
+    int i = 0;
+    while (i < oldLength)
     {
-        case 'N':
-            new_x = x;
-            new_y = y - 1;
-            mark = '^';
-            break;
-        case 'S':
-            new_x = x;
-            new_y = y + 1;
-            mark = 'v';
-            break;
-        case 'E':
-            new_x = x + 1;
-            new_y = y;
-            mark = '>';
-            break;
-        case 'W':
-            new_x = x - 1;
-            new_y = y;
-            mark = '<';
-            break;
-        default:
-            return NULL;
+        newActions[i+1] = oldActions[i];
+        i += 1;
     }
+    newActions[i] = '\0';
+    newActions[0] = action;
 
-    Location *new = malloc(sizeof(Location));
-    new-> x = new_x;
-    new-> y = new_y;
+    Node *successor = malloc(sizeof(Node));
+    Path *successorPath = malloc(sizeof(Path));
+    successorPath->length = newLength;
+    successorPath->actions = newActions;
 
-    if (checkForWin(new, grid))
-    {
-        *grid[new->x][new->y] = 'O'; 
-        printf("WIN!!!\n");
-    } else {
-        *grid[new->x][new->y] = mark; 
-    }
-
-    free(start);
-
-    return new;
+    return successor;
 }
 
-*/
+void deleteNode(Node *node)
+{
+    free(node->path->actions);
+    free(node->path);
+    free(node->loc);
+    free(node);
+}
 
 bool checkForWin(Location *location, Grid *grid)
 {
