@@ -8,14 +8,21 @@
 #include "location.h"
 #endif
 
-void drawPath(char *actions, Location *start, Grid *grid);
-
-bool checkForWin(Location *location, Grid *grid);
-
-Location *getNextLocation(char action, Location *start, Grid *grid);
+#ifndef BOOL
+#define BOOL
+#include <stdbool.h>
+#endif
 
 typedef struct Game {
     Grid *grid;
     Location *start;
+    Location *goal;
     Location *agent;
+    bool isWin;
 } Game;
+
+Game *newGame(void);
+
+void play(char *actions, Game *game);
+
+void deleteGame(Game *game);

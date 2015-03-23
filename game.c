@@ -44,36 +44,56 @@
 #include "game.h"
 #endif
 
-int main(void)
+void placeGoal(Location *goal, Grid *grid);
+
+void placeStart(Location *start, Grid *grid);
+
+bool isLegal(int x, int y, Grid *grid);
+
+bool isWin(Game *game);
+
+bool sameLocation(Location *a, Location *b);
+
+Game *newGame(void)
 {
     Grid *grid = malloc(sizeof(Grid));
     buildLayout(grid);
 
-    Location *agent = malloc(sizeof(Location));
-    placeAgent(agent, grid);
+    Location *start = malloc(sizeof(Location));
+    placeStart(start, grid);
 
     Location *goal = malloc(sizeof(Location));
     placeGoal(goal, grid);
 
-    printGrid(grid);
+    Location *agent = malloc(sizeof(Location));
+    *agent = *start;
 
-    char path[] = { 'N', 'N', 'W', 'W', '\0' };
-    drawPath(path, agent, grid);
+    Game *game = malloc(sizeof(Game));
+    game->grid = grid;
+    game->start = start;
+    game->agent = agent;
+    game->goal = goal;
+    game->isWin = false;
 
-    printGrid(grid);
-
-    free(grid);
-    free(agent);
-    free(goal);
+    return game;
 }
 
-Location *getNextLocation(char action, Location *start, Grid *grid)
+void deleteGame(Game *game)
 {
-    printf("getNextLocation\n");
+    free(game->grid);
+    free(game->start);
+    free(game->goal);
+    free(game);
+}
+
+bool moveAgent(char action, Game *game)
+{
     int new_x, new_y;
-    int x = start->x;
-    int y = start->y;
-    switch (action) {
+    int x = game->agent->x;
+    int y = game->agent->y;
+
+    switch (action) 
+    {
         case 'N':
             new_x = x;
             new_y = y - 1;
@@ -91,74 +111,105 @@ Location *getNextLocation(char action, Location *start, Grid *grid)
             new_y = y;
             break;
         default:
-            return NULL;
+            return false;
+    }
+    
+    if (!isLegal(new_x, new_y, game->grid)) 
+    {
+        return false;
     }
 
-    // note that we create a new struct and return it.
-    // WE DO NOT FREE THE OLD STRUCT HERE
-    Location *nextLocation = malloc(sizeof(Location));
-    nextLocation->x = new_x;
-    nextLocation->y = new_y;
-    return nextLocation;
+    game->agent->x = new_x;
+    game->agent->y = new_y;
+
+    return true;
 }
 
-bool isLegal(Location *location, Grid *grid)
+bool isLegal(int x, int y, Grid *grid)
 {
-    int x = location-> x;
-    int y = location-> y;
     if (x > WIDTH - 1 || x < 0 || y > HEIGHT - 1 || y < 0) 
     {
         return false;
     }
-    if (*grid[x][y] == 'X') {
+    if (*grid[x][y] == 'X') 
+    {
         return false;
     }
     return true;
 }
 
-bool isOccupied(Location *location, Grid *grid)
+bool isWin(Game *game)
 {
-    return false;
+    return sameLocation(game->agent, game->goal);
 }
 
-void drawPath(char *actions, Location *start, Grid *grid)
+bool sameLocation(Location *a, Location *b)
 {
-    printf("drawPath\n");
-    Location *last = malloc(sizeof(Location));
-    last->x = start->x;
-    last->y = start->y;
+    return (a->x == b->x && a->y == b->y);
+}
 
+void play(char *actions, Game *game)
+{
+    bool winner = false;
     int i = 0;
     while(actions[i] != '\0')
     {
-        char action = actions[i];
-        Location *next = getNextLocation(action, last, grid);
-        if (next != NULL && isLegal(next, grid))
+        if (isWin(game)) 
         {
-            char mark;
-            switch(action) {
-                case 'N':
-                    mark = '^';
-                    break;
-                case 'S':
-                    mark = 'v';
-                    break;
-                case 'E':
-                    mark = '>';
-                    break;
-                case 'W':
-                    mark = '<';
-                    break;
-            }
-            *grid[next->x][next->y] = mark;
-        } else {
-            printf("ILLEGAL ACTION ATTEMPTED. ABORTING DRAW\n");
+            winner = true;
             break;
         }
-        free(last);
-        last = next;
-        i += 1;
+
+        char action = actions[i];
+
+        if (!moveAgent(action, game))
+        {
+            printf("ILLEGAL ACTION ATTEMPTED. ABORTING GAME\n");
+            break;
+        }
     }
-    free(last);
+
+    if (winner)
+    {
+        printf("WINNER!\n");
+    } else {
+        printf("GAME OVER.\n");
+    }
 }
         
+void placeStart(Location *start, Grid *grid)
+{
+    bool placed = false;
+    while (!placed)
+    {
+        int x = randInRange(0,WIDTH - 1);
+        int y = randInRange(0,HEIGHT - 1);
+
+        if (*grid[x][y] != 'X' && *grid[x][y] != 'G')
+        {
+            *grid[x][y] = 'A';
+
+            start->x = x;
+            start->y = y;
+            placed = true;
+        }
+    }
+}
+
+void placeGoal(Location *goal, Grid *grid)
+{
+    bool placed = false;
+    while (!placed)
+    {
+        int x = randInRange(0,WIDTH - 1);
+        int y = randInRange(0,HEIGHT - 1);
+
+        if (*grid[x][y] != 'X' && *grid[x][y] != 'A')
+        {
+            *grid[x][y] = 'G';
+            goal->x = x;
+            goal->y = y;
+            placed = true;
+        }
+    }
+}

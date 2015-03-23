@@ -13,10 +13,10 @@
 #include "funcs.h"
 #endif
 
-#ifndef WH
-#define WH
-#define WIDTH 50
-#define HEIGHT 25
+#ifndef GRID_DIMS
+#define GRID_DIMS
+#define GRID_WIDTH 50
+#define GRID_HEIGHT 25
 #endif
 
 #ifndef GRID
@@ -24,24 +24,14 @@
 #include "grid.h"
 #endif
 
-#ifndef LOCATION
-#define LOCATION
-#include "location.h"
-#endif
-
-#ifndef BOOL
-#define BOOL
-#include <stdbool.h>
-#endif
-
 void buildLayout(Grid *grid)
 {
     // this is the basic build. it just populates the outside with walls
-    for (int x = 0; x < WIDTH; x += 1) 
+    for (int x = 0; x < GRID_WIDTH; x += 1) 
     {
-        for (int y = 0; y < HEIGHT; y += 1) 
+        for (int y = 0; y < GRID_HEIGHT; y += 1) 
         {
-            if ((y == 0 || y == HEIGHT - 1) || (x == 0 || x == WIDTH - 1))
+            if ((y == 0 || y == GRID_HEIGHT - 1) || (x == 0 || x == GRID_WIDTH - 1))
             {
                 *grid[x][y] = 'X';
             } else {
@@ -67,12 +57,12 @@ void buildLayout(Grid *grid)
         int is_horiz = randInRange(0,1);
         if(is_horiz) 
         {
-            x = randInRange(1, WIDTH - (len + 1));
-            y = randInRange(2, HEIGHT - 3);
+            x = randInRange(1, GRID_WIDTH - (len + 1));
+            y = randInRange(2, GRID_HEIGHT - 3);
     
         } else {
-            x = randInRange(2, WIDTH - 3);
-            y = randInRange(2, HEIGHT - (len + 1));
+            x = randInRange(2, GRID_WIDTH - 3);
+            y = randInRange(2, GRID_HEIGHT - (len + 1));
         }
 
         // here we actually draw the wall
@@ -103,9 +93,9 @@ void buildLayout(Grid *grid)
 
 void printGrid(Grid *grid)
 {
-    for (int y = 0; y < HEIGHT; y += 1) 
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
     {
-        for (int x = 0; x < WIDTH; x += 1) 
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
         {
             printf("%c", *grid[x][y]);
         }
@@ -113,39 +103,11 @@ void printGrid(Grid *grid)
     }
 }
 
-void placeAgent(Location *agent, Grid *grid)
+void drawCharToGrid(char c, Location *loc, Grid* grid)
 {
-    bool placed = false;
-    while (!placed)
+    int x = loc->x, y = loc->y;
+    if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT)
     {
-        int x = randInRange(0,WIDTH - 1);
-        int y = randInRange(0,HEIGHT - 1);
-
-        if (*grid[x][y] != 'X' && *grid[x][y] != 'G')
-        {
-            *grid[x][y] = 'A';
-
-            agent->x = x;
-            agent->y = y;
-            placed = true;
-        }
-    }
-}
-
-void placeGoal(Location *goal, Grid *grid)
-{
-    bool placed = false;
-    while (!placed)
-    {
-        int x = randInRange(0,WIDTH - 1);
-        int y = randInRange(0,HEIGHT - 1);
-
-        if (*grid[x][y] != 'X' && *grid[x][y] != 'A')
-        {
-            *grid[x][y] = 'G';
-            goal->x = x;
-            goal->y = y;
-            placed = true;
-        }
+        *grid[loc->x][loc->y] = c;
     }
 }
