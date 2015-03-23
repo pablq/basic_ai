@@ -1,27 +1,22 @@
-#ifndef LOCATION 
-#define LOCATION
+#ifndef PROBLEM
+#define PROBLEM
+
 #include "location.h"
-#endif
-
-#ifndef GRID
-#define GRID
 #include "grid.h"
-#endif
+#include "list.h"
 
-char *getLegalActions(Location *agent, Grid *grid);
+// we only mock the gamestate. we don't make use of game (though we might use some of game functions)
+
+List *getSuccessors(Location *location, Grid *grid);
 
 bool checkForWin(Location *location, Grid *grid);
 
 // the char * actions will always be null terminated
 // the length value does not count the null terminator
-typedef struct Path
-{
-    char *actions;
-    int length;
-} Path;
-
 typedef struct Node
 {
-    Location *loc;
-    Path *path;
+    Location *location;
+    List *path;
 } Node;
+
+#endif /* PROBLEM */

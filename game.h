@@ -1,17 +1,9 @@
-#ifndef GRID
-#define GRID
-#include "grid.h"
-#endif
+#ifndef GAME
+#define GAME
 
-#ifndef LOCATION
-#define LOCATION
-#include "location.h"
-#endif
-
-#ifndef BOOL
-#define BOOL
 #include <stdbool.h>
-#endif
+#include "grid.h"
+#include "location.h"
 
 typedef struct Game {
     Grid *grid;
@@ -25,3 +17,5 @@ Game *newGame(void);
 void play(char *actions, Game *game);
 
 void deleteGame(Game *game);
+
+#endif /*GAME*/

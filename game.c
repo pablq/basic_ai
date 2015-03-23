@@ -1,55 +1,24 @@
-#ifndef STDIO
-#define STDIO
 #include <stdio.h>
-#endif
-
-#ifndef STDLIB
-#define STDLIB
 #include <stdlib.h>
-#endif
-
-#ifndef GRID
-#define GRID
-#include "grid.h"
-#endif
-
-#ifndef GRID_DIMS
-#define GRID_DIMS
-#define GRID_WIDTH 50
-#define GRID_HEIGHT 25
-#endif
-
-#ifndef LOCATION
-#define LOCATION
-#include "location.h"
-#endif
-
-#ifndef STDBOOL
-#define STDBOOL
 #include <stdbool.h>
-#endif
-
-#ifndef UTIL
-#define UTIL
+#include "grid.h"
+#include "location.h"
 #include "util.h"
-#endif
-
-#ifndef GAME
-#define GAME
 #include "game.h"
-#endif
 
-void placeGoal(Location *goal, Grid *grid);
-
-void placeStart(Location *start, Grid *grid);
-
-bool isWin(Game *game);
+bool moveAgent(char action, Game *game);
 
 bool sameLocation(Location *a, Location *b);
+
+bool isWin(Game *game);
 
 void drawMove(char move, Location *agent, Grid *grid);
 
 void drawWinner(Location *winner, Grid *grid);
+
+void placeStart(Location *start, Grid *grid);
+
+void placeGoal(Location *goal, Grid *grid);
 
 Game *newGame(void)
 {
@@ -73,6 +42,39 @@ Game *newGame(void)
     game->goal = goal;
 
     return game;
+}
+
+void play(char *actions, Game *game)
+{
+    bool winner = false;
+    int i = 0;
+    while(actions[i] != '\0')
+    {
+        if (isWin(game)) 
+        {
+            winner = true;
+            break;
+        }
+
+        char action = actions[i];
+
+        if (!moveAgent(action, game))
+        {
+            break;
+        }
+
+        drawMove(action, game->agent, game->grid);
+
+        i += 1;
+    }
+
+    if (winner)
+    {
+        drawWinner(game->agent, game->grid);
+        printf("WINNER!\n");
+    } else {
+        printf("GAME OVER.\n");
+    }
 }
 
 void deleteGame(Game *game)
@@ -126,47 +128,14 @@ bool moveAgent(char action, Game *game)
     return true;
 }
 
-bool isWin(Game *game)
-{
-    return sameLocation(game->agent, game->goal);
-}
-
 bool sameLocation(Location *a, Location *b)
 {
     return (a->x == b->x && a->y == b->y);
 }
 
-void play(char *actions, Game *game)
+bool isWin(Game *game)
 {
-    bool winner = false;
-    int i = 0;
-    while(actions[i] != '\0')
-    {
-        if (isWin(game)) 
-        {
-            winner = true;
-            break;
-        }
-
-        char action = actions[i];
-
-        if (!moveAgent(action, game))
-        {
-            break;
-        }
-
-        drawMove(action, game->agent, game->grid);
-
-        i += 1;
-    }
-
-    if (winner)
-    {
-        drawWinner(game->agent, game->grid);
-        printf("WINNER!\n");
-    } else {
-        printf("GAME OVER.\n");
-    }
+    return sameLocation(game->agent, game->goal);
 }
 
 // the below functions all use the grid api's drawCharToGrid function to actually draw on the grid

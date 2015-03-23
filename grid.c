@@ -1,28 +1,8 @@
-#ifndef STDIO
-#define STDIO
 #include <stdio.h>
-#endif
-
-#ifndef STDLIB
-#define STDLIB
 #include <stdlib.h>
-#endif
-
-#ifndef GRID_DIMS
-#define GRID_DIMS
-#define GRID_WIDTH 50
-#define GRID_HEIGHT 25
-#endif
-
-#ifndef GRID
-#define GRID
+#include <stdbool.h>
 #include "grid.h"
-#endif
-
-#ifndef UTIL
-#define UTIL
 #include "util.h"
-#endif
 
 void buildLayout(Grid *grid)
 {
@@ -103,6 +83,16 @@ void printGrid(Grid *grid)
     }
 }
 
+bool drawCharToGrid(char c, int x, int y, Grid* grid)
+{
+    if (isLegal(x, y, grid))
+    {
+        *grid[x][y] = c;
+        return true;
+    }
+    return false;
+}
+
 bool isLegal(int x, int y, Grid *grid)
 {
     if (!(x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT))
@@ -114,14 +104,4 @@ bool isLegal(int x, int y, Grid *grid)
         return false;
     }
     return true;
-}
-
-bool drawCharToGrid(char c, int x, int y, Grid* grid)
-{
-    if (isLegal(x, y, grid))
-    {
-        *grid[x][y] = c;
-        return true;
-    }
-    return false;
 }

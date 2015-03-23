@@ -1,13 +1,5 @@
-#ifndef STDLIB
-#define STDLIB
 #include <stdlib.h>
-#endif
-
-#ifndef TIME
-#define TIME
 #include <time.h>
-#endif
-
 
 int randInRange(int low, int high)
 {

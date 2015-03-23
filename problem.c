@@ -1,70 +1,66 @@
-#ifndef LOCATION 
-#define LOCATION
-#include "location.h"
-#endif
-
-#ifndef GRID
-#define GRID
-#include "grid.h"
-#endif
-
-#ifndef BOOL
-#define BOOL
 #include <stdbool.h>
-#endif
-
-#ifndef STDLIB
-#define STDLIB
 #include <stdlib.h>
-#endif
-
-#ifndef STDIO
-#define STDIO
 #include <stdio.h>
-#endif
-
-#ifndef PROBLEM
-#define PROBLEM
+#include "location.h"
+#include "grid.h"
 #include "problem.h"
-#endif
+
+/*
+ * NOTE TO SELF:
+ * COMBINE GETSUCCESSOR AND GETLEGALACTIONS.
+ * THE NEW FUNCTION WILL RETURN AN ARRAY OF SUCCESSORS
+ * THE THING TO CONSIDER NOW, IS HOW WILL WE KNOW EXACTLY HOW MANY SUCCESSORS THERE WERE?
+ * PERHAPS I CAN MAKE THE PATH STRUCT MORE GENERIC.
+ * IT WILL HOLD A VOID* AND INT FOR THE NUMBER OF ITEMS ASSOCIATED WITH IT.
+ * I STILL HAVE TO CONSIDER HOW TO COUNT THE LENGTH OF ACTION STRINGS...
+ * IF THEY ARE REGULAR STRINGS THEN I'LL HAVE TO COUNT THEM EVERY TIME I PASS THEM TO ANYTHING.
+ * OR, I CAN HAVE THEM BE STORED IN THE ABOVE GENERIC { VOID*; INT } STRUCT
+ * RIGHT NOW I THINK IT'D BE EASIER TO USE PLAIN STRINGS AND EITHER STRLEN
+ * OR WRITE MY OWN LAME STRING COUNTING FUNCTION. <- IF I DO WRITE MY OWN I'LL HAVE TO
+ * BE QUITE CAREFUL TO MAKE SURE THE STRINGS ARE *ALWAYS* NULL-TERMINATED.
+ *
+ */
+
+Node *getSuccessor(char action, Node *node);
 
 Location *getNeighbor(char action, Location *loc);
 
-// note this function mallocs a char *!!
-char *getLegalActions(Location *loc, Grid *grid)
+void deleteNode(Node *node);
+
+// must check for null after call. **NOTE WE MALLOC HERE**
+// this function mocks some game functionality
+Location *getNeighbor(char action, Location *loc)
 {
-    bool n = *grid[loc->x][loc->y - 1] != 'X' ? true : false;
-    bool s = *grid[loc->x][loc->y + 1] != 'X' ? true : false;
-    bool e = *grid[loc->x + 1][loc->y] != 'X' ? true : false;
-    bool w = *grid[loc->x - 1][loc->y] != 'X' ? true : false;
+    int new_x, new_y;
+    int x = loc->x;
+    int y = loc->y;
 
-    char *moves = malloc(sizeof(char) * 5); // we will null terminate the string with max length of 4
-
-    int total_moves = 0;
-    if (n) {
-        moves[total_moves] = 'N';
-        total_moves += 1;
-    }
-    if (s) {
-        moves[total_moves] = 'S';
-        total_moves += 1;
-    }
-    if (e) {
-        moves[total_moves] = 'E';
-        total_moves += 1;
-    }
-    if (w) {
-        moves[total_moves] = 'W';
-        total_moves += 1;
-    }
-    if (total_moves == 0) 
+    switch (action) 
     {
-        free(moves);
-        return NULL;
-    } else {
-        moves[total_moves] = '\0';
-        return moves;
+        case 'N':
+            new_x = x;
+            new_y = y - 1;
+            break;
+        case 'S':
+            new_x = x;
+            new_y = y + 1;
+            break;
+        case 'E': new_x = x + 1;
+            new_y = y;
+            break;
+        case 'W':
+            new_x = x - 1;
+            new_y = y;
+            break;
+        default:
+            return NULL;
     }
+    
+    Location *new_loc = malloc(sizeof(Location));
+    new_loc->x = new_x;
+    new_loc->y = new_y;
+    
+    return new_loc;
 }
 
 // note that this function creates Nodes but does not free anything!
@@ -105,40 +101,41 @@ void deleteNode(Node *node)
     free(node);
 }
 
-// must check for null after call
-Location *getNeighbor(char action, Location *loc)
+// note this function mallocs a char *!!
+char *getLegalActions(Location *loc, Grid *grid)
 {
-    int new_x, new_y;
-    int x = loc->x;
-    int y = loc->y;
+    bool n = *grid[loc->x][loc->y - 1] != 'X' ? true : false;
+    bool s = *grid[loc->x][loc->y + 1] != 'X' ? true : false;
+    bool e = *grid[loc->x + 1][loc->y] != 'X' ? true : false;
+    bool w = *grid[loc->x - 1][loc->y] != 'X' ? true : false;
 
-    switch (action) 
-    {
-        case 'N':
-            new_x = x;
-            new_y = y - 1;
-            break;
-        case 'S':
-            new_x = x;
-            new_y = y + 1;
-            break;
-        case 'E':
-            new_x = x + 1;
-            new_y = y;
-            break;
-        case 'W':
-            new_x = x - 1;
-            new_y = y;
-            break;
-        default:
-            return NULL;
+    char *moves = malloc(sizeof(char) * 5); // we will null terminate the string with max length of 4
+
+    int total_moves = 0;
+    if (n) {
+        moves[total_moves] = 'N';
+        total_moves += 1;
     }
-    
-    Location *new_loc = malloc(sizeof(Location));
-    new_loc->x = new_x;
-    new_loc->y = new_y;
-    
-    return new_loc;
+    if (s) {
+        moves[total_moves] = 'S';
+        total_moves += 1;
+    }
+    if (e) {
+        moves[total_moves] = 'E';
+        total_moves += 1;
+    }
+    if (w) {
+        moves[total_moves] = 'W';
+        total_moves += 1;
+    }
+    if (total_moves == 0) 
+    {
+        free(moves);
+        return NULL;
+    } else {
+        moves[total_moves] = '\0';
+        return moves;
+    }
 }
 
 bool checkForWin(Location *location, Grid *grid)

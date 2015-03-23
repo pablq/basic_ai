@@ -1,17 +1,6 @@
-#ifndef GAME
-#define GAME
-#include "game.h"
-#endif
-
-#ifndef GRID
-#define GRID
-#include "grid.h"
-#endif
-
-#ifndef STDIO
-#define STDIO
 #include <stdio.h>
-#endif
+#include "game.h"
+#include "grid.h"
 
 int main (void)
 {
