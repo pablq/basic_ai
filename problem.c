@@ -138,8 +138,9 @@ char *getLegalActions(Location *loc, Grid *board, char *moves)
 // PASSING A COPY OF THE GAME SEEMS TO ME TO BE A REASONABLE
 // THING TO DO AS THE AI METHODS WILL NOT MODIFY IT
 // AND THERE ISN'T A WHOLE LOT OF DATA TO COPY OVER
-bool checkForWin(Location *location, Grid *board)
+bool checkForWin(Location *location, Grid *game)
 {
+    if 
     if (*board[location->x][location->y] == 'G')
     {
         return true;
