@@ -104,13 +104,12 @@ void deleteNode(Node *node)
     free(node);
 }
 
-// note this function mallocs a char *!!
 char *getLegalActions(Location *loc, Grid *board, char *moves)
 {
-    bool n = isLegal(loc->x,loc->y - 1, board);
-    bool s = isLegal(loc->x,loc->y + 1, board);
-    bool e = isLegal(loc->x + 1,loc->y, board);
-    bool w = isLegal(loc->x - 1,loc->y, board);
+    bool n = isLegal(loc->x, loc->y - 1, board);
+    bool s = isLegal(loc->x, loc->y + 1, board);
+    bool e = isLegal(loc->x + 1, loc->y, board);
+    bool w = isLegal(loc->x - 1, loc->y, board);
 
     int total_moves = 0;
     if (n) {
@@ -134,6 +133,11 @@ char *getLegalActions(Location *loc, Grid *board, char *moves)
     return moves;
 }
 
+// THIS FUNCTION IS NO LONGER ANY GOOD.
+// WE NEED EITHER THE GAME, OR THE GAME'S GOAL LOCATION.
+// PASSING A COPY OF THE GAME SEEMS TO ME TO BE A REASONABLE
+// THING TO DO AS THE AI METHODS WILL NOT MODIFY IT
+// AND THERE ISN'T A WHOLE LOT OF DATA TO COPY OVER
 bool checkForWin(Location *location, Grid *board)
 {
     if (*board[location->x][location->y] == 'G')
