@@ -7,18 +7,7 @@
 #include "problem.h"
 
 /*
- * NOTE TO SELF:
- * COMBINE GETSUCCESSOR AND GETLEGALACTIONS.
- * THE NEW FUNCTION WILL RETURN AN ARRAY OF SUCCESSORS
- * THE THING TO CONSIDER NOW, IS HOW WILL WE KNOW EXACTLY HOW MANY SUCCESSORS THERE WERE?
- * PERHAPS I CAN MAKE THE PATH STRUCT MORE GENERIC.
- * IT WILL HOLD A VOID* AND INT FOR THE NUMBER OF ITEMS ASSOCIATED WITH IT.
- * I STILL HAVE TO CONSIDER HOW TO COUNT THE LENGTH OF ACTION STRINGS...
- * IF THEY ARE REGULAR STRINGS THEN I'LL HAVE TO COUNT THEM EVERY TIME I PASS THEM TO ANYTHING.
- * OR, I CAN HAVE THEM BE STORED IN THE ABOVE GENERIC { VOID*; INT } STRUCT
- * RIGHT NOW I THINK IT'D BE EASIER TO USE PLAIN STRINGS AND EITHER STRLEN
- * OR WRITE MY OWN LAME STRING COUNTING FUNCTION. <- IF I DO WRITE MY OWN I'LL HAVE TO
- * BE QUITE CAREFUL TO MAKE SURE THE STRINGS ARE *ALWAYS* NULL-TERMINATED.
+ * ACTION STRINGS MUST *ALWAYS* BE NULL-TERMINATED
  *
  */
 
@@ -26,23 +15,30 @@ Location *getNeighbor(char action, Location *old, Location *new);
 
 void deleteNode(Node *node);
 
-char *getLegalActions(Location *loc, Grid *grid);
+char *getLegalActions(Location *loc, Grid *board, char *moves);
 
-int costFn(Location *location, Grid *grid);
+int costFn(Location *location, Grid *board);
 
-int costFn(Location *location, Grid *grid)
+// if the costFn is passed a wall it will give a favorable value!
+// you should check for the legality of a location before calling the costfn
+int costFn(Location *location, Grid *board)
 {
-    return 1;
+    return *board[location->x][location->y];
 }
 
-Node *getFirstNode(Node *node, Grid *grid)
+// TODO
+Node *getFirstNode(Node *node, Grid *board)
 {
     return node;
 }
 
-List *getSuccessors(List *successors, Node *parent, Grid *grid) // this function assumes successors->list has 4 available slots.
+// this function is exposed in the api.
+// a search algorithem will call this to get the neighboring 'state's to a given parent node.
+// this function assumes successors->list has 4 available slots for Nodes.
+List *getSuccessors(List *successors, Node *parent, Grid *board) 
 {
-    char *legalActions = getLegalActions(parent->location, grid);
+    char legalActions[5]; // space for four moves + a null terminator
+    getLegalActions(parent->location, board, legalActions);
     
     int i = 0;
     while (legalActions[i] != '\0')
@@ -54,7 +50,7 @@ List *getSuccessors(List *successors, Node *parent, Grid *grid) // this function
         Location *s_location = malloc(sizeof(Location));
 
         successor->location = getNeighbor(action, parent->location, s_location);
-        successor->cost = costFn(successor->location, grid);
+        successor->cost = costFn(successor->location, board);
         successor->action = action;
 
         Node **list = (Node **) successors->list;
@@ -68,7 +64,7 @@ List *getSuccessors(List *successors, Node *parent, Grid *grid) // this function
 }
 
 
-// must check for null.
+// helper function for getSuccessors
 Location *getNeighbor(char action, Location *old, Location *new)
 {
     int new_x, new_y;
@@ -77,18 +73,18 @@ Location *getNeighbor(char action, Location *old, Location *new)
 
     switch (action) 
     {
-        case 'N':
+        case 'n':
             new_x = x;
             new_y = y - 1;
             break;
-        case 'S':
+        case 's':
             new_x = x;
             new_y = y + 1;
             break;
-        case 'E': new_x = x + 1;
+        case 'e': new_x = x + 1;
             new_y = y;
             break;
-        case 'W':
+        case 'w':
             new_x = x - 1;
             new_y = y;
             break;
@@ -109,45 +105,38 @@ void deleteNode(Node *node)
 }
 
 // note this function mallocs a char *!!
-char *getLegalActions(Location *loc, Grid *grid)
+char *getLegalActions(Location *loc, Grid *board, char *moves)
 {
-    bool n = *grid[loc->x][loc->y - 1] != 'X' ? true : false;
-    bool s = *grid[loc->x][loc->y + 1] != 'X' ? true : false;
-    bool e = *grid[loc->x + 1][loc->y] != 'X' ? true : false;
-    bool w = *grid[loc->x - 1][loc->y] != 'X' ? true : false;
-
-    char *moves = malloc(sizeof(char) * 5); // we will null terminate the string with max length of 4
+    bool n = isLegal(loc->x,loc->y - 1, board);
+    bool s = isLegal(loc->x,loc->y + 1, board);
+    bool e = isLegal(loc->x + 1,loc->y, board);
+    bool w = isLegal(loc->x - 1,loc->y, board);
 
     int total_moves = 0;
     if (n) {
-        moves[total_moves] = 'N';
+        moves[total_moves] = 'n';
         total_moves += 1;
     }
     if (s) {
-        moves[total_moves] = 'S';
+        moves[total_moves] = 's';
         total_moves += 1;
     }
     if (e) {
-        moves[total_moves] = 'E';
+        moves[total_moves] = 'e';
         total_moves += 1;
     }
     if (w) {
-        moves[total_moves] = 'W';
+        moves[total_moves] = 'w';
         total_moves += 1;
     }
-    if (total_moves == 0) 
-    {
-        free(moves);
-        return NULL;
-    } else {
-        moves[total_moves] = '\0';
-        return moves;
-    }
+    moves[total_moves] = '\0';
+
+    return moves;
 }
 
-bool checkForWin(Location *location, Grid *grid)
+bool checkForWin(Location *location, Grid *board)
 {
-    if (*grid[location->x][location->y] == 'G')
+    if (*board[location->x][location->y] == 'G')
     {
         return true;
     } else {
