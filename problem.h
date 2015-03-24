@@ -5,27 +5,21 @@
 #include "grid.h"
 #include "list.h"
 
-Location *getStartState(Grid *grid);
-
 bool isGoalState(Location *location, Grid *grid);
 
 // the char * actions will always be null terminated
 // the length value does not count the null terminator
-typedef struct SuccessorNode
+typedef struct Node 
 {
     Location *location;
     char action;
     int cost;
-} SuccessorNode;
+} Node;
 
-List *getSuccessors(Location *location, Grid *grid);
+Node *getFirstNode(Node *first_node, Grid *grid);
 
-/*
-typedef struct FringeNode <- for use in search algorithms
-{
-   SuccessorNode *node;
-   List *actions;
-} 
-*/
+List *getSuccessors(List *successors, Node *parent, Grid *grid); // this function assumes successors has 4 available slots.
+
+void deleteNode(Node *node);
 
 #endif /* PROBLEM */

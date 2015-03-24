@@ -105,3 +105,12 @@ bool isLegal(int x, int y, Grid *grid)
     }
     return true;
 }
+
+bool isAvailable(int x, int y, Grid *grid)
+{
+    if (isLegal(x,y,grid))
+    {
+       return (*grid[x][y] - 48 >= 0 || *grid[x][y] - 48 <= 9);
+    }
+    return false;
+} 

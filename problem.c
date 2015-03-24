@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "location.h"
 #include "grid.h"
+#include "list.h"
 #include "problem.h"
 
 /*
@@ -21,19 +22,58 @@
  *
  */
 
-Node *getSuccessor(char action, Node *node);
-
-Location *getNeighbor(char action, Location *loc);
+Location *getNeighbor(char action, Location *old, Location *new);
 
 void deleteNode(Node *node);
 
-// must check for null after call. **NOTE WE MALLOC HERE**
-// this function mocks some game functionality
-Location *getNeighbor(char action, Location *loc)
+char *getLegalActions(Location *loc, Grid *grid);
+
+int costFn(Location *location, Grid *grid);
+
+int costFn(Location *location, Grid *grid)
+{
+    return 1;
+}
+
+Node *getFirstNode(Node *node, Grid *grid)
+{
+    return node;
+}
+
+List *getSuccessors(List *successors, Node *parent, Grid *grid) // this function assumes successors->list has 4 available slots.
+{
+    char *legalActions = getLegalActions(parent->location, grid);
+    
+    int i = 0;
+    while (legalActions[i] != '\0')
+    {
+        char action = legalActions[i];
+
+        Node *successor = (Node *)malloc(sizeof(Node));
+
+        Location *s_location = malloc(sizeof(Location));
+
+        successor->location = getNeighbor(action, parent->location, s_location);
+        successor->cost = costFn(successor->location, grid);
+        successor->action = action;
+
+        Node **list = (Node **) successors->list;
+        list[i]= successor;
+
+        successors->length = i;
+        i += 1;
+    }
+
+    return successors;
+}
+
+
+// must check for null.
+Location *getNeighbor(char action, Location *old, Location *new)
 {
     int new_x, new_y;
-    int x = loc->x;
-    int y = loc->y;
+    int x = old->x;
+    int y = old->y;
 
     switch (action) 
     {
@@ -55,49 +95,16 @@ Location *getNeighbor(char action, Location *loc)
         default:
             return NULL;
     }
-    
-    Location *new_loc = malloc(sizeof(Location));
-    new_loc->x = new_x;
-    new_loc->y = new_y;
-    
-    return new_loc;
-}
 
-// note that this function creates Nodes but does not free anything!
-Node *getSuccessor(char action, Node *node)
-{
-    int oldLength = node->path->length;
-    int newLength = oldLength + 1;
-    
-    char *oldActions = node->path->actions;
-    char *newActions = malloc(sizeof(char) * newLength);
+    new->x = new_x;
+    new->y = new_y;
 
-    int i = 0;
-    while (i < oldLength)
-    {
-        newActions[i+1] = oldActions[i];
-        i += 1;
-    }
-    newActions[i] = '\0';
-    newActions[0] = action;
-
-    // Location oldLocation = node->loc;
-    Location *newLocation = getNeighbor(action, node->loc);
-
-    Node *successor = malloc(sizeof(Node));
-    successor->loc = newLocation;
-    Path *successorPath = malloc(sizeof(Path));
-    successorPath->length = newLength;
-    successorPath->actions = newActions;
-
-    return successor;
+    return new;
 }
 
 void deleteNode(Node *node)
 {
-    free(node->path->actions);
-    free(node->path);
-    free(node->loc);
+    free(node->location);
     free(node);
 }
 

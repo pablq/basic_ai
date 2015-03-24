@@ -1,6 +1,8 @@
 #include <stdio.h>
-#include "game.h"
 #include "grid.h"
+#include "game.h"
+#include "problem.h"
+#include "search.h"
 
 int main (void)
 {
@@ -18,3 +20,5 @@ int main (void)
 
     return 0;
 }
+
+

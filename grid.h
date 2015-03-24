@@ -16,4 +16,6 @@ bool drawCharToGrid(char c, int x, int y, Grid* grid);
 
 bool isLegal(int x, int y, Grid *grid);
 
+bool isAvailable(int x, int y, Grid *grid);
+
 #endif /* GRID */
