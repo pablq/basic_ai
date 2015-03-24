@@ -7,15 +7,18 @@
 void buildLayout(Grid *grid)
 {
     // this is the basic build. it just populates the outside with walls
+    // all locations in the grid have a value. walls are 0 and available space range
+    // in value from 1 to 9.
+    // 1 is the base value and, for now, every spot will have a value of 1
     for (int x = 0; x < GRID_WIDTH; x += 1) 
     {
         for (int y = 0; y < GRID_HEIGHT; y += 1) 
         {
             if ((y == 0 || y == GRID_HEIGHT - 1) || (x == 0 || x == GRID_WIDTH - 1))
             {
-                *grid[x][y] = 'X';
+                *grid[x][y] = 0;
             } else {
-                *grid[x][y] = ' ';
+                *grid[x][y] = 1;
             }
         }
     }
@@ -49,18 +52,18 @@ void buildLayout(Grid *grid)
         for (int j = 0; j < len; j += 1)
         {
             // draw the wall!
-            *grid[x][y] = 'X';
+            *grid[x][y] = 0;
             if (is_horiz) { // for horizontal walls
-                // if the next block is already an 'X' or there is an 'X' above or below, we're done with this wall
-                if ((j > 0 && j < len - 1) && (*grid[x+1][y] == 'X' || *grid[x][y+1] == 'X' || *grid[x][y-1] == 'X'))
+                // if the next block is already a wall or there is a wall above or below, we're done with this wall
+                if ((j > 0 && j < len - 1) && (*grid[x+1][y] == 0 || *grid[x][y+1] == 0 || *grid[x][y-1] == 0))
                 {
                     break;
                 } else { // otherwise, advance to the next block
                     x += 1;
                 }
             } else { // for vertical walls
-                // if the next block is already an 'X' or there is an 'X' to the right or left, we're done with this wall
-                if ((j > 0 && j < len - 1) && (*grid[x+1][y] == 'X' || *grid[x][x-1] == 'X'))
+                // if the next block is already a wall or there is a wall to the right or left, we're done with this wall
+                if ((j > 0 && j < len - 1) && (*grid[x+1][y] == 0 || *grid[x][x-1] == 0))
                 {
                     break;
                 } else { // otherwise, advance to the next block
@@ -71,7 +74,30 @@ void buildLayout(Grid *grid)
     }
 }
 
+void copyGrid(Grid *original, Grid *copy)
+{
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
+    {
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
+        {
+            *copy[x][y] = *original[x][y];
+        }
+    }
+}
+
 void printGrid(Grid *grid)
+{
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
+    {
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
+        {
+            printf("%d", *grid[x][y]);
+        }
+        printf("\n");
+    }
+}
+
+void printGridAsChars(Grid *grid)
 {
     for (int y = 0; y < GRID_HEIGHT; y += 1) 
     {
@@ -82,24 +108,13 @@ void printGrid(Grid *grid)
         printf("\n");
     }
 }
-
-bool drawCharToGrid(char c, int x, int y, Grid* grid)
-{
-    if (isLegal(x, y, grid))
-    {
-        *grid[x][y] = c;
-        return true;
-    }
-    return false;
-}
-
 bool isLegal(int x, int y, Grid *grid)
 {
     if (!(x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT))
     {
         return false;
     }
-    if (*grid[x][y] == 'X') 
+    if (*grid[x][y] == 0) 
     {
         return false;
     }

@@ -6,11 +6,15 @@
 #define GRID_WIDTH 50
 #define GRID_HEIGHT 25
 
-typedef char Grid[GRID_WIDTH][GRID_HEIGHT]; 
+typedef int Grid[GRID_WIDTH][GRID_HEIGHT]; 
 
 void buildLayout(Grid* grid);
 
+void copyGrid(Grid* original, Grid *copy);
+
 void printGrid(Grid *grid);
+
+void printGridAsChars(Grid *grid);
 
 bool drawCharToGrid(char c, int x, int y, Grid* grid);
 

@@ -8,8 +8,6 @@ int main (void)
 {
     Game *game = newGame();
 
-    printGrid(game->grid);
-
     printf("MOVES: ");
     char *moves = GetString();
 
@@ -21,8 +19,6 @@ int main (void)
     }
 
     playGame(moves, game);
-
-    printGrid(game->grid);
 
     deleteGame(game);
 

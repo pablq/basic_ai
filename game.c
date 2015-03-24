@@ -12,33 +12,42 @@ bool sameLocation(Location *a, Location *b);
 
 bool isWin(Game *game);
 
-void drawMove(char move, Location *agent, Grid *grid);
+void drawMove(char move, Game *game);
 
-void drawWinner(Location *winner, Grid *grid);
+void drawWinner(Game *game);
 
-void placeStart(Location *start, Grid *grid);
+void placeStart(Location *start, Game *game);
 
-void placeGoal(Location *goal, Grid *grid);
+void placeGoal(Location *goal, Game *game);
+
+void prepareDisplay(Grid *display);
 
 Game *newGame(void)
 {
-    Grid *grid = malloc(sizeof(Grid));
-    buildLayout(grid);
+    Game *game = malloc(sizeof(Game));
+
+    Grid *board = malloc(sizeof(Grid));
+    buildLayout(board);
+    game->board = board;
+
+    Grid *display = malloc(sizeof(Grid));
+    copyGrid(board, display); 
+    prepareDisplay(display);
+    game->display = display;
 
     Location *start = malloc(sizeof(Location));
-    placeStart(start, grid);
+    placeStart(start, game);
+    game->start = start;
 
     Location *goal = malloc(sizeof(Location));
-    placeGoal(goal, grid);
+    placeGoal(goal, game);
+    game->goal = goal;
 
     Location *agent = malloc(sizeof(Location));
     *agent = *start;
-
-    Game *game = malloc(sizeof(Game));
-    game->grid = grid;
-    game->start = start;
     game->agent = agent;
-    game->goal = goal;
+
+    printGridAsChars(game->display);
 
     return game;
 }
@@ -56,8 +65,6 @@ void playGame(char *actions, Game *game)
             break;
         }
 
-        drawMove(action, game->agent, game->grid);
-
         if (isWin(game)) 
         {
             winner = true;
@@ -69,16 +76,20 @@ void playGame(char *actions, Game *game)
 
     if (winner)
     {
-        drawWinner(game->agent, game->grid);
+        drawWinner(game);
         printf("WINNER!\n");
     } else {
-        printf("GAME OVER.\n");
+        printf("YOU DID NOT REACH GOAL.\n");
     }
+
+    printGridAsChars(game->display);
+
 }
 
 void deleteGame(Game *game)
 {
-    free(game->grid);
+    free(game->board);
+    free(game->display);
     free(game->start);
     free(game->goal);
     free(game->agent);
@@ -114,16 +125,18 @@ bool moveAgent(char action, Game *game)
             return false;
     }
 
-    if (!isLegal(new_x, new_y, game->grid)) 
+    if (!isLegal(new_x, new_y, game->board)) 
     {
-        printf("ILLEGAL MOVE: (%d,%d)->(%d,%d) with action %c\n",x,y,new_x,new_y,action);
+        printf("ILLEGAL MOVE: (%d,%d)->(%d,%d) with action '%c'.\n",x,y,new_x,new_y,action);
         return false;
     }
 
     game->agent->x = new_x;
     game->agent->y = new_y;
 
-    printf("SUCCESSFUL MOVE: (%d,%d)->(%d,%d) with action %c\n",x,y,new_x,new_y,action);
+    // this is a side effect -> it draw's the actual move to the game's display grid.
+    drawMove(action, game);
+
     return true;
 }
 
@@ -137,12 +150,60 @@ bool isWin(Game *game)
     return sameLocation(game->agent, game->goal);
 }
 
-// the below functions all use the grid api's drawCharToGrid function to actually draw on the grid
+// the below functions all use the drawCharToGrid function to actually draw on the grid
 
-void drawMove(char move, Location *agent, Grid *grid)
+bool drawCharToGrid(char c, int x, int y, Grid* grid)
 {
-    int x = agent->x;
-    int y = agent->y;
+    if (isLegal(x, y, grid))
+    {
+        *grid[x][y] = c;
+        return true;
+    }
+    return false;
+}
+
+void prepareDisplay(Grid *display)
+{
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
+    {
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
+        {
+            char c;
+            switch (*display[x][y])
+            {
+                case 0:
+                    c = 'X';
+                    break;
+                case 1:
+                    c = '.';
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    c = *display[x][y] + 48;
+                    break;
+                default:
+                    c = *display[x][y];
+            }
+            *display[x][y] = c;
+        }
+    }
+}
+
+void drawWinner(Game *game)
+{
+    drawCharToGrid('W', game->goal->x, game->goal->y, game->display);
+}
+
+void drawMove(char move, Game *game)
+{
+    int x = game->agent->x;
+    int y = game->agent->y;
     char mark = '?';
     switch (move)
     {
@@ -160,25 +221,15 @@ void drawMove(char move, Location *agent, Grid *grid)
             break;
     }
 
-    if (isLegal(x,y,grid))
+    if (isLegal(x,y,game->board))
     {
-        drawCharToGrid(mark,x,y,grid);
-    }
-}
-
-void drawWinner(Location *winner, Grid *grid)
-{
-    int x = winner->x;
-    int y = winner->y;
-    if (isLegal(x,y,grid))
-    {
-        drawCharToGrid('W',x,y,grid);
+        drawCharToGrid(mark,x,y,game->display);
     }
 }
 
 // these two are special because they draw to the grid AND populate Location structs
         
-void placeStart(Location *start, Grid *grid)
+void placeStart(Location *start, Game *game)
 {
     bool placed = false;
     while (!placed)
@@ -186,9 +237,9 @@ void placeStart(Location *start, Grid *grid)
         int x = randInRange(0,GRID_WIDTH - 1);
         int y = randInRange(0,GRID_HEIGHT - 1);
 
-        if (isLegal(x,y,grid) && *grid[x][y] != 'G')
+        if (isLegal(x,y,game->board) && *game->display[x][y] != 'G')
         {
-            drawCharToGrid('S',x,y,grid);
+            drawCharToGrid('S',x,y,game->display);
             start->x = x;
             start->y = y;
             placed = true;
@@ -196,7 +247,7 @@ void placeStart(Location *start, Grid *grid)
     }
 }
 
-void placeGoal(Location *goal, Grid *grid)
+void placeGoal(Location *goal, Game *game)
 {
     bool placed = false;
     while (!placed)
@@ -204,9 +255,9 @@ void placeGoal(Location *goal, Grid *grid)
         int x = randInRange(0,GRID_WIDTH - 1);
         int y = randInRange(0,GRID_HEIGHT - 1);
 
-        if (isLegal(x,y, grid) && *grid[x][y] != 'S')
+        if (isLegal(x,y, game->board) && *game->display[x][y] != 'S')
         {
-            drawCharToGrid('G',x,y,grid);
+            drawCharToGrid('G',x,y,game->display);
             goal->x = x;
             goal->y = y;
             placed = true;

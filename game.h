@@ -6,7 +6,8 @@
 #include "location.h"
 
 typedef struct Game {
-    Grid *grid;
+    Grid *board;
+    Grid *display;
     Location *start;
     Location *goal;
     Location *agent;
