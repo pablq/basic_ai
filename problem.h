@@ -4,6 +4,7 @@
 #include "location.h"
 #include "grid.h"
 #include "list.h"
+#include "game.h"
 
 bool isGoalState(Location *location, Grid *grid);
 
@@ -16,7 +17,7 @@ typedef struct Node
     int cost;
 } Node;
 
-Node *getFirstNode(Node *first_node, Grid *grid);
+Node *getFirstNode(Node *first_node, Game *game);
 
 List *getSuccessors(List *successors, Node *parent, Grid *grid); // this function assumes successors has 4 available slots.
 

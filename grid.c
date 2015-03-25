@@ -4,6 +4,11 @@
 #include "grid.h"
 #include "util.h"
 
+bool sameLocation(int x1, int y1, int x2, int y2)
+{
+    return  (x1 == x2 && y1 == y2);
+}
+
 void buildLayout(Grid *grid)
 {
     // this is the basic build. it just populates the outside with walls
@@ -108,6 +113,7 @@ void printGridAsChars(Grid *grid)
         printf("\n");
     }
 }
+
 bool isLegal(int x, int y, Grid *grid)
 {
     if (!(x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT))
@@ -120,12 +126,3 @@ bool isLegal(int x, int y, Grid *grid)
     }
     return true;
 }
-
-bool isAvailable(int x, int y, Grid *grid)
-{
-    if (isLegal(x,y,grid))
-    {
-       return (*grid[x][y] - 48 >= 0 || *grid[x][y] - 48 <= 9);
-    }
-    return false;
-} 

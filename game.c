@@ -8,8 +8,6 @@
 
 bool moveAgent(char action, Game *game);
 
-bool sameLocation(Location *a, Location *b);
-
 bool isWin(Game *game);
 
 void drawMove(char move, Game *game);
@@ -140,14 +138,9 @@ bool moveAgent(char action, Game *game)
     return true;
 }
 
-bool sameLocation(Location *a, Location *b)
-{
-    return (a->x == b->x && a->y == b->y);
-}
-
 bool isWin(Game *game)
 {
-    return sameLocation(game->agent, game->goal);
+    return sameLocation(game->agent->x, game->agent->y, game->goal->x, game->goal->y);
 }
 
 // the below functions all use the drawCharToGrid function to actually draw on the grid

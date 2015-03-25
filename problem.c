@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include "location.h"
 #include "grid.h"
+#include "game.h"
 #include "list.h"
-#include "problem.h"
+#include "search_helpers.h"
 
 /*
  * ACTION STRINGS MUST *ALWAYS* BE NULL-TERMINATED
@@ -26,10 +27,14 @@ int costFn(Location *location, Grid *board)
     return *board[location->x][location->y];
 }
 
-// TODO
-Node *getFirstNode(Node *node, Grid *board)
+Node *getFirstNode(Node *first, Game *game)
 {
-    return node;
+    // location must be malloc'd already!
+    first->location = game->start;
+    first->cost = costFn(game->start, game->board);
+    first->action = 0;
+
+    return first;
 }
 
 // this function is exposed in the api.
@@ -133,18 +138,7 @@ char *getLegalActions(Location *loc, Grid *board, char *moves)
     return moves;
 }
 
-// THIS FUNCTION IS NO LONGER ANY GOOD.
-// WE NEED EITHER THE GAME, OR THE GAME'S GOAL LOCATION.
-// PASSING A COPY OF THE GAME SEEMS TO ME TO BE A REASONABLE
-// THING TO DO AS THE AI METHODS WILL NOT MODIFY IT
-// AND THERE ISN'T A WHOLE LOT OF DATA TO COPY OVER
-bool checkForWin(Location *location, Grid *game)
+bool checkForWin(Location *location, Game *game)
 {
-    if 
-    if (*board[location->x][location->y] == 'G')
-    {
-        return true;
-    } else {
-        return false;
-    }
+    return sameLocation(location->x, location->y, game->goal->x, game->goal->y);
 }
