@@ -155,14 +155,14 @@ bool drawCharToGrid(char c, int x, int y, Grid* grid)
     return false;
 }
 
-void prepareDisplay(Grid *display)
+void prepareDisplay(Grid *display, Grid *board)
 {
     for (int y = 0; y < GRID_HEIGHT; y += 1) 
     {
         for (int x = 0; x < GRID_WIDTH; x += 1) 
         {
             char c;
-            switch (*display[x][y])
+            switch (*board[x][y])
             {
                 case 0:
                     c = 'X';
@@ -197,7 +197,7 @@ void drawMove(char move, Game *game)
 {
     int x = game->agent->x;
     int y = game->agent->y;
-    char mark = '?';
+    char mark;
     switch (move)
     {
         case 'n':
@@ -211,6 +211,9 @@ void drawMove(char move, Game *game)
             break;
         case 'w':
             mark = '<';
+            break;
+        default:
+            mark = 'x';
             break;
     }
 

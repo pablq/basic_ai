@@ -5,7 +5,7 @@
 #include "grid.h"
 #include "game.h"
 #include "list.h"
-#include "search_helpers.h"
+#include "problem.h"
 
 /*
  * ACTION STRINGS MUST *ALWAYS* BE NULL-TERMINATED
@@ -31,7 +31,7 @@ Node *getFirstNode(Node *first, Game *game)
 {
     // location must be malloc'd already!
     first->location = game->start;
-    first->cost = costFn(game->start, game->board);
+    first->cost = 0;
     first->action = 0;
 
     return first;

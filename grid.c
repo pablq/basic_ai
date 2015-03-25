@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "grid.h"
-#include "util.h"
 
 bool sameLocation(int x1, int y1, int x2, int y2)
 {
