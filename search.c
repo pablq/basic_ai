@@ -1,6 +1,8 @@
-#include "game.h";
-#include "grid.h";
-#include
+#include "game.h"
+#include "grid.h"
+#include "search.h"
+#include "list.h"
+
 /*
 
     List *fringe = malloc(sizeof(List));
@@ -39,9 +41,9 @@
     }
 */
 
-
 char *dfs (Game *game)
 {
+    List *fringe = 
     Stack *fringe = newStack();
 
     Set *closed = newHashTable();

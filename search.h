@@ -1,10 +1,13 @@
 #ifndef SEARCH
 #define SEARCH
 
+#include "searchhelper.h"
+
 typedef struct FringeNode
 {
-    SuccessorNode *node;
-    List *actions;
-} FringeNode; 
+    StateNode *state;
+    char *allActions;
+    int costOfActions;
+}
 
 #endif /* SEARCH */
