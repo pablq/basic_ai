@@ -1,3 +1,18 @@
+#include <stdio.h>
+#include "util.h"
+#include "grid.h"
+
+void printGridAsChars(Grid *grid);
+
+void printGrid(Grid *grid);
+
+bool isLegal(int x, int y, Grid *grid);
+
+void copyGrid(Grid *original, Grid *copy);
+
+void buildLayout(Grid *grid);
+
+bool sameLocation(int x1, int y1, int x2, int y2);
 
 bool sameLocation(int x1, int y1, int x2, int y2)
 {

@@ -2,7 +2,7 @@
 #include "game.h"
 #include "grid.h"
 
-int main (void)
+int main (int argc, char *argv[])
 {
     Game *game = newGame();
 
@@ -11,6 +11,8 @@ int main (void)
     playGame(moves, game);
 
     deleteGame(game);
+
+    printf("argc: %d\n",argc);
 
     return 0;
 }

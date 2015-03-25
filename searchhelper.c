@@ -14,7 +14,7 @@
 
 Location *getNeighbor(char action, Location *old, Location *new);
 
-void deleteNode(Node *node);
+void deleteStateNode(StateNode *node);
 
 char *getLegalActions(Location *loc, Grid *board, char *moves);
 
@@ -27,7 +27,7 @@ int costFn(Location *location, Grid *board)
     return *board[location->x][location->y];
 }
 
-Node *getFirstNode(Node *first, Game *game)
+StateNode *getFirstStateNode(StateNode *first, Game *game)
 {
     // location must be malloc'd already!
     first->location = game->start;
@@ -39,8 +39,8 @@ Node *getFirstNode(Node *first, Game *game)
 
 // this function is exposed in the api.
 // a search algorithem will call this to get the neighboring 'state's to a given parent node.
-// this function assumes successors->list has 4 available slots for Nodes.
-List *getSuccessors(List *successors, Node *parent, Grid *board) 
+// this function assumes successors->list has 4 available slots for StateNodes.
+List *getSuccessors(List *successors, StateNode *parent, Grid *board) 
 {
     char legalActions[5]; // space for four moves + a null terminator
     getLegalActions(parent->location, board, legalActions);
@@ -50,7 +50,7 @@ List *getSuccessors(List *successors, Node *parent, Grid *board)
     {
         char action = legalActions[i];
 
-        Node *successor = (Node *)malloc(sizeof(Node));
+        StateNode *successor = (StateNode *)malloc(sizeof(StateNode));
 
         Location *s_location = malloc(sizeof(Location));
 
@@ -58,7 +58,7 @@ List *getSuccessors(List *successors, Node *parent, Grid *board)
         successor->cost = costFn(successor->location, board);
         successor->action = action;
 
-        Node **list = (Node **) successors->list;
+        StateNode **list = (StateNode **) successors->list;
         list[i]= successor;
 
         successors->length = i;
@@ -103,7 +103,7 @@ Location *getNeighbor(char action, Location *old, Location *new)
     return new;
 }
 
-void deleteNode(Node *node)
+void deleteStateNode(StateNode *node)
 {
     free(node->location);
     free(node);

@@ -1,10 +1,10 @@
 #ifndef SEARCH
 #define SEARCH
 
-typedef struct FringeNode <- for use in search algorithms
+typedef struct FringeNode
 {
-   SuccessorNode *node;
-   List *actions;
-} 
+    SuccessorNode *node;
+    List *actions;
+} FringeNode; 
 
 #endif /* SEARCH */

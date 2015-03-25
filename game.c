@@ -18,7 +18,7 @@ void placeStart(Location *start, Game *game);
 
 void placeGoal(Location *goal, Game *game);
 
-void prepareDisplay(Grid *display);
+void prepareDisplay(Grid *display, Grid *board);
 
 Game *newGame(void)
 {
@@ -30,7 +30,7 @@ Game *newGame(void)
 
     Grid *display = malloc(sizeof(Grid));
     copyGrid(board, display); 
-    prepareDisplay(display);
+    prepareDisplay(display, board);
     game->display = display;
 
     Location *start = malloc(sizeof(Location));

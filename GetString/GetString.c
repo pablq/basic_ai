@@ -1,20 +1,3 @@
-/*
- * I'm toying with the idea of having my program accept the output filename as an argument
- * after the command line.  This will prevent the user from accidentally overwriting a file that is
- * meant to be an input file.  So, i'm toying with the idea of using these safe getstring() functions
- * instead of writing my own.  Why reinvent the wheel right?
- *
- * Right now I have two to choose from.  I will end up using the first one (from Harvard's CS50 library) 
- * because it returns a string that will be easy for me to use in my program.
- *
- * I'm including the second option for now as a way for me to look at another way of doing it.
- * It won't, however, work for me, because it's more complex, and returns an int instead of the char* that I want!
- *
- * getstring.h
- *
- * By Pablo Philipps (sort of) 2014
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -92,61 +75,4 @@ char* GetString(void)
 
     // return string
     return minimal;
-}
-
-// the following version of getstring comes from this url:
-// http://stackoverflow.com/questions/7831755/what-is-the-simplest-way-of-getting-user-input-in-c
-
-void quit() // write error message and quit
-{
-    fprintf(stderr, "memory exhausted\n");
-    exit(1);
-}
-
-int getString()
-{
-    int max = 20;
-    char* name = (char*)malloc(max); // allocate buffer
-    if (name == 0) quit();
-
-    printf("Enter a file name: ");
-
-    int loop = 1;
-    while (loop == 1) 
-    { // skip leading whitespace
-        int c = getchar();
-        if (c == EOF) // end of file!
-        {
-            loop = 0;
-        }
-        if (!isspace(c)) 
-        {
-             ungetc(c, stdin);
-             loop = 0;
-        }
-    }
-
-    loop = 1;
-    int i = 0;
-    while (loop == 1) 
-    {
-        int c = getchar();
-        if (isspace(c) || c == EOF) // at end, add terminating zero
-	{
-            name[i] = 0;
-            loop = 0;
-        }
-        name[i] = c;
-        if (i==max-1) // buffer full
-        {
-            max = max+max;
-            name = (char*)realloc(name,max); // get a new and larger buffer
-            if (name == 0) quit();
-        }
-        i++;
-    }
-
-    printf("The filename is %s\n", name);
-    free(name); // release memory
-    return 0;
 }
