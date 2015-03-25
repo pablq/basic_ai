@@ -1,5 +1,5 @@
-#ifndef PROBLEM
-#define PROBLEM
+#ifndef SEARCHHELPER
+#define SEARCHHELPER
 
 #include "location.h"
 #include "grid.h"
@@ -23,4 +23,11 @@ List *getSuccessors(List *successors, StateNode *parent, Grid *grid); // this fu
 
 void deleteStateNode(StateNode *node);
 
-#endif /* PROBLEM */
+typedef struct FringeNode
+{
+    StateNode *state;
+    char *allActions;
+    int costOfActions;
+}
+
+#endif /* SEARCHHELPER*/

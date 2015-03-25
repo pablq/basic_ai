@@ -30,9 +30,14 @@ int costFn(Location *location, Grid *board)
 StateNode *getFirstStateNode(StateNode *first, Game *game)
 {
     // location must be malloc'd already!
+    if (first->location == NULL) {
+        free(first);
+        return NULL;
+    }
+
     first->location = game->start;
     first->cost = 0;
-    first->action = 0;
+    first->action = NULL;
 
     return first;
 }

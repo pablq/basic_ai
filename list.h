@@ -10,6 +10,10 @@ typedef struct List
     int capacity;
 } List;
 
-bool checkSize(List *list);
+bool checkListSize(List *list);
+
+bool trimListSize(List *list);
+
+void *popFromList(List *list);
 
 #endif /* LIST */

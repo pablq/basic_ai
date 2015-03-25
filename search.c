@@ -1,7 +1,7 @@
 #include "game.h"
 #include "grid.h"
-#include "search.h"
 #include "list.h"
+#include "searchhelper.h"
 
 /*
 
@@ -43,16 +43,36 @@
 
 char *dfs (Game *game)
 {
-    List *fringe = 
-    Stack *fringe = newStack();
-
+    List *fringe = (List *) malloc(sizeof(List));
+    fringe->items = (FringeNode **) malloc(sizeof(FringeNode*) * 32);
+    fringe->capacity = 32;
+    fringe->n_items = 0;
+    
+    /*
     Set *closed = newHashTable();
-    Node *first = firstNode(game);
+    */
+
+    StateNode *state = (StateNode *) malloc(sizeof(StateNode));
+    Location *stateLocation = (Location *) malloc(sizeof(Location));
+    state->location = stateLocation;
+
+    state = getFirstStateNode(state, game);
+    // ^^^^ SHOULD CHECK FOR NULL:
    
-    addNodeToFringe((first, [first->action]));
+    //vvvv SHOULD BE DONE FOR ME IN A FUNCTION
+    FringeNode *first = (FringeNode *) malloc(sizeof(FringeNode));
+    FringeNode->state = state;
+    FringeNode->allActions = "\0";
+    FringeNode->costOfActions = 0;
+
+    // vvv clean in a function addToList(void *item, List *list)
+    fringe->n_items += 1;
+    checkListSize(fringe);
+    fringe->items[fringe->n_items - 1] = first;
 
     while(true)
     {
+        FringeNode thisNode = getLastItem(fringe);
         Node* thisNode = fringe.pop();
 
         if thisNode = null {
