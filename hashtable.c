@@ -1,10 +1,14 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "hashtable.h"
 #include "util.h"
 
 #define TABLE_LENGTH 75
 
-int getHashTableIndex(void *pointer);
+unsigned int getHashTableIndex(char *str);
+
+unsigned long hash(char *str);
 
 HashTable *newHashTable (void)
 {
@@ -18,6 +22,7 @@ HashTable *newHashTable (void)
 
 HashTableNode *newHashTableNode ()
 {
+    //printf("newHashTableNode\n");
     HashTableNode *htn = malloc(sizeof(HashTableNode)); 
     htn->value = NULL;
     htn->next = NULL;
@@ -25,14 +30,17 @@ HashTableNode *newHashTableNode ()
     return htn;
 }
 
-bool isInTable(void *val, HashTable *ht)
+bool inHashTable(char *str, HashTable *ht)
 {
-    int index = getHashTableIndex(val);
+    printf("inHashTable : ");
+
+    int index = getHashTableIndex(str);
 
     HashTableNode *last = ht[index];
 
     if (last == NULL)
     {
+        printf("false\n");
         return false;
     }
     
@@ -40,8 +48,9 @@ bool isInTable(void *val, HashTable *ht)
 
         HashTableNode *next = last->next;
 
-        if (val == last->value)
+        if (strcmp(str,last->value) == 0)
         {
+            printf("true\n");
             return true;
         }
 
@@ -49,11 +58,14 @@ bool isInTable(void *val, HashTable *ht)
 
     } while (last != NULL); 
     
+    printf("false\n");
     return false;    
 }
 
-void insertToHashTable(void *val, HashTable *ht)
+void insertToHashTable(char *val, HashTable *ht)
 {
+    printf("insertToHashTable : %s\n",val);
+
     int index = getHashTableIndex(val);
     
     HashTableNode *htn = newHashTableNode();
@@ -94,7 +106,23 @@ void deleteHashTable(HashTable *ht)
     free(ht);
 }
 
-int getHashTableIndex(void *pointer) 
+unsigned int getHashTableIndex(char *str) 
 {
-    return pointerHash(pointer) % TABLE_LENGTH;
+    return hash(str) % TABLE_LENGTH;
+}
+
+unsigned long hash(char *str)
+{
+    unsigned long hash = 5381;
+    int c;
+    
+    int i = 0;
+    while (str[i] != '\0')
+    {
+        c = str[i]; 
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + x */
+        i += 1;
+    }
+
+    return hash;
 }

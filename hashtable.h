@@ -1,9 +1,11 @@
 #ifndef HASHTABLE
 #define HASHTABLE
 
+#include <stdbool.h>
+
 typedef struct HashTableNode
 {
-    void *value;
+    char *value;
     struct HashTableNode* next;
 } HashTableNode;
 
@@ -11,9 +13,9 @@ typedef HashTableNode *HashTable;
 
 HashTable *newHashTable (void);
 
-bool isInTable(void *val, HashTable *ht);
+bool inHashTable(char *str, HashTable *ht);
 
-void insertToHashTable(void *val, HashTable *ht);
+void insertToHashTable(char *str, HashTable *ht);
 
 void deleteHashTable(HashTable *ht);
 

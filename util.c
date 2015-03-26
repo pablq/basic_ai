@@ -13,9 +13,9 @@ int randInRange(int low, int high)
     return low + (r % (high + 1 - low));
 }
 
-int pointerHash(void *pointer)
+unsigned int pointerHash(void *pointer)
 {
-   return (int) (unsigned long) pointer; 
+   return (unsigned int) (unsigned long) pointer; 
 } 
 
 bool sameLocation(int x1, int y1, int x2, int y2)

@@ -9,8 +9,10 @@
 #include "searchhelper.h"
 #include "search.h"
 
+
 bool checkClosedSize(List *list);
 bool checkFringeSize(List *list);
+char *stateToString(StateNode *state);
 
 List *newFringe(void)
 {
@@ -63,52 +65,27 @@ void addToFringe(FringeNode *fn, List *fringe)
     }
 }
 
-List *newClosed(void)
+HashTable *newClosed(void)
 {
-    List *closed = (List *) malloc(sizeof(List));
-    Location **items = (Location **) malloc(sizeof(Location *) * 32);
-    closed->items = items;
-    closed->capacity = 32;
-    closed->n_items = 0;
-    
+    HashTable *closed = newHashTable();
     return closed;
 }
 
-void deleteClosed(List *closed)
+void deleteClosed(HashTable *closed)
 {
-    Location **items = (Location **)closed->items;
-    for (int i = 0, len = closed->n_items; i < len; i += 1)
-    {
-        Location *location = (Location *) items[i];
-        free(location);
-    }
-    free(closed->items);
-    free(closed);
+    deleteHashTable(closed);
 }
 
-bool inClosed(Location *location, List *closed)
+bool inClosed(StateNode *state, HashTable *closed)
 {
-    Location **items = (Location **) closed->items;
-    for (int i = 0, len = closed->n_items; i < len; i += 1)
-    {
-        Location *temp = items[i];
-        if(sameLocation(location->x,location->y,temp->x,temp->y))
-        {
-            return true;
-        }
-    } 
-    return false;
+    char *sh = stateToString(state);  
+    return inHashTable(sh, closed);
 }
 
-void addToClosed(Location *location, List *closed)
+void addToClosed(StateNode *state, HashTable *closed)
 {
-    if (checkClosedSize(closed))
-    {
-        Location **items = closed->items;
-        items[closed->n_items] = location;
-        closed->items = items;
-        closed->n_items += 1;
-    }
+    char *sh = stateToString(state);
+    insertToHashTable(sh, closed);  
 }
 
 // accepts the new state, and the old fringenode's allActions and costOfActions
@@ -148,7 +125,7 @@ char *dfs (Game *game)
 
     List *fringe = newFringe();
     
-    List *closed = newClosed();
+    HashTable *closed = newClosed();
 
     StateNode *state = getFirstStateNode(game->start->x,game->start->y);
    
@@ -205,9 +182,9 @@ char *dfs (Game *game)
                 StateNode **items = successors->items;
                 StateNode *successor = items[i];
                 
-                if (!inClosed(successor->location, closed))
+                if (!inClosed(successor, closed))
                 {
-                    addToClosed(successor->location, closed);
+                    addToClosed(successor, closed);
                     FringeNode *fn = newFringeNode(successor, pastActions, pastCost);
                     addToFringe(fn, fringe);
                 }
@@ -259,4 +236,16 @@ bool checkFringeSize(List *list)
         list->capacity = new_size; 
     }
     return true;
+}
+
+char *stateToString(StateNode *state)
+{
+    char * sh = malloc(sizeof(char) * 5);
+    sh[0] = state->location->x + 48;
+    sh[1] = state->location->y + 48;
+    sh[2] = state->action;
+    sh[3] = state->cost + 48;
+    sh[4] = '\0';
+    
+    return sh; 
 }
