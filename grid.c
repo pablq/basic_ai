@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "util.h"
 #include "grid.h"
 
@@ -8,7 +9,7 @@ void printGrid(Grid *grid);
 
 bool isLegal(int x, int y, Grid *grid);
 
-void copyGrid(Grid *original, Grid *copy);
+Grid *copyGrid(Grid *original);
 
 void buildLayout(Grid *grid);
 
@@ -89,8 +90,9 @@ void buildLayout(Grid *grid)
     }
 }
 
-void copyGrid(Grid *original, Grid *copy)
+Grid* copyGrid(Grid *original)
 {
+    Grid *copy = (Grid *) malloc(sizeof(Grid));
     for (int y = 0; y < GRID_HEIGHT; y += 1) 
     {
         for (int x = 0; x < GRID_WIDTH; x += 1) 
@@ -98,6 +100,22 @@ void copyGrid(Grid *original, Grid *copy)
             *copy[x][y] = *original[x][y];
         }
     }
+    return copy;
+}
+
+bool sameGrid(Grid *model, Grid *check)
+{
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
+    {
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
+        {
+            if (*model[x][y] != *check[x][y]) 
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 void printGrid(Grid *grid)

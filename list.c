@@ -1,10 +1,12 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "list.h"
 
 bool checkListSize(List *list)
 {
     if (list->n_items >= list->capacity) 
     {
+        printf("re-allocing list\n");
         int new_size = list->capacity * 2;
         
         void *new_items = realloc(list->items, sizeof(void*) * new_size);

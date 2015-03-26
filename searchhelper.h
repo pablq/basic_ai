@@ -17,7 +17,7 @@ typedef struct StateNode
     int cost;
 } StateNode;
 
-StateNode* getFirstStateNode(Game *game);
+StateNode* getFirstStateNode(int x, int y);
 
 StateNode* newStateNode(void);
 

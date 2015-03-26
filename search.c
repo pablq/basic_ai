@@ -8,6 +8,8 @@
 #include "searchhelper.h"
 #include "search.h"
 
+bool checkClosedSize(List *list);
+bool checkFringeSize(List *list);
 List *newFringe(void)
 {
     List* fringe = (List *) malloc(sizeof(List));
@@ -50,8 +52,7 @@ FringeNode *popFromFringe(List *fringe)
 
 void addToFringe(FringeNode *fn, List *fringe)
 {
-    //printf("addToFringe\n");
-    if (checkListSize(fringe))
+    if (checkFringeSize(fringe))
     {
         FringeNode **items = fringe->items;
         items[fringe->n_items] = fn;
@@ -63,7 +64,7 @@ void addToFringe(FringeNode *fn, List *fringe)
 List *newClosed(void)
 {
     List *closed = (List *) malloc(sizeof(List));
-    Location **items = (Location **) malloc(sizeof(Location) * 32);
+    Location **items = (Location **) malloc(sizeof(Location *) * 32);
     closed->items = items;
     closed->capacity = 32;
     closed->n_items = 0;
@@ -99,7 +100,7 @@ bool inClosed(Location *location, List *closed)
 
 void addToClosed(Location *location, List *closed)
 {
-    if (checkListSize(closed))
+    if (checkClosedSize(closed))
     {
         Location **items = closed->items;
         items[closed->n_items] = location;
@@ -111,17 +112,16 @@ void addToClosed(Location *location, List *closed)
 // accepts the new state, and the old fringenode's allActions and costOfActions
 FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 {
-    int len = strlen(pastActions), i = 0;
+    int len = strlen(pastActions);
     char *allActions = malloc(sizeof(char) * (len + 2));
-    while (i < len)
+    allActions = strcpy(allActions, pastActions);
+    /*while (i < len)
     {
-        //printf("%c",pastActions[i]);
         allActions[i] = pastActions[i]; 
         i += 1; 
-    } 
-    allActions[i] = state->action;
-    allActions[i+1] = '\0';
-    //printf("%c\n",allActions[i]);
+    }*/ 
+    allActions[len] = state->action;
+    allActions[len + 1] = '\0';
 
     int costOfActions = pastCost + state->cost;
 
@@ -142,21 +142,21 @@ void deleteFringeNode(FringeNode *fn)
 
 char *dfs (Game *game)
 {
+    Grid *broke_copy = copyGrid(game->board);
+
     List *fringe = newFringe();
     
     List *closed = newClosed();
 
-    StateNode *state = getFirstStateNode(game);
+    StateNode *state = getFirstStateNode(game->start->x,game->start->y);
    
-    FringeNode *first = newFringeNode(state,"\0", 0);
+    FringeNode *first = newFringeNode(state,"", 0);
 
     addToFringe(first, fringe);
 
     while(true)
     {
         FringeNode *thisNode = popFromFringe(fringe);
-
-        //printf("thisNode->state->location->x : %d, thisNode->state->location->y : %d\n",thisNode->state->location->x,thisNode->state->location->y);
 
         if (thisNode == NULL) {
             return NULL;
@@ -180,12 +180,60 @@ char *dfs (Game *game)
                 if (!inClosed(successor->location, closed))
                 {
                     addToClosed(successor->location, closed);
+                    if (!sameGrid(broke_copy, game->board))
+                    {
+                        printf("addToClosed\n");
+                        return NULL;
+                    }
                     FringeNode *fn = newFringeNode(successor, pastActions, pastCost);
                     addToFringe(fn, fringe);
+                    if (!sameGrid(broke_copy, game->board))
+                    {
+                        printf("addToFringe\n");
+                        return NULL;
+                    }
                 }
             }
         }
 
         //deleteFringeNode(thisNode);
     } 
+}
+bool checkClosedSize(List *list)
+{
+    if (list->n_items >= list->capacity) 
+    {
+        printf("re-allocing closed\n");
+        int new_size = list->capacity * 2;
+        
+        void *new_items = realloc(list->items, sizeof(Location*) * new_size);
+
+        if (new_items == NULL) 
+        {
+            return false;
+        }
+
+        list->items = new_items;
+        list->capacity = new_size; 
+    }
+    return true;
+}
+bool checkFringeSize(List *list)
+{
+    if (list->n_items >= list->capacity) 
+    {
+        printf("re-allocing fringe\n");
+        int new_size = list->capacity * 2;
+        
+        void *new_items = realloc(list->items, sizeof(FringeNode*) * new_size);
+
+        if (new_items == NULL) 
+        {
+            return false;
+        }
+
+        list->items = new_items;
+        list->capacity = new_size; 
+    }
+    return true;
 }

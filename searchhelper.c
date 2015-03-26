@@ -26,15 +26,16 @@ int costFn(Location *location, Grid *board);
 // you should check for the legality of a location before calling the costfn
 int costFn(Location *location, Grid *board)
 {
-    return *board[location->x][location->y];
+    int val = *board[location->x][location->y];
+    return val;
 }
 
-StateNode *getFirstStateNode(Game *game)
+StateNode *getFirstStateNode(int x, int y)
 {
     StateNode *first = newStateNode();
 
-    first->location = game->start;
-    
+    first->location->x = x;
+    first->location->y = y;
     first->action = 0;
     first->cost = 0;
 
@@ -82,20 +83,14 @@ List *getSuccessors(StateNode *parent, Grid *board)
     getLegalActions(parent->location, board, legalActions);
     
     int i = 0;
-    //printf("getSuccessors->legalActions: ");
     while (legalActions[i] != '\0')
     {
         char action = legalActions[i];
-        //printf("%c",action); 
         StateNode *successor = newStateNode();
         successor->location = getNeighbor(action, parent->location, successor->location);
-        successor->cost = costFn(successor->location, board);
+        //successor->cost = costFn(successor->location, board);
+        successor->cost = 1;
         successor->action = action;
-        
-        /*
-        StateNode **list = (StateNode **) successors->list;
-        list[i]= successor;
-        */
 
         StateNode **list = (StateNode **) successors->items;
         list[i]= successor;
@@ -104,9 +99,8 @@ List *getSuccessors(StateNode *parent, Grid *board)
         i += 1;
         successors->n_items = i;
     }
-    //printf("\n"); 
     
-    trimListSize(successors);
+    //trimListSize(successors);
 
     return successors;
 }
@@ -172,9 +166,4 @@ char *getLegalActions(Location *loc, Grid *board, char *moves)
     moves[total_moves] = '\0';
 
     return moves;
-}
-
-bool checkForWin(Location *location, Game *game)
-{
-    return sameLocation(location->x, location->y, game->goal->x, game->goal->y);
 }

@@ -28,8 +28,7 @@ Game *newGame(void)
     buildLayout(board);
     game->board = board;
 
-    Grid *display = malloc(sizeof(Grid));
-    copyGrid(board, display); 
+    Grid *display = copyGrid(board); 
     prepareDisplay(display, board);
     game->display = display;
 
@@ -45,8 +44,8 @@ Game *newGame(void)
     *agent = *start;
     game->agent = agent;
 
+    printGrid(game->board);
     printGridAsChars(game->display);
-
     return game;
 }
 
@@ -54,7 +53,7 @@ void playGame(char *actions, Game *game)
 {
     bool winner = false;
     int i = 0;
-    while(actions[i] != '\0')
+    while(actions != NULL && actions[i] != '\0')
     {
         char action = actions[i];
 
@@ -81,7 +80,6 @@ void playGame(char *actions, Game *game)
     }
 
     printGridAsChars(game->display);
-
 }
 
 void deleteGame(Game *game)
