@@ -1,14 +1,10 @@
-#include <stdlib.h>
-#include "grid.h"
+#include <stdio.h>
+#include "util.h"
 
 int main (void) {
-
-    Grid *grid = malloc(sizeof(Grid));
-
-    buildLayout(grid);
     
-    printGrid(grid);
-    printGridAsChars(grid);
-
-    free(grid);
+    for (int i = 0; i < 25; i += 1)
+    {
+        printf("%d\n", randInRange(0,10));
+    }
 } 

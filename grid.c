@@ -13,12 +13,15 @@ Grid copyGrid(Grid original);
 
 void buildLayout(Grid grid);
 
+bool inBounds(int x, int y);
+
 Grid newGrid(void)
 {
     Grid myGrid = malloc(sizeof(int *) * GRID_WIDTH);
     for (int i = 0; i < GRID_WIDTH; i += 1)
     {
-        myGrid[i] = malloc(sizeof(int) * GRID_HEIGHT);
+        int *column = malloc(sizeof(int) * GRID_HEIGHT);
+        myGrid[i] = column; 
     }
     return myGrid;
 }
@@ -34,64 +37,77 @@ void deleteGrid(Grid grid)
 
 void buildLayout(Grid grid)
 {
-    // this is the basic build. it just populates the outside with walls
-    // all locations in the grid have a value. walls are 0 and available space range
-    // in value from 1 to 9.
-    // 1 is the base value and, for now, every spot will have a value of 1
+    // Create outside walls and open locations.
     for (int x = 0; x < GRID_WIDTH; x += 1) 
     {
         for (int y = 0; y < GRID_HEIGHT; y += 1) 
         {
-            if ((y == 0 || y == GRID_HEIGHT - 1) || (x == 0 || x == GRID_WIDTH - 1))
+            bool left_border = (x == 0);
+            bool right_border = (x == GRID_WIDTH - 1);
+            bool top_border = (y == 0);
+            bool bottom_border = (y == GRID_HEIGHT - 1);
+
+            if (left_border || right_border || top_border || bottom_border)
             {
+                // 0 is the value for walls
                 grid[x][y] = 0;
+
             } else {
+
+                // 1 is the base value for acceptable locations
                 grid[x][y] = 1;
             }
         }
     }
 
-    // Add some interior walls:
-    
+    // Now add some interior walls
     int num_walls = randInRange(15,30);
     for (int i = 0; i < num_walls; i += 1)
     {
+        // give walls varied lengths
         int len = randInRange(2,5);
         int x, y;
 
         // decide whether wall will be horizontal or vertical.
-        // we'll draw the wall by either incrementing y or x depending on
-        // whether the wall is horizontal or vertical. so, we have to make 
-        // sure we save enough space to not overwrite the array
-        // also, we make sure a wall that is parallel to the outside wall
-        // has at least a buffer of 1 space
         int is_horiz = randInRange(0,1);
+
+        // pick the starting point of the wall:
+        // horizontal =  left->right
+        // vertical = top->down 
         if(is_horiz) 
         {
-            x = randInRange(1, GRID_WIDTH - (len + 1));
-            y = randInRange(2, GRID_HEIGHT - 3);
+            x = randInRange(0, (GRID_WIDTH - 1) - len);
+            y = randInRange(0, GRID_HEIGHT - 1);
     
         } else {
-            x = randInRange(2, GRID_WIDTH - 3);
-            y = randInRange(2, GRID_HEIGHT - (len + 1));
+            x = randInRange(0, GRID_WIDTH -1);
+            y = randInRange(0, (GRID_HEIGHT - 1) - len);
         }
 
         // here we actually draw the wall
-        for (int j = 0; j < len; j += 1)
+        for (int w = 0; w < len; w += 1)
         {
-            // draw the wall!
+            bool isFirst = (w == 0);
+            bool isLast = (w == len - 1);
+            bool rightIsOpen = isLegal(x+1, y, grid);
+            bool leftIsOpen = isLegal(x-1, y, grid);
+            bool aboveIsOpen = isLegal(x, y-1, grid);
+            bool belowIsOpen = isLegal(x, y+1, grid); 
+
             grid[x][y] = 0;
-            if (is_horiz) { // for horizontal walls
-                // if the next block is already a wall or there is a wall above or below, we're done with this wall
-                if ((j > 0 && j < len - 1) && (grid[x+1][y] == 0 || grid[x][y+1] == 0 || grid[x][y-1] == 0))
+            if (is_horiz) {
+                // if you're in the middle of a wall and the next space is already a wall
+                // or there is already a wall directly above or below - stop
+                if ((!isFirst && !isLast) && (!rightIsOpen || !aboveIsOpen || !belowIsOpen))
                 {
                     break;
-                } else { // otherwise, advance to the next block
+                } else {
                     x += 1;
                 }
-            } else { // for vertical walls
-                // if the next block is already a wall or there is a wall to the right or left, we're done with this wall
-                if ((j > 0 && j < len - 1) && (grid[x+1][y] == 0 || grid[x][x-1] == 0))
+            } else {
+                // if you're in the middle of a wall and the next space is already a wall
+                // or there is already a wall directly left or right - stop
+                if ((!isFirst && !isLast) && (!belowIsOpen || !rightIsOpen || !leftIsOpen))
                 {
                     break;
                 } else { // otherwise, advance to the next block
@@ -101,6 +117,15 @@ void buildLayout(Grid grid)
         }
     }
 }
+
+void drawWall(int x1, int x2, int len, bool horiz, Grid grid)
+{
+    for (int i = 0; i < len; i += 1)
+    {
+        
+    }
+}
+
 
 Grid copyGrid(Grid original)
 {
@@ -155,9 +180,14 @@ void printGridAsChars(Grid grid)
     }
 }
 
+bool inBounds(int x, int y)
+{
+    return (x >= 0 && x < GRID_WIDTH && y>= 0 && y < GRID_HEIGHT);
+}
+
 bool isLegal(int x, int y, Grid grid)
 {
-    if (!(x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT))
+    if (!inBounds(x,y))
     {
         return false;
     }
