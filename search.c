@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "game.h"
 #include "grid.h"
 #include "list.h"
@@ -8,6 +9,7 @@
 
 List *newFringe(void)
 {
+    // printf("newFringe\n");
     List* fringe = (List *) malloc(sizeof(List));
 
     FringeNode **items = (FringeNode **) malloc(sizeof(FringeNode*) * 32);
@@ -20,6 +22,8 @@ List *newFringe(void)
 
 void deleteFringe(List *fringe)
 {
+    
+    // printf("deleteFringe\n");
     FringeNode **items = (FringeNode **)fringe->items;
     for (int i = 0; i < fringe->n_items; i += 1)
     {
@@ -32,13 +36,15 @@ void deleteFringe(List *fringe)
 
 FringeNode *popFromFringe(List *fringe)
 {
+    //printf("popFromFringe\n");
     if (fringe->n_items < 1)
     {
+        //printf("ISNULL\n");
         return NULL;
     } else {
-
+        //printf("DOWORK\n");
         FringeNode **items = (FringeNode **)fringe->items;
-        FringeNode *fn = items[fringe->n_items];
+        FringeNode *fn = items[fringe->n_items - 1];
         fringe->n_items -= 1;
         return fn;
     }
@@ -46,6 +52,7 @@ FringeNode *popFromFringe(List *fringe)
 
 void addToFringe(FringeNode *fn, List *fringe)
 {
+    //printf("addToFringe\n");
     if (checkListSize(fringe))
     {
         FringeNode **items = fringe->items;
@@ -59,6 +66,7 @@ void addToFringe(FringeNode *fn, List *fringe)
 // accepts the new state, and the old fringenode's allActions and costOfActions
 FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 {
+    //printf("newFringeNode\n");
     int len = strlen(pastActions), i = 0;
     char *allActions = malloc(sizeof(char) * (len + 1));
     while (i < len)
@@ -80,6 +88,7 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 
 char *dfs (Game *game)
 {
+    //printf("dfs\n");
     List *fringe = newFringe();
     /*
     Set *closed = newHashTable();
@@ -93,6 +102,8 @@ char *dfs (Game *game)
 
     while(true)
     {
+        printf("%d\n",fringe->n_items);
+
         FringeNode *thisNode = popFromFringe(fringe);
 
         if (thisNode == NULL) {
