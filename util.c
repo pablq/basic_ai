@@ -11,3 +11,13 @@ int randInRange(int low, int high)
     r = rand();
     return low + (r % (high + 1 - low));
 }
+
+int pointerHash(void *pointer)
+{
+   return (int) (unsigned long) pointer; 
+} 
+
+int hashLocation(int x, int y)
+{
+    return x + y;
+}

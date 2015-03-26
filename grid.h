@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-#define GRID_WIDTH 50
-#define GRID_HEIGHT 25
+#define GRID_WIDTH 15 
+#define GRID_HEIGHT 15 
 
 typedef int Grid[GRID_WIDTH][GRID_HEIGHT]; 
 

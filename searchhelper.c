@@ -82,10 +82,11 @@ List *getSuccessors(StateNode *parent, Grid *board)
     getLegalActions(parent->location, board, legalActions);
     
     int i = 0;
+    //printf("getSuccessors->legalActions: ");
     while (legalActions[i] != '\0')
     {
         char action = legalActions[i];
-
+        //printf("%c",action); 
         StateNode *successor = newStateNode();
         successor->location = getNeighbor(action, parent->location, successor->location);
         successor->cost = costFn(successor->location, board);
@@ -103,6 +104,7 @@ List *getSuccessors(StateNode *parent, Grid *board)
         i += 1;
         successors->n_items = i;
     }
+    //printf("\n"); 
     
     trimListSize(successors);
 
