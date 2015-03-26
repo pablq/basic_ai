@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include "hashtable.h"
 #include "util.h"
@@ -22,7 +21,6 @@ HashTable *newHashTable (void)
 
 HashTableNode *newHashTableNode ()
 {
-    //printf("newHashTableNode\n");
     HashTableNode *htn = malloc(sizeof(HashTableNode)); 
     htn->value = NULL;
     htn->next = NULL;
@@ -32,15 +30,12 @@ HashTableNode *newHashTableNode ()
 
 bool inHashTable(char *str, HashTable *ht)
 {
-    printf("inHashTable : ");
-
     int index = getHashTableIndex(str);
 
     HashTableNode *last = ht[index];
 
     if (last == NULL)
     {
-        printf("false\n");
         return false;
     }
     
@@ -50,7 +45,6 @@ bool inHashTable(char *str, HashTable *ht)
 
         if (strcmp(str,last->value) == 0)
         {
-            printf("true\n");
             return true;
         }
 
@@ -58,14 +52,11 @@ bool inHashTable(char *str, HashTable *ht)
 
     } while (last != NULL); 
     
-    printf("false\n");
     return false;    
 }
 
 void insertToHashTable(char *val, HashTable *ht)
 {
-    printf("insertToHashTable : %s\n",val);
-
     int index = getHashTableIndex(val);
     
     HashTableNode *htn = newHashTableNode();

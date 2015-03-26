@@ -11,8 +11,6 @@ int main (int argc, char *argv[])
 
     char *moves = dfs(game);
 
-    printf("%s\n",moves);
-
     playGame(moves, game);
 
     deleteGame(game);

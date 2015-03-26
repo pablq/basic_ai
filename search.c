@@ -121,7 +121,9 @@ void deleteFringeNode(FringeNode *fn)
 
 char *dfs (Game *game)
 {
-    printf("Thinking... :)\n");
+    printf("Depth First Search working...\n");
+    int md = manhattanDistance(game->start->x, game->start->y, game->goal->x, game->goal->y);
+    printf("Manhattan distance from start to goal: %d\n", md);
 
     List *fringe = newFringe();
     
@@ -133,9 +135,9 @@ char *dfs (Game *game)
 
     addToFringe(first, fringe);
 
-    double expanded = 0;
-    double total_fringe = 0;
-    double average_fringe = 0;
+    long expanded = 0;
+    long total_fringe = 0;
+    long average_fringe = 0;
     
     while(true)
     {
@@ -149,8 +151,7 @@ char *dfs (Game *game)
             deleteClosed(closed);
             */
 
-            printf("searched a total of %f nodes with an average of %f in memory at a time\n",expanded,average_fringe);
-            printf("ran out of nodes to search :(\n");
+            printf("No Solution found :(\n");
 
             return NULL;
         } 
@@ -165,7 +166,11 @@ char *dfs (Game *game)
             deleteFringe(fringe);
             deleteClosed(closed);
             */
-            printf("searched a total of %f nodes with an average of %f in memory at a time\n",expanded,average_fringe);
+            
+            printf("Solution found! :D\n");
+            printf("Total movement cost of solution: %d\n", thisNode->costOfActions);
+            printf("Total locations explored: %ld\n", expanded);
+            printf("Average number of locations stored: %ld\n", average_fringe);
 
             return thisNode->allActions;
 
