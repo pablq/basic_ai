@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "list.h"
 
 bool checkListSize(List *list)
@@ -36,11 +37,7 @@ bool trimListSize(List *list)
     return true;
 }
 
-//NOTE THIS FUNCTION DOESN'T DELETE ANYTHING IT JUST MOVES THE POINTER. THE MEMORY WILL STILL HAVE TO BE CLEARED.
-void *popFromList(List *list)
+void popFromList(List *list)
 {
-    int index = list->n_items - 1;
-    list->n_items = index;
-
-    return list->items[index];
+    // MUST BE IMPLEMENTED BY EACH KIND OF LIST
 }

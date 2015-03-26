@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include "game.h"
-#include "grid.h"
+#include "search.h"
 
 int main (int argc, char *argv[])
 {
     Game *game = newGame();
 
-    char moves[] = {'n','e','e','e','s','w','s','\0'};
+    char *moves = dfs(game);
 
     playGame(moves, game);
 

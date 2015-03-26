@@ -9,7 +9,7 @@
 bool isGoalState(Location *location, Grid *grid);
 
 // the char * actions will always be null terminated
-/ the length value does not count the null terminator
+// the length value does not count the null terminator
 typedef struct StateNode
 {
     Location *location;
@@ -17,17 +17,12 @@ typedef struct StateNode
     int cost;
 } StateNode;
 
-StateNode *getFirstStateNode(StateNode *first_node, Game *game);
+StateNode* getFirstStateNode(Game *game);
 
-List *getSuccessors(List *successors, StateNode *parent, Grid *grid); // this function assumes successors has 4 available slots.
+StateNode* newStateNode(void);
+
+List* getSuccessors(StateNode *parent, Grid *grid);
 
 void deleteStateNode(StateNode *node);
-
-typedef struct FringeNode
-{
-    StateNode *state;
-    char *allActions;
-    int costOfActions;
-}
 
 #endif /* SEARCHHELPER*/

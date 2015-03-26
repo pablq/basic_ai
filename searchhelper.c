@@ -5,7 +5,7 @@
 #include "grid.h"
 #include "game.h"
 #include "list.h"
-#include "problem.h"
+#include "searchhelper.h"
 
 /*
  * ACTION STRINGS MUST *ALWAYS* BE NULL-TERMINATED
@@ -14,7 +14,9 @@
 
 Location *getNeighbor(char action, Location *old, Location *new);
 
-void deleteStateNode(StateNode *node);
+StateNode *newStateNode(void);
+
+void deleteStateNode(StateNode *sn);
 
 char *getLegalActions(Location *loc, Grid *board, char *moves);
 
@@ -27,26 +29,55 @@ int costFn(Location *location, Grid *board)
     return *board[location->x][location->y];
 }
 
-StateNode *getFirstStateNode(StateNode *first, Game *game)
+StateNode *getFirstStateNode(Game *game)
 {
-    // location must be malloc'd already!
-    if (first->location == NULL) {
-        free(first);
-        return NULL;
-    }
+    StateNode *first = newStateNode();
 
     first->location = game->start;
+    
+    first->action = 0;
     first->cost = 0;
-    first->action = NULL;
 
     return first;
 }
 
+StateNode* newStateNode(void)
+{
+    StateNode *sn = (StateNode *) malloc(sizeof(StateNode));
+    Location *l = (Location *) malloc(sizeof(Location));
+    
+    sn->location = l;
+    sn->action = 0;
+    sn->cost = 0;
+
+    return sn;
+}
+
+void deleteStateNode(StateNode *sn)
+{
+    free(sn->location);
+    free(sn);
+}
+
+List* new4StateNodesList(void)
+{
+    List* n4sn = (List *) malloc(sizeof(List));
+    
+    StateNode **items = malloc(sizeof(StateNode *) * 4);
+
+    n4sn->items = items;
+    n4sn->n_items = 0;
+    n4sn->capacity = 4; 
+
+    return n4sn;
+}
+
 // this function is exposed in the api.
 // a search algorithem will call this to get the neighboring 'state's to a given parent node.
-// this function assumes successors->list has 4 available slots for StateNodes.
-List *getSuccessors(List *successors, StateNode *parent, Grid *board) 
+List *getSuccessors(StateNode *parent, Grid *board) 
 {
+    List *successors = new4StateNodesList();
+
     char legalActions[5]; // space for four moves + a null terminator
     getLegalActions(parent->location, board, legalActions);
     
@@ -55,24 +86,28 @@ List *getSuccessors(List *successors, StateNode *parent, Grid *board)
     {
         char action = legalActions[i];
 
-        StateNode *successor = (StateNode *)malloc(sizeof(StateNode));
-
-        Location *s_location = malloc(sizeof(Location));
-
-        successor->location = getNeighbor(action, parent->location, s_location);
+        StateNode *successor = newStateNode();
+        successor->location = getNeighbor(action, parent->location, successor->location);
         successor->cost = costFn(successor->location, board);
         successor->action = action;
-
+        
+        /*
         StateNode **list = (StateNode **) successors->list;
         list[i]= successor;
+        */
 
-        successors->length = i;
+        StateNode **list = (StateNode **) successors->items;
+        list[i]= successor;
+        successors->items = list;
+
         i += 1;
+        successors->n_items = i;
     }
+    
+    trimListSize(successors);
 
     return successors;
 }
-
 
 // helper function for getSuccessors
 Location *getNeighbor(char action, Location *old, Location *new)
@@ -106,12 +141,6 @@ Location *getNeighbor(char action, Location *old, Location *new)
     new->y = new_y;
 
     return new;
-}
-
-void deleteStateNode(StateNode *node)
-{
-    free(node->location);
-    free(node);
 }
 
 char *getLegalActions(Location *loc, Grid *board, char *moves)

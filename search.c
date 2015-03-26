@@ -1,95 +1,130 @@
+#include <stdlib.h>
+#include <string.h>
 #include "game.h"
 #include "grid.h"
 #include "list.h"
 #include "searchhelper.h"
+#include "search.h"
 
-/*
+List *newFringe(void)
+{
+    List* fringe = (List *) malloc(sizeof(List));
 
-    List *fringe = malloc(sizeof(List));
-    fringe->list = (FringeNode **) malloc(sizeof(FringeNode*) * 32);
-    fringe->length = 32;
-    
-    StateNode *parent = PARENT NODE;
+    FringeNode **items = (FringeNode **) malloc(sizeof(FringeNode*) * 32);
+    fringe->items = items;
+    fringe->capacity = 32;
+    fringe->n_items = 0;
 
-    List *successors = (List *) malloc(sizeof(List));
-    successors->list = (StateNode **) malloc(sizeof(StateNode *) * 4);
-    successors->length = 4;
+    return fringe;
+}
 
-    List *successors = getSuccessors(successors, parent, game);
-
-    for (int i = 0; i < successors->length; i += 1)
+void deleteFringe(List *fringe)
+{
+    FringeNode **items = (FringeNode **)fringe->items;
+    for (int i = 0; i < fringe->n_items; i += 1)
     {
-        FringeNode fringeNode = malloc(sizeof(FringeNode));
-
-        Successor *successor = successors[i]; 
-
-        fringeNode->StateNode = successor;
-        fringeNode->allActions = lastFringeNode + successor->action;
-        fringeNode->costOfActions = lastFringeNode->costOfActions + successor->cost;
-
-        *** THIS IS WHERE CODE GOES TO RESIZE myList ***
-        fringe->list[i] = fringeNode;
+        FringeNode *fn = (FringeNode *)items[i];
+        free(fn);
     }
+    free(fringe->items);
+    free(fringe);
+}
 
-    free(successors);
-
-    typedef struct FringeNode
+FringeNode *popFromFringe(List *fringe)
+{
+    if (fringe->n_items < 1)
     {
-        StateNode *state;
-        char *allActions;
-        int costOfActions;
+        return NULL;
+    } else {
+
+        FringeNode **items = (FringeNode **)fringe->items;
+        FringeNode *fn = items[fringe->n_items];
+        fringe->n_items -= 1;
+        return fn;
     }
-*/
+}
+
+void addToFringe(FringeNode *fn, List *fringe)
+{
+    if (checkListSize(fringe))
+    {
+        FringeNode **items = fringe->items;
+        items[fringe->n_items] = fn;
+        fringe->items = items;
+        fringe->n_items += 1; 
+    }
+}
+
+
+// accepts the new state, and the old fringenode's allActions and costOfActions
+FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
+{
+    int len = strlen(pastActions), i = 0;
+    char *allActions = malloc(sizeof(char) * (len + 1));
+    while (i < len)
+    {
+        allActions[i] = pastActions[i]; 
+        i += 1; 
+    } 
+    allActions[i] = state->action;
+
+    int costOfActions = pastCost + state->cost;
+
+    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
+    fn->state = state;
+    fn->allActions = allActions;
+    fn->costOfActions = costOfActions;
+   
+    return fn;
+}
 
 char *dfs (Game *game)
 {
-    List *fringe = (List *) malloc(sizeof(List));
-    fringe->items = (FringeNode **) malloc(sizeof(FringeNode*) * 32);
-    fringe->capacity = 32;
-    fringe->n_items = 0;
-    
+    List *fringe = newFringe();
     /*
     Set *closed = newHashTable();
     */
 
-    StateNode *state = (StateNode *) malloc(sizeof(StateNode));
-    Location *stateLocation = (Location *) malloc(sizeof(Location));
-    state->location = stateLocation;
-
-    state = getFirstStateNode(state, game);
-    // ^^^^ SHOULD CHECK FOR NULL:
+    StateNode *state = getFirstStateNode(game);
    
-    //vvvv SHOULD BE DONE FOR ME IN A FUNCTION
-    FringeNode *first = (FringeNode *) malloc(sizeof(FringeNode));
-    FringeNode->state = state;
-    FringeNode->allActions = "\0";
-    FringeNode->costOfActions = 0;
+    FringeNode *first = newFringeNode(state,"\0", 0);
 
-    // vvv clean in a function addToList(void *item, List *list)
-    fringe->n_items += 1;
-    checkListSize(fringe);
-    fringe->items[fringe->n_items - 1] = first;
+    addToFringe(first, fringe);
 
     while(true)
     {
-        FringeNode thisNode = getLastItem(fringe);
-        Node* thisNode = fringe.pop();
+        FringeNode *thisNode = popFromFringe(fringe);
 
-        if thisNode = null {
+        if (thisNode == NULL) {
             return NULL;
         } 
-        if (isWin(thisNode->state->location)) {
-            return thisNode->actions;
+        if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
+            return thisNode->allActions;
         }
 
         else {
-            List *list = getSuccessorNodes(*thisNode, game);
+            
+            char *pastActions = thisNode->allActions;
+            int pastCost = thisNode->costOfActions;
 
-            for each in list:
+            List *successors = getSuccessors(thisNode->state, game->board);
 
-                if (each->location not in closed):
-                    closed.add(each->location);
-                    fringe.push((each, [thisNode->actions + each->action]));
+            int len = successors->n_items;
+            for (int i = 0; i < len; i += 1)
+            {
+                StateNode **items = successors->items;
+                StateNode *successor = items[i];
+                /*
+                if (!locationInClosed(successor->location, closed))
+                {
+                    addToClosed(successor->location);
+                */
+                    FringeNode *fn = newFringeNode(successor, pastActions, pastCost);
+                    addToFringe(fn, fringe);
+                /*
+                }
+                */ 
+            }
         }
     } 
 }

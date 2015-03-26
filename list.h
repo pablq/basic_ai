@@ -14,6 +14,4 @@ bool checkListSize(List *list);
 
 bool trimListSize(List *list);
 
-void *popFromList(List *list);
-
 #endif /* LIST */
