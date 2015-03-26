@@ -18,7 +18,7 @@ StateNode *newStateNode(void);
 
 void deleteStateNode(StateNode *sn);
 
-char *getLegalActions(Location *loc, Grid *board, char *moves);
+char *getLegalActions(Location *loc, Grid *board);
 
 int costFn(Location *location, Grid *board);
 
@@ -79,13 +79,12 @@ List *getSuccessors(StateNode *parent, Grid *board)
 {
     List *successors = new4StateNodesList();
 
-    char legalActions[5]; // space for four moves + a null terminator
-    getLegalActions(parent->location, board, legalActions);
+    char *actions = getLegalActions(parent->location, board);
     
     int i = 0;
-    while (legalActions[i] != '\0')
+    while (actions[i] != '\0')
     {
-        char action = legalActions[i];
+        char action = actions[i];
         StateNode *successor = newStateNode();
         successor->location = getNeighbor(action, parent->location, successor->location);
         //successor->cost = costFn(successor->location, board);
@@ -93,14 +92,16 @@ List *getSuccessors(StateNode *parent, Grid *board)
         successor->action = action;
 
         StateNode **list = (StateNode **) successors->items;
-        list[i]= successor;
+        list[i] = successor;
         successors->items = list;
 
         i += 1;
         successors->n_items = i;
     }
     
-    //trimListSize(successors);
+    free(actions);
+    
+    trimListSize(successors);
 
     return successors;
 }
@@ -139,31 +140,36 @@ Location *getNeighbor(char action, Location *old, Location *new)
     return new;
 }
 
-char *getLegalActions(Location *loc, Grid *board, char *moves)
+char *getLegalActions(Location *loc, Grid *board)
 {
-    bool n = isLegal(loc->x, loc->y - 1, board);
-    bool s = isLegal(loc->x, loc->y + 1, board);
-    bool e = isLegal(loc->x + 1, loc->y, board);
-    bool w = isLegal(loc->x - 1, loc->y, board);
+    int x = loc-> x;
+    int y = loc-> y; 
+
+    bool n = isLegal(x, y - 1, board);
+    bool s = isLegal(x, y + 1, board);
+    bool e = isLegal(x + 1, y, board);
+    bool w = isLegal(x - 1, y, board);
+
+    char *actions = (char *) malloc(sizeof(char) * 5);
 
     int total_moves = 0;
     if (n) {
-        moves[total_moves] = 'n';
+        actions[total_moves] = 'n';
         total_moves += 1;
     }
     if (s) {
-        moves[total_moves] = 's';
+        actions[total_moves] = 's';
         total_moves += 1;
     }
     if (e) {
-        moves[total_moves] = 'e';
+        actions[total_moves] = 'e';
         total_moves += 1;
     }
     if (w) {
-        moves[total_moves] = 'w';
+        actions[total_moves] = 'w';
         total_moves += 1;
     }
-    moves[total_moves] = '\0';
+    actions[total_moves] = '\0';
 
-    return moves;
+    return actions;
 }

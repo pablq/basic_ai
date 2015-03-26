@@ -195,7 +195,7 @@ void drawMove(char move, Game *game)
 {
     int x = game->agent->x;
     int y = game->agent->y;
-    char mark;
+    char mark = 'Z';
     switch (move)
     {
         case 'n':

@@ -159,10 +159,16 @@ char *dfs (Game *game)
         FringeNode *thisNode = popFromFringe(fringe);
 
         if (thisNode == NULL) {
+            deleteFringeNode(thisNode);
+            deleteFringe(fringe);
+            deleteClosed(closed);
             return NULL;
         } 
 
         if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
+            deleteFringeNode(thisNode);
+            deleteFringe(fringe);
+            deleteClosed(closed);
             return thisNode->allActions;
         } else {
             
@@ -194,9 +200,11 @@ char *dfs (Game *game)
                     }
                 }
             }
+
+            free(successors);
         }
 
-        //deleteFringeNode(thisNode);
+        deleteFringeNode(thisNode);
     } 
 }
 bool checkClosedSize(List *list)
@@ -206,14 +214,15 @@ bool checkClosedSize(List *list)
         printf("re-allocing closed\n");
         int new_size = list->capacity * 2;
         
-        void *new_items = realloc(list->items, sizeof(Location*) * new_size);
+        Location **items = (Location**) list->items;
+        items = realloc(items, sizeof(Location*) * new_size);
 
-        if (new_items == NULL) 
+        if (items == NULL) 
         {
             return false;
         }
 
-        list->items = new_items;
+        list->items = items;
         list->capacity = new_size; 
     }
     return true;
@@ -225,14 +234,16 @@ bool checkFringeSize(List *list)
         printf("re-allocing fringe\n");
         int new_size = list->capacity * 2;
         
-        void *new_items = realloc(list->items, sizeof(FringeNode*) * new_size);
+        FringeNode **items = (FringeNode**) list->items;
+        
+        items = realloc(items, sizeof(FringeNode*) * new_size);
 
-        if (new_items == NULL) 
+        if (items == NULL) 
         {
             return false;
         }
 
-        list->items = new_items;
+        list->items = items;
         list->capacity = new_size; 
     }
     return true;
