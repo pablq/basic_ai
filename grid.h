@@ -10,11 +10,9 @@ typedef int **Grid;
 
 Grid newGrid(void);
 
-void buildLayout(Grid grid);
+void deleteGrid(Grid grid);
 
 Grid copyGrid(Grid original);
-
-bool sameGrid(Grid model, Grid check);
 
 void printGrid(Grid grid);
 

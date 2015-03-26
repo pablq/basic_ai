@@ -50,7 +50,6 @@ Game *newGame(void)
 Grid newBoard(void)
 {
     Grid board = newGrid();
-    buildLayout(board);
     return board;
 }
 

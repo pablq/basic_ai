@@ -3,27 +3,24 @@
 #include "util.h"
 #include "grid.h"
 
-void printGridAsChars(Grid grid);
-
-void printGrid(Grid grid);
-
-bool isLegal(int x, int y, Grid grid);
-
-Grid copyGrid(Grid original);
-
 void buildLayout(Grid grid);
 
-bool inBounds(int x, int y);
-
-Grid newGrid(void)
+Grid newBlankGrid(void)
 {
-    Grid myGrid = malloc(sizeof(int *) * GRID_WIDTH);
+    Grid blank = malloc(sizeof(int *) * GRID_WIDTH);
     for (int i = 0; i < GRID_WIDTH; i += 1)
     {
         int *column = malloc(sizeof(int) * GRID_HEIGHT);
-        myGrid[i] = column; 
+        blank[i] = column; 
     }
-    return myGrid;
+    return blank;
+}
+
+Grid newGrid(void)
+{
+    Grid grid = newBlankGrid();
+    buildLayout(grid);
+    return grid;
 }
 
 void deleteGrid(Grid grid)
@@ -33,6 +30,62 @@ void deleteGrid(Grid grid)
         free(grid[i]);
     }
     free(grid);
+}
+
+Grid copyGrid(Grid original)
+{
+    Grid copy = newBlankGrid();
+
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
+    {
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
+        {
+            copy[x][y] = original[x][y];
+        }
+    }
+    return copy;
+}
+
+bool inBounds(int x, int y)
+{
+    return (x >= 0 && x < GRID_WIDTH && y>= 0 && y < GRID_HEIGHT);
+}
+
+bool isLegal(int x, int y, Grid grid)
+{
+    if (!inBounds(x,y))
+    {
+        return false;
+    }
+    if (grid[x][y] == 0) 
+    {
+        return false;
+    }
+    return true;
+}
+
+void printGrid(Grid grid)
+{
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
+    {
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
+        {
+            printf("%d", grid[x][y]);
+        }
+        printf("\n");
+    }
+}
+
+void printGridAsChars(Grid grid)
+{
+    for (int y = 0; y < GRID_HEIGHT; y += 1) 
+    {
+        for (int x = 0; x < GRID_WIDTH; x += 1) 
+        {
+            printf("%c", grid[x][y]);
+        }
+        printf("\n");
+    }
 }
 
 void buildLayout(Grid grid)
@@ -65,7 +118,7 @@ void buildLayout(Grid grid)
     for (int i = 0; i < num_walls; i += 1)
     {
         // give walls varied lengths
-        int len = randInRange(2,5);
+        int len = randInRange(3,10);
         int x, y;
 
         // decide whether wall will be horizontal or vertical.
@@ -116,84 +169,4 @@ void buildLayout(Grid grid)
             }
         }
     }
-}
-
-void drawWall(int x1, int x2, int len, bool horiz, Grid grid)
-{
-    for (int i = 0; i < len; i += 1)
-    {
-        
-    }
-}
-
-
-Grid copyGrid(Grid original)
-{
-    Grid copy = newGrid();
-
-    for (int y = 0; y < GRID_HEIGHT; y += 1) 
-    {
-        for (int x = 0; x < GRID_WIDTH; x += 1) 
-        {
-            copy[x][y] = original[x][y];
-        }
-    }
-    return copy;
-}
-
-bool sameGrid(Grid model, Grid check)
-{
-    for (int y = 0; y < GRID_HEIGHT; y += 1) 
-    {
-        for (int x = 0; x < GRID_WIDTH; x += 1) 
-        {
-            if (model[x][y] != check[x][y]) 
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-void printGrid(Grid grid)
-{
-    for (int y = 0; y < GRID_HEIGHT; y += 1) 
-    {
-        for (int x = 0; x < GRID_WIDTH; x += 1) 
-        {
-            printf("%d", grid[x][y]);
-        }
-        printf("\n");
-    }
-}
-
-void printGridAsChars(Grid grid)
-{
-    for (int y = 0; y < GRID_HEIGHT; y += 1) 
-    {
-        for (int x = 0; x < GRID_WIDTH; x += 1) 
-        {
-            printf("%c", grid[x][y]);
-        }
-        printf("\n");
-    }
-}
-
-bool inBounds(int x, int y)
-{
-    return (x >= 0 && x < GRID_WIDTH && y>= 0 && y < GRID_HEIGHT);
-}
-
-bool isLegal(int x, int y, Grid grid)
-{
-    if (!inBounds(x,y))
-    {
-        return false;
-    }
-    if (grid[x][y] == 0) 
-    {
-        return false;
-    }
-    return true;
 }

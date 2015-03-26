@@ -13,6 +13,7 @@
 bool checkClosedSize(List *list);
 bool checkFringeSize(List *list);
 char *stateToString(StateNode *state);
+void deleteFringeNode(FringeNode *fn);
 
 List *newFringe(void)
 {
@@ -32,7 +33,7 @@ void deleteFringe(List *fringe)
     for (int i = 0; i < fringe->n_items; i += 1)
     {
         FringeNode *fn = (FringeNode *)items[i];
-        free(fn);
+        deleteFringeNode(fn);
     }
     free(fringe->items);
     free(fringe);
@@ -92,7 +93,7 @@ void addToClosed(StateNode *state, HashTable *closed)
 FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 {
     int len = strlen(pastActions);
-    char *allActions = malloc(sizeof(char) * (len + 2));
+    char* allActions = malloc(sizeof(char) * (len + 2));
     int i = 0;
     while (i < len)
     {
@@ -105,8 +106,10 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
     int costOfActions = pastCost + state->cost;
 
     FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
+    free(fn->allActions);
+
     fn->state = state;
-    fn->allActions = allActions;
+    fn->allActions = &allActions;
     fn->costOfActions = costOfActions;
    
     return fn;
@@ -146,10 +149,8 @@ char *dfs (Game *game)
         if (thisNode == NULL)
         {
             
-            /*
             deleteFringe(fringe);
             deleteClosed(closed);
-            */
 
             printf("No Solution found :(\n");
 
@@ -161,11 +162,9 @@ char *dfs (Game *game)
         average_fringe = total_fringe / expanded;
 
         if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
-            /*
-            deleteFringeNode(thisNode);
+
             deleteFringe(fringe);
             deleteClosed(closed);
-            */
             
             printf("Solution found! :D\n");
             printf("Total movement cost of solution: %d\n", thisNode->costOfActions);
@@ -195,10 +194,9 @@ char *dfs (Game *game)
                 }
             }
 
+            free(successors->items);
             free(successors);
         }
-
-        deleteFringeNode(thisNode);
     } 
 }
 

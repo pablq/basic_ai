@@ -43,7 +43,7 @@ StateNode *getFirstStateNode(int x, int y)
 StateNode* newStateNode(void)
 {
     StateNode *sn = (StateNode *) malloc(sizeof(StateNode));
-    Location *l = (Location *) malloc(sizeof(Location));
+    Location *l = newLocation(0,0);
     
     sn->location = l;
     sn->action = 0;
@@ -85,7 +85,6 @@ List *getSuccessors(StateNode *parent, Grid board)
         char action = actions[i];
         StateNode *successor = newStateNode();
         successor->location = getNeighbor(action, parent->location, successor->location);
-        //successor->cost = costFn(successor->location, board);
         successor->cost = 1;
         successor->action = action;
 

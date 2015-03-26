@@ -8,8 +8,3 @@ Location *newLocation(int x, int y)
     l->y = y;
     return l;
 }
-
-void deleteLocation(Location *l)
-{
-    free(l);
-}
