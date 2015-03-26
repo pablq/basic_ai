@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 
 int randInRange(int low, int high)

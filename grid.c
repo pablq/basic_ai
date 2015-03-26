@@ -27,7 +27,7 @@ void deleteGrid(Grid grid)
 {
     for (int i = 0; i < GRID_WIDTH; i += 1)
     {
-        free(grid[i])
+        free(grid[i]);
     }
     free(grid);
 }

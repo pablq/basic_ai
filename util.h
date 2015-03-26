@@ -1,6 +1,8 @@
 #ifndef UTIL
 #define UTIL
 
+#include <stdbool.h>
+
 int randInRange(int low, int high);
 
 int pointerHash(void *pointer);

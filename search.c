@@ -10,6 +10,7 @@
 
 bool checkClosedSize(List *list);
 bool checkFringeSize(List *list);
+
 List *newFringe(void)
 {
     List* fringe = (List *) malloc(sizeof(List));
@@ -114,12 +115,12 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 {
     int len = strlen(pastActions);
     char *allActions = malloc(sizeof(char) * (len + 2));
-    allActions = strcpy(allActions, pastActions);
-    /*while (i < len)
+    int i = 0;
+    while (i < len)
     {
         allActions[i] = pastActions[i]; 
         i += 1; 
-    }*/ 
+    }
     allActions[len] = state->action;
     allActions[len + 1] = '\0';
 
@@ -142,6 +143,8 @@ void deleteFringeNode(FringeNode *fn)
 
 char *dfs (Game *game)
 {
+    printf("Thinking... :)\n");
+
     List *fringe = newFringe();
     
     List *closed = newClosed();
@@ -152,18 +155,31 @@ char *dfs (Game *game)
 
     addToFringe(first, fringe);
 
+    double expanded = 0;
+    double total_fringe = 0;
+    double average_fringe = 0;
+    
     while(true)
     {
         FringeNode *thisNode = popFromFringe(fringe);
 
-        if (thisNode == NULL) {
+        if (thisNode == NULL)
+        {
+            
             /*
-            deleteFringeNode(thisNode);
             deleteFringe(fringe);
             deleteClosed(closed);
             */
+
+            printf("searched a total of %f nodes with an average of %f in memory at a time\n",expanded,average_fringe);
+            printf("ran out of nodes to search :(\n");
+
             return NULL;
         } 
+
+        expanded += 1;
+        total_fringe += fringe->n_items;
+        average_fringe = total_fringe / expanded;
 
         if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
             /*
@@ -171,7 +187,10 @@ char *dfs (Game *game)
             deleteFringe(fringe);
             deleteClosed(closed);
             */
+            printf("searched a total of %f nodes with an average of %f in memory at a time\n",expanded,average_fringe);
+
             return thisNode->allActions;
+
         } else {
             
             char *pastActions = thisNode->allActions;
@@ -199,11 +218,11 @@ char *dfs (Game *game)
         deleteFringeNode(thisNode);
     } 
 }
+
 bool checkClosedSize(List *list)
 {
     if (list->n_items >= list->capacity) 
     {
-        printf("re-allocing closed\n");
         int new_size = list->capacity * 2;
         
         Location **items = (Location**) list->items;
@@ -219,11 +238,11 @@ bool checkClosedSize(List *list)
     }
     return true;
 }
+
 bool checkFringeSize(List *list)
 {
     if (list->n_items >= list->capacity) 
     {
-        printf("re-allocing fringe\n");
         int new_size = list->capacity * 2;
         
         FringeNode **items = (FringeNode**) list->items;

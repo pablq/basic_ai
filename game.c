@@ -18,7 +18,9 @@ void placeStart(Location *start, Game *game);
 
 void placeGoal(Location *goal, Game *game);
 
-Grid  newDisplay(Grid board);
+Grid newDisplay(Grid board);
+
+Grid newBoard(void);
 
 Game *newGame(void)
 {
@@ -195,7 +197,7 @@ Grid newDisplay(Grid board)
 
 void drawWinner(Game *game)
 {
-    drawCharToGrid('W', game->goal->x, game->goal->y, game->display);
+    writeCharToGrid('W', game->goal->x, game->goal->y, game->display);
 }
 
 void drawMove(char move, Game *game)
@@ -224,7 +226,7 @@ void drawMove(char move, Game *game)
 
     if (isLegal(x,y,game->board))
     {
-        drawCharToGrid(mark,x,y,game->display);
+        writeCharToGrid(mark,x,y,game->display);
     }
 }
 
@@ -240,7 +242,7 @@ void placeStart(Location *start, Game *game)
 
         if (isLegal(x,y,game->board) && game->display[x][y] != 'G')
         {
-            drawCharToGrid('S',x,y,game->display);
+            writeCharToGrid('S',x,y,game->display);
             start->x = x;
             start->y = y;
             placed = true;
@@ -259,7 +261,7 @@ void placeGoal(Location *goal, Game *game)
 
         if (isLegal(x,y, game->board) && game->display[x][y] != 'S')
         {
-            drawCharToGrid('G',x,y,game->display);
+            writeCharToGrid('G',x,y,game->display);
             goal->x = x;
             goal->y = y;
             placed = true;
