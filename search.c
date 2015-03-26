@@ -5,6 +5,7 @@
 #include "grid.h"
 #include "list.h"
 #include "util.h"
+#include "hashtable.h"
 #include "searchhelper.h"
 #include "search.h"
 
