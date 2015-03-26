@@ -142,8 +142,6 @@ void deleteFringeNode(FringeNode *fn)
 
 char *dfs (Game *game)
 {
-    Grid *broke_copy = copyGrid(game->board);
-
     List *fringe = newFringe();
     
     List *closed = newClosed();
@@ -190,18 +188,8 @@ char *dfs (Game *game)
                 if (!inClosed(successor->location, closed))
                 {
                     addToClosed(successor->location, closed);
-                    if (!sameGrid(broke_copy, game->board))
-                    {
-                        printf("addToClosed\n");
-                        return NULL;
-                    }
                     FringeNode *fn = newFringeNode(successor, pastActions, pastCost);
                     addToFringe(fn, fringe);
-                    if (!sameGrid(broke_copy, game->board))
-                    {
-                        printf("addToFringe\n");
-                        return NULL;
-                    }
                 }
             }
 

@@ -18,35 +18,38 @@ void placeStart(Location *start, Game *game);
 
 void placeGoal(Location *goal, Game *game);
 
-void prepareDisplay(Grid *display, Grid *board);
+Grid  newDisplay(Grid board);
 
 Game *newGame(void)
 {
     Game *game = malloc(sizeof(Game));
 
-    Grid *board = newGrid();
-    buildLayout(board);
+    Grid board = newBoard();
     game->board = board;
 
-    Grid *display = copyGrid(board); 
-    prepareDisplay(display, board);
+    Grid display = newDisplay(board);
     game->display = display;
 
-    Location *start = malloc(sizeof(Location));
+    Location *start = newLocation(0,0); // placeStart gives it real values
     placeStart(start, game);
     game->start = start;
 
-    Location *goal = malloc(sizeof(Location));
+    Location *goal = newLocation(0,0);
     placeGoal(goal, game);
-    game->goal = goal;
 
-    Location *agent = malloc(sizeof(Location));
-    *agent = *start;
+    Location *agent = newLocation(start->x,start->y);
     game->agent = agent;
-
-    printGrid(game->board);
+    
     printGridAsChars(game->display);
+
     return game;
+}
+
+Grid newBoard(void)
+{
+    Grid board = newGrid();
+    buildLayout(board);
+    return board;
 }
 
 void playGame(char *actions, Game *game)
@@ -143,24 +146,26 @@ bool isWin(Game *game)
 
 // the below functions all use the drawCharToGrid function to actually draw on the grid
 
-bool drawCharToGrid(char c, int x, int y, Grid* grid)
+bool writeCharToGrid(char c, int x, int y, Grid grid)
 {
     if (isLegal(x, y, grid))
     {
-        *grid[x][y] = c;
+        grid[x][y] = c;
         return true;
     }
     return false;
 }
 
-void prepareDisplay(Grid *display, Grid *board)
+Grid newDisplay(Grid board)
 {
+    Grid display = copyGrid(board);
+
     for (int y = 0; y < GRID_HEIGHT; y += 1) 
     {
         for (int x = 0; x < GRID_WIDTH; x += 1) 
         {
             char c;
-            switch (*board[x][y])
+            switch (board[x][y])
             {
                 case 0:
                     c = 'X';
@@ -176,14 +181,16 @@ void prepareDisplay(Grid *display, Grid *board)
                 case 7:
                 case 8:
                 case 9:
-                    c = *display[x][y] + 48;
+                    c = display[x][y] + 48;
                     break;
                 default:
-                    c = *display[x][y];
+                    c = display[x][y];
             }
-            *display[x][y] = c;
+            display[x][y] = c;
         }
     }
+
+    return display;
 }
 
 void drawWinner(Game *game)
@@ -231,7 +238,7 @@ void placeStart(Location *start, Game *game)
         int x = randInRange(0,GRID_WIDTH - 1);
         int y = randInRange(0,GRID_HEIGHT - 1);
 
-        if (isLegal(x,y,game->board) && *game->display[x][y] != 'G')
+        if (isLegal(x,y,game->board) && game->display[x][y] != 'G')
         {
             drawCharToGrid('S',x,y,game->display);
             start->x = x;
@@ -239,6 +246,7 @@ void placeStart(Location *start, Game *game)
             placed = true;
         }
     }
+    game->start = start;
 }
 
 void placeGoal(Location *goal, Game *game)
@@ -249,7 +257,7 @@ void placeGoal(Location *goal, Game *game)
         int x = randInRange(0,GRID_WIDTH - 1);
         int y = randInRange(0,GRID_HEIGHT - 1);
 
-        if (isLegal(x,y, game->board) && *game->display[x][y] != 'S')
+        if (isLegal(x,y, game->board) && game->display[x][y] != 'S')
         {
             drawCharToGrid('G',x,y,game->display);
             goal->x = x;
@@ -257,4 +265,5 @@ void placeGoal(Location *goal, Game *game)
             placed = true;
         }
     }
+    game->goal = goal;
 }

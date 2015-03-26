@@ -5,6 +5,6 @@ int randInRange(int low, int high);
 
 int pointerHash(void *pointer);
 
-int hashLocation(int x, int y);
+bool sameLocation(int x1, int y1, int x2, int y2);
 
 #endif /* UTIL */

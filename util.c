@@ -17,7 +17,7 @@ int pointerHash(void *pointer)
    return (int) (unsigned long) pointer; 
 } 
 
-int hashLocation(int x, int y)
+bool sameLocation(int x1, int y1, int x2, int y2)
 {
-    return x + y;
+    return  (x1 == x2 && y1 == y2);
 }

@@ -10,20 +10,18 @@ typedef int **Grid;
 
 Grid newGrid(void);
 
-void buildLayout(Grid* grid);
+void buildLayout(Grid grid);
 
-Grid copyGrid(Grid* original);
+Grid copyGrid(Grid original);
 
-bool sameGrid(Grid *model, Grid *check);
+bool sameGrid(Grid model, Grid check);
 
-void printGrid(Grid *grid);
+void printGrid(Grid grid);
 
-void printGridAsChars(Grid *grid);
+void printGridAsChars(Grid grid);
 
-bool drawCharToGrid(char c, int x, int y, Grid* grid);
+bool drawCharToGrid(char c, int x, int y, Grid grid);
 
-bool isLegal(int x, int y, Grid *grid);
-
-bool sameLocation(int x1, int y1, int x2, int y2);
+bool isLegal(int x, int y, Grid grid);
 
 #endif /* GRID */

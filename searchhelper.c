@@ -18,15 +18,13 @@ StateNode *newStateNode(void);
 
 void deleteStateNode(StateNode *sn);
 
-char *getLegalActions(Location *loc, Grid *board);
-
-int costFn(Location *location, Grid *board);
+char *getLegalActions(Location *loc, Grid board);
 
 // if the costFn is passed a wall it will give a favorable value!
 // you should check for the legality of a location before calling the costfn
-int costFn(Location *location, Grid *board)
+int costFn(Location *location, Grid board)
 {
-    int val = *board[location->x][location->y];
+    int val = board[location->x][location->y];
     return val;
 }
 
@@ -75,7 +73,7 @@ List* new4StateNodesList(void)
 
 // this function is exposed in the api.
 // a search algorithem will call this to get the neighboring 'state's to a given parent node.
-List *getSuccessors(StateNode *parent, Grid *board) 
+List *getSuccessors(StateNode *parent, Grid board) 
 {
     List *successors = new4StateNodesList();
 
@@ -140,7 +138,7 @@ Location *getNeighbor(char action, Location *old, Location *new)
     return new;
 }
 
-char *getLegalActions(Location *loc, Grid *board)
+char *getLegalActions(Location *loc, Grid board)
 {
     int x = loc-> x;
     int y = loc-> y; 

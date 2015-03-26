@@ -6,7 +6,7 @@
 #include "list.h"
 #include "game.h"
 
-bool isGoalState(Location *location, Grid *grid);
+bool isGoalState(Location *location, Grid grid);
 
 // the char * actions will always be null terminated
 // the length value does not count the null terminator
@@ -21,7 +21,7 @@ StateNode* getFirstStateNode(int x, int y);
 
 StateNode* newStateNode(void);
 
-List* getSuccessors(StateNode *parent, Grid *grid);
+List* getSuccessors(StateNode *parent, Grid grid);
 
 void deleteStateNode(StateNode *node);
 
