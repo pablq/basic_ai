@@ -54,7 +54,7 @@ void addToFringe(FringeNode *fn, List *fringe)
 {
     if (checkFringeSize(fringe))
     {
-        FringeNode **items = fringe->items;
+        FringeNode **items = (FringeNode **)fringe->items;
         items[fringe->n_items] = fn;
         fringe->items = items;
         fringe->n_items += 1; 
@@ -159,16 +159,20 @@ char *dfs (Game *game)
         FringeNode *thisNode = popFromFringe(fringe);
 
         if (thisNode == NULL) {
+            /*
             deleteFringeNode(thisNode);
             deleteFringe(fringe);
             deleteClosed(closed);
+            */
             return NULL;
         } 
 
         if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
+            /*
             deleteFringeNode(thisNode);
             deleteFringe(fringe);
             deleteClosed(closed);
+            */
             return thisNode->allActions;
         } else {
             

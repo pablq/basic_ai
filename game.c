@@ -24,7 +24,7 @@ Game *newGame(void)
 {
     Game *game = malloc(sizeof(Game));
 
-    Grid *board = malloc(sizeof(Grid));
+    Grid *board = newGrid();
     buildLayout(board);
     game->board = board;
 

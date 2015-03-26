@@ -20,6 +20,25 @@ bool sameLocation(int x1, int y1, int x2, int y2)
     return  (x1 == x2 && y1 == y2);
 }
 
+Grid newGrid(void)
+{
+    Grid *myGrid = malloc(sizeof(int *) * GRID_WIDTH);
+    for (int i = 0; i < GRID_WIDTH; i += 1)
+    {
+        myGrid[i] = malloc(sizeof(int) * GRID_HEIGHT);
+    }
+    return myGrid;
+}
+
+void deleteGrid(Grid grid)
+{
+    for (int i = 0; i < GRID_WIDTH; i += 1)
+    {
+        free(grid[i])
+    }
+    free(grid);
+}
+
 void buildLayout(Grid *grid)
 {
     // this is the basic build. it just populates the outside with walls
@@ -90,14 +109,14 @@ void buildLayout(Grid *grid)
     }
 }
 
-Grid* copyGrid(Grid *original)
+Grid copyGrid(Grid original)
 {
-    Grid *copy = (Grid *) malloc(sizeof(Grid));
+    Grid copy = newGrid();
     for (int y = 0; y < GRID_HEIGHT; y += 1) 
     {
         for (int x = 0; x < GRID_WIDTH; x += 1) 
         {
-            *copy[x][y] = *original[x][y];
+            copy[x][y] = original[x][y];
         }
     }
     return copy;

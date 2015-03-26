@@ -6,11 +6,13 @@
 #define GRID_WIDTH 50 
 #define GRID_HEIGHT 25 
 
-typedef int Grid[GRID_WIDTH][GRID_HEIGHT]; 
+typedef int **Grid; 
+
+Grid newGrid(void);
 
 void buildLayout(Grid* grid);
 
-Grid *copyGrid(Grid* original);
+Grid copyGrid(Grid* original);
 
 bool sameGrid(Grid *model, Grid *check);
 
