@@ -32,14 +32,15 @@ Game *newGame(void)
     Grid display = newDisplay(board);
     game->display = display;
 
-    Location *start = newLocation(0,0); // placeStart gives it real values
+    Location *start = malloc(sizeof(Location)); // placeStart populates
     placeStart(start, game);
     game->start = start;
 
-    Location *goal = newLocation(0,0);
+    Location *goal = malloc(sizeof(Location)); // placeGoal populates 
     placeGoal(goal, game);
 
-    Location *agent = newLocation(start->x,start->y);
+    Location *agent = malloc(sizeof(Location));
+    *agent = *start;
     game->agent = agent;
     
     return game;

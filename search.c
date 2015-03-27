@@ -13,8 +13,6 @@
 bool checkFringeSize(List *list);
 char *stateToString(StateNode *state);
 
-//costFn should be here?
-
 List *newFringe(void)
 {
     List* fringe = (List *) malloc(sizeof(List));

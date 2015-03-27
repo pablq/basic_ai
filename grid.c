@@ -125,14 +125,14 @@ void buildLayout(Grid grid)
         int is_horiz = randInRange(0,1);
 
         // pick the starting point of the wall:
-        // horizontal =  left->right
-        // vertical = top->down 
+        // horizontal =  left->right, vertical = top->down 
         if(is_horiz) 
         {
             x = randInRange(0, (GRID_WIDTH - 1) - len);
             y = randInRange(0, GRID_HEIGHT - 1);
     
         } else {
+
             x = randInRange(0, GRID_WIDTH -1);
             y = randInRange(0, (GRID_HEIGHT - 1) - len);
         }
@@ -142,6 +142,7 @@ void buildLayout(Grid grid)
         {
             bool isFirst = (w == 0);
             bool isLast = (w == len - 1);
+
             bool rightIsOpen = isLegal(x+1, y, grid);
             bool leftIsOpen = isLegal(x-1, y, grid);
             bool aboveIsOpen = isLegal(x, y-1, grid);
@@ -149,21 +150,29 @@ void buildLayout(Grid grid)
 
             grid[x][y] = 0;
             if (is_horiz) {
+
                 // if you're in the middle of a wall and the next space is already a wall
                 // or there is already a wall directly above or below - stop
                 if ((!isFirst && !isLast) && (!rightIsOpen || !aboveIsOpen || !belowIsOpen))
                 {
                     break;
+
                 } else {
+
                     x += 1;
                 }
+
             } else {
+
                 // if you're in the middle of a wall and the next space is already a wall
                 // or there is already a wall directly left or right - stop
                 if ((!isFirst && !isLast) && (!belowIsOpen || !rightIsOpen || !leftIsOpen))
                 {
+
                     break;
+
                 } else { // otherwise, advance to the next block
+
                     y += 1;
                 }
             }

@@ -22,7 +22,6 @@ HashTableNode *newHashTableNode ()
     HashTableNode *htn = malloc(sizeof(HashTableNode)); 
     htn->value = NULL;
     htn->next = NULL;
-    
     return htn;
 }
 

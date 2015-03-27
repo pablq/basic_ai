@@ -9,11 +9,12 @@ typedef struct StateNode
 } StateNode;
 
 List* getSuccessorStateNodes(StateNode *parent, Grid grid);
+char *stateToString(StateNode *state);
 
 // note dif between generic board/location based items
 // and items that return StateNode specific stuff
 
-bool isGoalState(Location *location, Grid grid);
+bool isGoalState(Location *location, Game *game); // <- utils sameLocation() does this
 
 //costFn here
 

@@ -1,6 +1,5 @@
 #include <stdlib.h>
-#include "state.h"
-#include "gamestate.h"
+#include "model.h"
 #include "list.h"
 
 bool checkFringeSize(List *list)
@@ -36,6 +35,7 @@ List *newFringe(void)
     return fringe;
 }
 
+/*
 void deleteFringe(List *fringe)
 {
     FringeNode **items = (FringeNode **)fringe->items;
@@ -50,6 +50,7 @@ void deleteFringe(List *fringe)
     free(items);
     free(fringe);
 }
+*/
 
 FringeNode *popFromFringe(List *fringe)
 {

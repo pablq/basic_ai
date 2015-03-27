@@ -19,4 +19,6 @@ void playGame(char *actions, Game *game);
 
 void deleteGame(Game *game);
 
+// bool isWin(Location *location, Game *game);
+
 #endif /*GAME*/
