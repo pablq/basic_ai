@@ -84,6 +84,20 @@ void playGame(char *actions, Game *game)
     printGridAsChars(game->display);
 }
 
+Game *resetGame(Game *game)
+{
+    deleteGrid(game->display);
+     
+    game->display = newDisplay(game->board);
+    writeCharToGrid('G',game->goal->x,game->goal->y,game->display);
+    writeCharToGrid('S',game->start->x,game->start->y,game->display);
+
+    game->agent->x = game->start->x;
+    game->agent->y = game->start->y;
+    
+    return game;
+}
+
 void deleteGame(Game *game)
 {
     deleteGrid(game->board);

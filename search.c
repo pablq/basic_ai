@@ -141,7 +141,6 @@ char *bfs(Game *game)
 
     // create our fringe as a FIFO Queue
     FringeNode *fringe = newQueue();
-    printf("initial queue: %p\n",fringe);
     
     // closed will store all the states we've already visited to avoid repeats
     HashTable *closed = newHashTable();
@@ -163,7 +162,8 @@ char *bfs(Game *game)
 
     // variables for book-keeping
     long expanded = 0;
-    long total_fringe = 0;
+    long n_items = 1; // for the first FringeNode
+    long total_fringe = n_items;
     long average_fringe = 0;
     
     // let's get goin!
@@ -186,8 +186,9 @@ char *bfs(Game *game)
 
         // book-keeping
         expanded += 1;
-        // total_fringe += fringe->n_items;
-        // average_fringe = total_fringe / expanded;
+        n_items -= 1;
+        total_fringe += n_items;
+        average_fringe = total_fringe / expanded;
 
         // how manys actions in path?
         int len = 0;
@@ -206,7 +207,7 @@ char *bfs(Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %ld\n", expanded);
-            // printf("Average number of bytes in memory: %ld\n", average_fringe * sizeof(FringeNode));
+            printf("Average number of bytes in memory: %ld\n", average_fringe * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -240,6 +241,9 @@ char *bfs(Game *game)
 
                     // add it to the fringe
                     pushToQueue(new, &fringe);
+                   
+                    // book-keeping 
+                    n_items += 1;
 
                 } else {
 

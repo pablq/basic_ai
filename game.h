@@ -17,8 +17,8 @@ Game *newGame(void);
 
 void playGame(char *actions, Game *game);
 
-void deleteGame(Game *game);
+Game *resetGame(Game *game);
 
-// bool isWin(Location *location, Game *game);
+void deleteGame(Game *game);
 
 #endif /*GAME*/

@@ -10,11 +10,23 @@ int main (int argc, char *argv[])
 
     Game *game = newGame();
 
-    char *moves = bfs(game);
+    printf("DEPTH FIRST SEARCH\n");
 
-    playGame(moves, game);
+    char *dfs_moves = dfs(game);
+
+    playGame(dfs_moves, game);
     
-    free(moves);
+    free(dfs_moves);
+
+    game = resetGame(game);
+
+    printf("BREADTH FIRST SEARCH\n");
+    
+    char *bfs_moves = bfs(game);
+    
+    playGame(bfs_moves, game);
+
+    free(bfs_moves);
 
     deleteGame(game);
 
