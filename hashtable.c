@@ -87,10 +87,12 @@ void deleteHashTable(HashTable *ht)
             HashTableNode *next = last->next;
             while (next != NULL)
             {    
+                free(last->value);
                 free(last);
                 last = next;
                 next = next->next;
             }
+            free(last->value);
             free(last); 
         }
     }

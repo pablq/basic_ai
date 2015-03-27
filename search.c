@@ -80,7 +80,9 @@ void deleteClosed(HashTable *closed)
 bool inClosed(StateNode *state, HashTable *closed)
 {
     char *sh = stateToString(state);  
-    return inHashTable(sh, closed);
+    bool inClosed = inHashTable(sh, closed);
+    free(sh);
+    return inClosed;
 }
 
 void addToClosed(StateNode *state, HashTable *closed)
@@ -150,8 +152,8 @@ char *dfs (Game *game)
         if (thisNode == NULL)
         {
             
-            deleteFringe(fringe);
             deleteClosed(closed);
+            deleteFringe(fringe);
 
             printf("No Solution found :(\n");
 
@@ -164,10 +166,11 @@ char *dfs (Game *game)
 
         if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
 
+            deleteClosed(closed);
+            deleteFringe(fringe);
+
             char *allActions = thisNode->allActions;
             deleteFringeNode(thisNode);
-            deleteFringe(fringe);
-            deleteClosed(closed);
             
             printf("Solution found! :D\n");
             printf("Total movement cost of solution: %d\n", thisNode->costOfActions);

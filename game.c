@@ -88,8 +88,8 @@ void playGame(char *actions, Game *game)
 
 void deleteGame(Game *game)
 {
-    free(game->board);
-    free(game->display);
+    deleteGrid(game->board);
+    deleteGrid(game->display);
     free(game->start);
     free(game->goal);
     free(game->agent);
