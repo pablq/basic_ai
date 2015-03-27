@@ -6,8 +6,8 @@
 typedef struct FringeNode
 {
     StateNode *state;
-    char *allActions;
-    int costOfActions;
+    char *path;
+    int totalCost;
     struct FringeNode *next; // for linked lists ONLY
 } FringeNode;
 

@@ -3,27 +3,6 @@
 #include "fringenode.h"
 #include "list.h"
 
-bool checkStackSize(List *list)
-{
-    if (list->n_items >= list->capacity) 
-    {
-        int new_size = list->capacity * 2;
-        
-        FringeNode **items = (FringeNode**) list->items;
-        
-        items = realloc(items, sizeof(FringeNode*) * new_size);
-
-        if (items == NULL) 
-        {
-            return false;
-        }
-
-        list->items = items;
-        list->capacity = new_size; 
-    }
-    return true;
-}
-
 List *newStack(void)
 {
     List* fringe = (List *) malloc(sizeof(List));
@@ -71,6 +50,28 @@ FringeNode *popFromStack(List *fringe)
         // return pointer    
         return fn;
     }
+}
+
+// helper function for pushToStack
+bool checkStackSize(List *list)
+{
+    if (list->n_items >= list->capacity) 
+    {
+        int new_size = list->capacity * 2;
+        
+        FringeNode **items = (FringeNode**) list->items;
+        
+        items = realloc(items, sizeof(FringeNode*) * new_size);
+
+        if (items == NULL) 
+        {
+            return false;
+        }
+
+        list->items = items;
+        list->capacity = new_size; 
+    }
+    return true;
 }
 
 void pushToStack(FringeNode *fn, List *fringe)

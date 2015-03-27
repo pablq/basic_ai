@@ -9,7 +9,7 @@ int costFn(Location *location, Grid board);
 
 typedef struct StateNode
 {
-    Location *location;
+    Location *loc;
     char action;
     int cost;
 } StateNode;

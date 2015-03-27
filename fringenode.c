@@ -7,23 +7,23 @@
 FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 {
     int len = strlen(pastActions);
-    char* allActions = malloc((len + 2)); // pastActions + new action + '\0'
+    char* path = malloc((len + 2)); // pastActions + new action + '\0'
     int i = 0;
     while (i < len)
     {
-        allActions[i] = pastActions[i]; 
+        path[i] = pastActions[i]; 
         i += 1; 
     }
-    allActions[len] = state->action;
-    allActions[len + 1] = '\0';
+    path[len] = state->action;
+    path[len + 1] = '\0';
 
-    int costOfActions = pastCost + state->cost;
+    int totalCost = pastCost + state->cost;
 
     FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
 
     fn->state = state;
-    fn->allActions = allActions;
-    fn->costOfActions = costOfActions;
+    fn->path = path;
+    fn->totalCost = totalCost;
 
     /* NOTE
         fn->next is specifically for use in linked lists.
@@ -42,8 +42,8 @@ void deleteFringeNode(FringeNode *fn)
         that case, it's the linked list's responsibility to 
         delete fringe nodes individually */
 
-    free(fn->state->location);
+    free(fn->state->loc);
     free(fn->state);
-    free(fn->allActions);
+    free(fn->path);
     free(fn);
 }

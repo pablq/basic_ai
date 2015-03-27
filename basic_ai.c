@@ -7,9 +7,10 @@
 
 int main (int argc, char *argv[])
 {
+
     Game *game = newGame();
 
-    char *moves = dfs(game);
+    char *moves = bfs(game);
 
     playGame(moves, game);
     

@@ -1,0 +1,60 @@
+#include <stdlib.h>
+
+#include "fringenode.h"
+
+FringeNode *newQueue(void)
+{
+    return NULL;
+}
+
+void pushToQueue(FringeNode *fn, FringeNode *fringe)
+{
+    FringeNode *last = fringe;
+    if (last == NULL)
+    {
+        fringe = fn;
+        
+    } else {
+        
+        FringeNode *next = last->next;
+        
+        while (next != NULL)
+        {
+            last = next;
+            next = next->next;
+        }
+        last->next = fn;
+    }
+}
+
+void deleteQueue(FringeNode *fringe)
+{
+    FringeNode *last = fringe;
+    if (last != NULL)
+    {
+        FringeNode *next = NULL;
+        do {
+
+            next = last->next;
+            deleteFringeNode(last);
+
+        } while (next != NULL);
+    }
+}
+
+FringeNode *nextInQueue(FringeNode *fringe)
+{
+    FringeNode *first = fringe;
+
+    if (first == NULL)
+    {
+        return NULL;
+
+    } else {
+
+        FringeNode *next = first->next;
+        fringe = next;
+    }
+
+    return first;
+}
