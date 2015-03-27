@@ -10,7 +10,7 @@ int main (int argc, char *argv[])
 
     Game *game = newGame();
 
-    printf("DEPTH FIRST SEARCH\n");
+    printf("\nDEPTH FIRST SEARCH\n");
 
     char *dfs_moves = dfs(game);
 
@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
 
     game = resetGame(game);
 
-    printf("BREADTH FIRST SEARCH\n");
+    printf("\nBREADTH FIRST SEARCH\n");
     
     char *bfs_moves = bfs(game);
     

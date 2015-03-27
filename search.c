@@ -14,8 +14,6 @@
 
 char *dfs (Game *game)
 {
-    printf("Depth First Search working...\n");
-
     // create our fringe as a FILO Stack
     List *fringe = newStack();
     
@@ -39,8 +37,6 @@ char *dfs (Game *game)
 
     // variables for book-keeping
     long expanded = 0;
-    long total_fringe = 0;
-    long average_fringe = 0;
     
     // let's get goin!
     while(true)
@@ -62,8 +58,6 @@ char *dfs (Game *game)
 
         // book-keeping
         expanded += 1;
-        total_fringe += fringe->n_items;
-        average_fringe = total_fringe / expanded;
 
         // how manys actions in path?
         int len = 0;
@@ -82,7 +76,7 @@ char *dfs (Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %ld\n", expanded);
-            printf("Average number of bytes in memory: %ld\n", average_fringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %ld\n", fringe->n_items * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -137,8 +131,6 @@ char *dfs (Game *game)
 
 char *bfs(Game *game)
 {
-    printf("Breadth First Search working...\n");
-
     // create our fringe as a FIFO Queue
     FringeNode *fringe = newQueue();
     
@@ -163,8 +155,6 @@ char *bfs(Game *game)
     // variables for book-keeping
     long expanded = 0;
     long n_items = 1; // for the first FringeNode
-    long total_fringe = n_items;
-    long average_fringe = 0;
     
     // let's get goin!
     while(true)
@@ -187,8 +177,6 @@ char *bfs(Game *game)
         // book-keeping
         expanded += 1;
         n_items -= 1;
-        total_fringe += n_items;
-        average_fringe = total_fringe / expanded;
 
         // how manys actions in path?
         int len = 0;
@@ -207,7 +195,7 @@ char *bfs(Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %ld\n", expanded);
-            printf("Average number of bytes in memory: %ld\n", average_fringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %ld\n", n_items * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);

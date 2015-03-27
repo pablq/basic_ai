@@ -74,14 +74,14 @@ void playGame(char *actions, Game *game)
         i += 1;
     }
 
+    printGridAsChars(game->display);
+
     if (winner)
     {
         printf("WINNER!\n");
     } else {
-        printf("YOU DID NOT REACH GOAL.\n");
+        printf("FAIL.\n");
     }
-
-    printGridAsChars(game->display);
 }
 
 Game *resetGame(Game *game)
