@@ -1,8 +1,7 @@
 #include <stdlib.h>
 
-#include fringe.h
-#include list.h
-#include 
+#include "fringenode.h"
+#include "list.h"
 
 bool checkStackSize(List *list)
 {

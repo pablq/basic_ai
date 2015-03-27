@@ -2,7 +2,7 @@
 #define STACK
 
 #include "list.h"
-#include "fringe.h"
+#include "fringenode.h"
 
 List *newStack(void);
 

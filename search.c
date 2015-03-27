@@ -7,14 +7,15 @@
 #include "util.h"
 #include "hashtable.h"
 #include "search.h"
-#include "fringe.h"
+#include "fringenode.h"
+#include "stack.h"
 #include "gamemodel.h"
 
 char *dfs (Game *game)
 {
     printf("Depth First Search working...\n");
 
-    List *fringe = newFringe();
+    List *fringe = newStack();
     
     HashTable *closed = newHashTable();
 
@@ -31,7 +32,7 @@ char *dfs (Game *game)
 
     FringeNode *first = newFringeNode(startState, startPath, startCost);
 
-    addToFringe(first, fringe);
+    pushToStack(first, fringe);
 
     long expanded = 0;
     long total_fringe = 0;
@@ -39,13 +40,13 @@ char *dfs (Game *game)
     
     while(true)
     {
-        FringeNode *thisNode = popFromFringe(fringe);
+        FringeNode *fn = popFromStack(fringe);
 
-        if (thisNode == NULL)
+        if (fn == NULL)
         {
             printf("No Solution found :(\n");
 
-            deleteFringe(fringe);
+            deleteStack(fringe);
             deleteHashTable(closed);
 
             return NULL;
@@ -55,35 +56,39 @@ char *dfs (Game *game)
         total_fringe += fringe->n_items;
         average_fringe = total_fringe / expanded;
 
-        StateNode *thisState = thisNode->state;
-        Location *thisLocation = thisState->location;
-        char *pastActions = thisNode->allActions;
-        int lenPastActions = 0;
-        if (pastActions != NULL)
+        StateNode *s = fn->state;
+        char *path = fn->allActions;
+        int len = 0;
+        if (path != NULL)
         {
-            lenPastActions = strlen(pastActions);
+            len = strlen(path);
         }
-        int pastCostOfActions = thisNode->costOfActions;
+        int cost = fn->costOfActions;
 
-        if (sameLocation(thisLocation->x, thisLocation->y, game->goal->x, game->goal->y))
+        if (sameLocation(s->location->x, s->location->y, game->goal->x, game->goal->y))
         {
-            char *pathToVictory = malloc(lenPastActions + 1);
+            char *pathToVictory = malloc(len + 1);
 
-            for (int i = 0; i <= lenPastActions; i += 1)
+            // copies all chars include null terminator
+            for (int i = 0; i <= len; i += 1)
             {
-                pathToVictory[i] = pastActions[i];
+                pathToVictory[i] = path[i];
             }
 
-            printf("Total movement cost of solution: %d\n", pastCostOfActions);
+            printf("Total movement cost of solution: %d\n", cost);
             printf("Total locations explored: %ld\n", expanded);
             printf("Average number of locations stored: %ld\n", average_fringe);
 
-            free(thisLocation);
-            free(thisState);
-            free(pastActions);
-            free(thisNode);
+            /*
+            free(s->location);
+            free(s);
+            free(path);
+            free(fn);
+            */
 
-            deleteFringe(fringe);
+            deleteFringeNode(fn);
+
+            deleteStack(fringe);
             deleteHashTable(closed);
 
             return pathToVictory;
@@ -91,7 +96,7 @@ char *dfs (Game *game)
         } else {
             
             Grid board = game->board;
-            List *successors = getSuccessorStateNodes(thisState, board);
+            List *successors = getSuccessorStateNodes(s, board);
 
             StateNode **items = successors->items;
             int len = successors->n_items;
@@ -103,14 +108,13 @@ char *dfs (Game *game)
                 {
                     addStateToHashTable(successor, closed);
 
-                    FringeNode *fn = newFringeNode(successor, pastActions, pastCostOfActions);
+                    FringeNode *new = newFringeNode(successor, path, cost);
 
-                    addToFringe(fn, fringe);
+                    pushToStack(new, fringe);
 
                 } else {
 
-                    Location *successor_loc = successor->location;
-                    free(successor_loc);
+                    free(successor->location);
                     free(successor);
                 }
             }
@@ -118,10 +122,13 @@ char *dfs (Game *game)
             free(items); 
             free(successors);
 
+            deleteFringeNode(fn);
+            /*
             free(thisLocation);
             free(thisState);
             free(pastActions);
             free(thisNode);
+            */
         }
     } 
 }

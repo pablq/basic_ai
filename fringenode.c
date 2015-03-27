@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "fringe.h"
+#include "fringenode.h"
 #include "gamemodel.h"
 
 FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
