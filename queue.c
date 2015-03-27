@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "fringenode.h"
 
@@ -7,15 +8,16 @@ FringeNode *newQueue(void)
     return NULL;
 }
 
-void pushToQueue(FringeNode *fn, FringeNode *fringe)
+void pushToQueue(FringeNode *fn, FringeNode **fringe)
 {
-    FringeNode *last = fringe;
+    FringeNode *last = *fringe;
+
     if (last == NULL)
     {
-        fringe = fn;
+        *fringe = fn;
         
     } else {
-        
+
         FringeNode *next = last->next;
         
         while (next != NULL)
@@ -27,24 +29,25 @@ void pushToQueue(FringeNode *fn, FringeNode *fringe)
     }
 }
 
-void deleteQueue(FringeNode *fringe)
+void deleteQueue(FringeNode **fringe)
 {
-    FringeNode *last = fringe;
+    FringeNode *last = *fringe;
     if (last != NULL)
     {
-        FringeNode *next = NULL;
-        do {
-
-            next = last->next;
+        FringeNode *next = last->next;
+        while (next != NULL)
+        {
             deleteFringeNode(last);
-
-        } while (next != NULL);
+            last = next;
+            next = next->next;
+        }
+        deleteFringeNode(last);
     }
 }
 
-FringeNode *nextInQueue(FringeNode *fringe)
+FringeNode *nextInQueue(FringeNode **fringe)
 {
-    FringeNode *first = fringe;
+    FringeNode *first = *fringe;
 
     if (first == NULL)
     {
@@ -53,7 +56,7 @@ FringeNode *nextInQueue(FringeNode *fringe)
     } else {
 
         FringeNode *next = first->next;
-        fringe = next;
+        *fringe = next;
     }
 
     return first;

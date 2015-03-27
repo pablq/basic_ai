@@ -5,10 +5,10 @@
 
 FringeNode *newQueue(void);
 
-void deleteQueue(FringeNode *fringe);
+void deleteQueue(FringeNode **fringe);
 
-FringeNode *nextInQueue(FringeNode *fringe);
+FringeNode *nextInQueue(FringeNode **fringe);
 
-void pushToQueue(FringeNode *fn, FringeNode *fringe);
+void pushToQueue(FringeNode *fn, FringeNode **fringe);
 
 #endif /* QUEUE */

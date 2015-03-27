@@ -141,6 +141,7 @@ char *bfs(Game *game)
 
     // create our fringe as a FIFO Queue
     FringeNode *fringe = newQueue();
+    printf("initial queue: %p\n",fringe);
     
     // closed will store all the states we've already visited to avoid repeats
     HashTable *closed = newHashTable();
@@ -158,7 +159,7 @@ char *bfs(Game *game)
     
     // build fringe node and push it to the fringe
     FringeNode *first = newFringeNode(startState, startPath, startCost);
-    pushToQueue(first, fringe);
+    pushToQueue(first, &fringe);
 
     // variables for book-keeping
     long expanded = 0;
@@ -169,7 +170,7 @@ char *bfs(Game *game)
     while(true)
     {
         // get the most recently added FringeNode
-        FringeNode *fn = nextInQueue(fringe);
+        FringeNode *fn = nextInQueue(&fringe);
 
         // if there was nothing there, we failed :/
         if (fn == NULL)
@@ -177,7 +178,7 @@ char *bfs(Game *game)
             printf("No Solution found :(\n");
 
             // clean up
-            deleteQueue(fringe);
+            deleteQueue(&fringe);
             deleteHashTable(closed);
 
             return NULL;
@@ -209,7 +210,7 @@ char *bfs(Game *game)
 
             // clean up
             deleteFringeNode(fn);
-            deleteQueue(fringe);
+            deleteQueue(&fringe);
             deleteHashTable(closed);
 
             // return the glorious path to victory!
@@ -238,7 +239,7 @@ char *bfs(Game *game)
                     FringeNode *new = newFringeNode(successor, fn->path, fn->totalCost);
 
                     // add it to the fringe
-                    pushToQueue(new, fringe);
+                    pushToQueue(new, &fringe);
 
                 } else {
 
