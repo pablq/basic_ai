@@ -23,6 +23,20 @@ Grid newGrid(void)
     return grid;
 }
 
+Grid newWeightedGrid(void)
+{
+    Grid grid = newBlankGrid();
+
+    buildLayout(grid);
+
+}
+
+void setCostAreas(Grid grid)
+{
+
+
+}
+
 void deleteGrid(Grid grid)
 {
     for (int i = 0; i < GRID_WIDTH; i += 1)
