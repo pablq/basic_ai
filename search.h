@@ -7,7 +7,7 @@
 typedef struct FringeNode
 {
     StateNode *state;
-    char **allActions;
+    char *allActions;
     int costOfActions;
 } FringeNode;
 

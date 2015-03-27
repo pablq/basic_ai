@@ -93,7 +93,7 @@ void addToClosed(StateNode *state, HashTable *closed)
 FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 {
     int len = strlen(pastActions);
-    char* allActions = malloc(sizeof(char) * (len + 2));
+    char* allActions = malloc((len + 2)); // pastActions + new action + '\0'
     int i = 0;
     while (i < len)
     {
@@ -105,11 +105,10 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 
     int costOfActions = pastCost + state->cost;
 
-    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
-    free(fn->allActions);
+    FringeNode *fn = (FringeNode *) malloc(sizeof(StateNode*) + sizeof(int) + sizeof(char*));    
 
     fn->state = state;
-    fn->allActions = &allActions;
+    fn->allActions = allActions;
     fn->costOfActions = costOfActions;
    
     return fn;
@@ -132,9 +131,11 @@ char *dfs (Game *game)
     
     HashTable *closed = newClosed();
 
-    StateNode *state = getFirstStateNode(game->start->x,game->start->y);
+    StateNode *startState = getFirstStateNode(game->start->x,game->start->y);
    
-    FringeNode *first = newFringeNode(state,"", 0);
+    char *startPath = "\0";
+    int startCost = 0;
+    FringeNode *first = newFringeNode(startState, startPath, startCost);
 
     addToFringe(first, fringe);
 
@@ -163,6 +164,8 @@ char *dfs (Game *game)
 
         if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
 
+            char *allActions = thisNode->allActions;
+            deleteFringeNode(thisNode);
             deleteFringe(fringe);
             deleteClosed(closed);
             
@@ -171,7 +174,7 @@ char *dfs (Game *game)
             printf("Total locations explored: %ld\n", expanded);
             printf("Average number of locations stored: %ld\n", average_fringe);
 
-            return thisNode->allActions;
+            return allActions;
 
         } else {
             

@@ -43,6 +43,7 @@ StateNode *getFirstStateNode(int x, int y)
 StateNode* newStateNode(void)
 {
     StateNode *sn = (StateNode *) malloc(sizeof(StateNode));
+
     Location *l = newLocation(0,0);
     
     sn->location = l;
