@@ -33,9 +33,12 @@ void deleteFringe(List *fringe)
     for (int i = 0; i < fringe->n_items; i += 1)
     {
         FringeNode *fn = (FringeNode *)items[i];
-        deleteFringeNode(fn);
+        free(fn->state->location);
+        free(fn->state);
+        free(fn->allActions);
+        free(fn);
     }
-    free(fringe->items);
+    free(items);
     free(fringe);
 }
 
@@ -47,10 +50,19 @@ FringeNode *popFromFringe(List *fringe)
 
     } else {
 
+        // get list of pointers
         FringeNode **items = (FringeNode **)fringe->items;
-        FringeNode *fn = items[fringe->n_items - 1];
-        fringe->n_items -= 1;
         
+        // grab pointer to last item
+        FringeNode *fn = (FringeNode *)items[fringe->n_items - 1];
+
+        // decriment count of items
+        fringe->n_items -= 1;
+
+        // eliminate pointer from list
+        items[fringe->n_items] = NULL;
+        
+        // return pointer    
         return fn;
     }
 }
@@ -59,7 +71,7 @@ void addToFringe(FringeNode *fn, List *fringe)
 {
     if (checkFringeSize(fringe))
     {
-        FringeNode **items = (FringeNode **)fringe->items;
+        FringeNode **items = (FringeNode **) fringe->items;
         items[fringe->n_items] = fn;
         fringe->items = items;
         fringe->n_items += 1; 
@@ -107,7 +119,7 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 
     int costOfActions = pastCost + state->cost;
 
-    FringeNode *fn = (FringeNode *) malloc(sizeof(StateNode*) + sizeof(int) + sizeof(char*));    
+    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
 
     fn->state = state;
     fn->allActions = allActions;
@@ -125,15 +137,23 @@ void deleteFringeNode(FringeNode *fn)
 
 char *dfs (Game *game)
 {
+    /*
     printf("Depth First Search working...\n");
     int md = manhattanDistance(game->start->x, game->start->y, game->goal->x, game->goal->y);
     printf("Manhattan distance from start to goal: %d\n", md);
+    */
 
     List *fringe = newFringe();
     
     HashTable *closed = newClosed();
 
-    StateNode *startState = getFirstStateNode(game->start->x,game->start->y);
+    StateNode *startState = (StateNode *) malloc(sizeof(StateNode));
+    Location *l = malloc(sizeof(Location));
+    l->x = game->start->x;
+    l->y = game->start->y;
+    startState->location = l;
+    startState->action = 0;
+    startState->cost = 0;
    
     char *startPath = "\0";
     int startCost = 0;
@@ -151,11 +171,10 @@ char *dfs (Game *game)
 
         if (thisNode == NULL)
         {
-            
-            deleteClosed(closed);
-            deleteFringe(fringe);
-
             printf("No Solution found :(\n");
+
+            deleteFringe(fringe);
+            deleteClosed(closed);
 
             return NULL;
         } 
@@ -164,32 +183,42 @@ char *dfs (Game *game)
         total_fringe += fringe->n_items;
         average_fringe = total_fringe / expanded;
 
-        if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y)) {
+        if (sameLocation(thisNode->state->location->x, thisNode->state->location->y, game->goal->x, game->goal->y))
+        {
 
-            deleteClosed(closed);
-            deleteFringe(fringe);
-
-            char *allActions = thisNode->allActions;
-            deleteFringeNode(thisNode);
+            int len = strlen(thisNode->allActions);
+            char *pathToVictory = malloc(sizeof(len + 1));
+            for (int i = 0; i <= len; i += 1)
+            {
+                pathToVictory[i] = thisNode->allActions[i];
+            }
             
+            free(thisNode->state->location);
+            free(thisNode->state);
+            free(thisNode->allActions);
+            free(thisNode);
+
+            deleteFringe(fringe);
+            deleteClosed(closed);
+
             printf("Solution found! :D\n");
             printf("Total movement cost of solution: %d\n", thisNode->costOfActions);
             printf("Total locations explored: %ld\n", expanded);
             printf("Average number of locations stored: %ld\n", average_fringe);
 
-            return allActions;
+            return pathToVictory;
 
         } else {
             
             char *pastActions = thisNode->allActions;
             int pastCost = thisNode->costOfActions;
 
-            List *successors = getSuccessors(thisNode->state, game->board);
+            List *successors = getSuccessorStateNodes(thisNode->state, game->board);
 
+            StateNode **items = successors->items;
             int len = successors->n_items;
             for (int i = 0; i < len; i += 1)
             {
-                StateNode **items = successors->items;
                 StateNode *successor = items[i];
                 
                 if (!inClosed(successor, closed))
@@ -199,9 +228,14 @@ char *dfs (Game *game)
                     addToFringe(fn, fringe);
                 }
             }
-
-            free(successors->items);
+            
+            free(items); 
             free(successors);
+
+            free(thisNode->state->location);
+            free(thisNode->state);
+            free(thisNode->allActions);
+            free(thisNode);
         }
     } 
 }
@@ -250,6 +284,7 @@ bool checkFringeSize(List *list)
 char *stateToString(StateNode *state)
 {
     char * sh = malloc(sizeof(char) * 5);
+
     sh[0] = state->location->x + 48;
     sh[1] = state->location->y + 48;
     sh[2] = state->action;

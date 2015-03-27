@@ -12,7 +12,7 @@
  *
  */
 
-Location *getNeighbor(char action, Location *old, Location *new);
+Location *getNeighbor(char action, Location *location);
 
 StateNode *newStateNode(void);
 
@@ -43,10 +43,7 @@ StateNode *getFirstStateNode(int x, int y)
 StateNode* newStateNode(void)
 {
     StateNode *sn = (StateNode *) malloc(sizeof(StateNode));
-
-    Location *l = newLocation(0,0);
-    
-    sn->location = l;
+    sn->location = NULL;
     sn->action = 0;
     sn->cost = 0;
 
@@ -63,7 +60,7 @@ List* new4StateNodesList(void)
 {
     List* n4sn = (List *) malloc(sizeof(List));
     
-    StateNode **items = malloc(sizeof(StateNode *) * 4);
+    StateNode **items = (StateNode **) malloc(sizeof(StateNode *) * 4);
 
     n4sn->items = items;
     n4sn->n_items = 0;
@@ -74,7 +71,7 @@ List* new4StateNodesList(void)
 
 // this function is exposed in the api.
 // a search algorithem will call this to get the neighboring 'state's to a given parent node.
-List *getSuccessors(StateNode *parent, Grid board) 
+List *getSuccessorStateNodes(StateNode *parent, Grid board) 
 {
     List *successors = new4StateNodesList();
 
@@ -84,8 +81,9 @@ List *getSuccessors(StateNode *parent, Grid board)
     while (actions[i] != '\0')
     {
         char action = actions[i];
-        StateNode *successor = newStateNode();
-        successor->location = getNeighbor(action, parent->location, successor->location);
+
+        StateNode *successor = malloc(sizeof(StateNode));
+        successor->location = getNeighbor(action, parent->location);
         successor->cost = 1;
         successor->action = action;
 
@@ -105,37 +103,39 @@ List *getSuccessors(StateNode *parent, Grid board)
 }
 
 // helper function for getSuccessors
-Location *getNeighbor(char action, Location *old, Location *new)
+Location *getNeighbor(char action, Location *location)
 {
-    int new_x, new_y;
-    int x = old->x;
-    int y = old->y;
+    int neighbor_x, neighbor_y;
+    int x = location->x;
+    int y = location->y;
 
     switch (action) 
     {
         case 'n':
-            new_x = x;
-            new_y = y - 1;
+            neighbor_x = x;
+            neighbor_y = y - 1;
             break;
         case 's':
-            new_x = x;
-            new_y = y + 1;
+            neighbor_x = x;
+            neighbor_y = y + 1;
             break;
-        case 'e': new_x = x + 1;
-            new_y = y;
+        case 'e': 
+            neighbor_x = x + 1;
+            neighbor_y = y;
             break;
         case 'w':
-            new_x = x - 1;
-            new_y = y;
+            neighbor_x = x - 1;
+            neighbor_y = y;
             break;
         default:
             return NULL;
     }
 
-    new->x = new_x;
-    new->y = new_y;
+    Location *neighbor = malloc(sizeof(Location));
+    neighbor->x = neighbor_x;
+    neighbor->y = neighbor_y;
 
-    return new;
+    return neighbor;
 }
 
 char *getLegalActions(Location *loc, Grid board)

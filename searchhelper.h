@@ -17,11 +17,7 @@ typedef struct StateNode
     int cost;
 } StateNode;
 
-StateNode* getFirstStateNode(int x, int y);
-
-StateNode* newStateNode(void);
-
-List* getSuccessors(StateNode *parent, Grid grid);
+List* getSuccessorStateNodes(StateNode *parent, Grid grid);
 
 void deleteStateNode(StateNode *node);
 

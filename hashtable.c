@@ -3,8 +3,6 @@
 #include "hashtable.h"
 #include "util.h"
 
-#define TABLE_LENGTH 75
-
 unsigned int getHashTableIndex(char *str);
 
 unsigned long hash(char *str);

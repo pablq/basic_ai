@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#define TABLE_LENGTH 75
+
 typedef struct HashTableNode
 {
     char *value;
