@@ -41,7 +41,11 @@ List* new4StateNodesList(void)
 // a search algorithem will call this to get the neighboring 'state's to a given parent node.
 List *getSuccessorStateNodes(StateNode *parent, Grid board) 
 {
-    List *successors = new4StateNodesList();
+    List* successors = (List *) malloc(sizeof(List));
+    StateNode **items = (StateNode **) malloc(sizeof(StateNode *) * 4);
+    successors->items = items;
+    successors->n_items = 0;
+    successors->capacity = 4; 
 
     char *actions = getLegalActions(parent->location, board);
     
@@ -91,7 +95,7 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     
     free(actions);
     
-    // trimListSize(successors);
+    trimListSize(successors);
 
     return successors;
 }
