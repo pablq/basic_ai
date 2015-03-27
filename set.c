@@ -1,7 +1,8 @@
+#include <stdlib.h>
 #include "gamemodel.h"
 #include "hashtable.h"
 
-bool inClosed(StateNode *state, HashTable *closed)
+bool inSet(StateNode *state, HashTable *closed)
 {
     char *sh = stateToString(state);  
     bool inClosed = inHashTable(sh, closed);
@@ -9,7 +10,7 @@ bool inClosed(StateNode *state, HashTable *closed)
     return inClosed;
 }
 
-void addToClosed(StateNode *state, HashTable *closed)
+void addToSet(StateNode *state, HashTable *closed)
 {
     char *sh = stateToString(state);
     insertToHashTable(sh, closed);  

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "fringe.h"
 #include "gamemodel.h"
@@ -26,6 +27,14 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
     fn->costOfActions = costOfActions;
    
     return fn;
+}
+
+void deleteFringeNode(FringeNode *fn)
+{
+    free(fn->state->location);
+    free(fn->state);
+    free(fn->allActions);
+    free(fn);
 }
 
 bool checkFringeSize(List *list)
@@ -67,10 +76,13 @@ void deleteFringe(List *fringe)
     for (int i = 0; i < fringe->n_items; i += 1)
     {
         FringeNode *fn = (FringeNode *)items[i];
+        /*
         free(fn->state->location);
         free(fn->state);
         free(fn->allActions);
         free(fn);
+        */
+        deleteFringeNode(fn);
     }
     free(items);
     free(fringe);

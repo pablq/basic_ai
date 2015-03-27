@@ -8,13 +8,13 @@ The efficiency of the algorithms will be determined by:
     - amount of memory used
 
 TODO:
-1. VALGRIND THE SHIT OUT OF THE PROGRAM -> FIX ERRORS AND LEAKS
-    ^ this includes cleaning up the mess you made tonight with unneccessary functions.
-2. Implement the other search algorithms
+1. Implement the other search algorithms
     ^ this includes activating the movement costs
     ^ brush up on heuristic functions (make it a simple one)
-3. CREATE A MAKEFILE YOU LAZY SLAG
-4. Show all your friends.
+2. CREATE A MAKEFILE YOU LAZY SLAG
+3. Build main.c to allow you to try different functions w/ cl arguments.
+    ^ maybe have an option where it runs all three on the same board!
+3. Show all your friends.
 
 SINCE I'M STILL SLACKING ON MAKEFILE (omit the -g if you don't want to debug):
-gcc -std=c99 -g -o exe/basic_ai basic_ai.c game.c grid.c util.c searchhelper.c search.c list.c location.c hashtable.c
+gcc -std=c99 -g -o exe/basic_ai basic_ai.c game.c grid.c util.c search.c list.c hashtable.c fringe.c gamemodel.c set.c

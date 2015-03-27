@@ -9,15 +9,11 @@
 #include "search.h"
 #include "fringe.h"
 #include "gamemodel.h"
-#include "closed.h"
+#include "set.h"
 
 char *dfs (Game *game)
 {
-    /*
     printf("Depth First Search working...\n");
-    int md = manhattanDistance(game->start->x, game->start->y, game->goal->x, game->goal->y);
-    printf("Manhattan distance from start to goal: %d\n", md);
-    */
 
     List *fringe = newFringe();
     
@@ -104,9 +100,9 @@ char *dfs (Game *game)
             {
                 StateNode *successor = items[i];
                 
-                if (!inClosed(successor, closed))
+                if (!inSet(successor, closed))
                 {
-                    addToClosed(successor, closed);
+                    addToSet(successor, closed);
 
                     FringeNode *fn = newFringeNode(successor, pastActions, pastCostOfActions);
 
@@ -130,3 +126,10 @@ char *dfs (Game *game)
         }
     } 
 }
+
+int costFn(Location *location, Grid board)
+{
+    int val = board[location->x][location->y];
+    return val;
+}
+

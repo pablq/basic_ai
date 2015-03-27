@@ -1,6 +1,12 @@
 #ifndef GAMEMODEL
 #define GAMEMODEL
 
+#include "location.h"
+#include "grid.h"
+#include "list.h"
+
+int costFn(Location *location, Grid board);
+
 typedef struct StateNode
 {
     Location *location;
@@ -8,15 +14,8 @@ typedef struct StateNode
     int cost;
 } StateNode;
 
-List* getSuccessorStateNodes(StateNode *parent, Grid grid);
-
 char *stateToString(StateNode *state);
 
-// note dif between generic board/location based items
-// and items that return StateNode specific stuff
-
-bool isGoalState(Location *location, Game *game); // <- utils sameLocation() does this
-
-//costFn here
+List* getSuccessorStateNodes(StateNode *parent, Grid grid);
 
 #endif /* GAMEMODEL */
