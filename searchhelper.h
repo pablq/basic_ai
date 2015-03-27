@@ -19,6 +19,4 @@ typedef struct StateNode
 
 List* getSuccessorStateNodes(StateNode *parent, Grid grid);
 
-void deleteStateNode(StateNode *node);
-
 #endif /* SEARCHHELPER*/

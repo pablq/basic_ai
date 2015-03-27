@@ -14,10 +14,6 @@
 
 Location *getNeighbor(char action, Location *location);
 
-StateNode *newStateNode(void);
-
-void deleteStateNode(StateNode *sn);
-
 char *getLegalActions(Location *loc, Grid board);
 
 // if the costFn is passed a wall it will give a favorable value!
@@ -26,34 +22,6 @@ int costFn(Location *location, Grid board)
 {
     int val = board[location->x][location->y];
     return val;
-}
-
-StateNode *getFirstStateNode(int x, int y)
-{
-    StateNode *first = newStateNode();
-
-    first->location->x = x;
-    first->location->y = y;
-    first->action = 0;
-    first->cost = 0;
-
-    return first;
-}
-
-StateNode* newStateNode(void)
-{
-    StateNode *sn = (StateNode *) malloc(sizeof(StateNode));
-    sn->location = NULL;
-    sn->action = 0;
-    sn->cost = 0;
-
-    return sn;
-}
-
-void deleteStateNode(StateNode *sn)
-{
-    free(sn->location);
-    free(sn);
 }
 
 List* new4StateNodesList(void)
@@ -82,9 +50,34 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     {
         char action = actions[i];
 
-        StateNode *successor = malloc(sizeof(StateNode));
+        int next_x, next_y;
 
-        successor->location = getNeighbor(action, parent->location);
+        switch (action) 
+        {
+            case 'n':
+                next_x = parent->location->x;
+                next_y = parent->location->y - 1;
+                break;
+            case 's':
+                next_x = parent->location->x;
+                next_y = parent->location->y + 1;
+                break;
+            case 'e': 
+                next_x = parent->location->x + 1;
+                next_y = parent->location->y;
+                break;
+            case 'w':
+                next_x = parent->location->x - 1;
+                next_y = parent->location->y;
+                break;
+        }
+
+        Location *location = malloc(sizeof(Location));
+        location->x = next_x;
+        location->y = next_y;
+
+        StateNode *successor = malloc(sizeof(StateNode));
+        successor->location = location;
         successor->cost = 1;
         successor->action = action;
 
@@ -101,42 +94,6 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     // trimListSize(successors);
 
     return successors;
-}
-
-// helper function for getSuccessors
-Location *getNeighbor(char action, Location *location)
-{
-    int neighbor_x, neighbor_y;
-    int x = location->x;
-    int y = location->y;
-
-    switch (action) 
-    {
-        case 'n':
-            neighbor_x = x;
-            neighbor_y = y - 1;
-            break;
-        case 's':
-            neighbor_x = x;
-            neighbor_y = y + 1;
-            break;
-        case 'e': 
-            neighbor_x = x + 1;
-            neighbor_y = y;
-            break;
-        case 'w':
-            neighbor_x = x - 1;
-            neighbor_y = y;
-            break;
-        default:
-            return NULL;
-    }
-
-    Location *neighbor = malloc(sizeof(Location));
-    neighbor->x = neighbor_x;
-    neighbor->y = neighbor_y;
-
-    return neighbor;
 }
 
 char *getLegalActions(Location *loc, Grid board)
