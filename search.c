@@ -10,9 +10,10 @@
 #include "search.h"
 
 
-bool checkClosedSize(List *list);
 bool checkFringeSize(List *list);
 char *stateToString(StateNode *state);
+
+//costFn should be here?
 
 List *newFringe(void)
 {
@@ -147,15 +148,10 @@ char *dfs (Game *game)
     startState->action = 0;
     startState->cost = 0;
    
-    char *startPath = malloc(1);
-    startPath[0] = 0;
+    char *startPath = "\0";
     int startCost = 0;
 
-    //FringeNode *first = newFringeNode(startState, startPath, startCost);
-    FringeNode *first = (FringeNode *) malloc(sizeof(FringeNode));
-    first->state = startState;
-    first->allActions = startPath;
-    first->costOfActions = startCost;
+    FringeNode *first = newFringeNode(startState, startPath, startCost);
 
     addToFringe(first, fringe);
 
@@ -228,26 +224,9 @@ char *dfs (Game *game)
                 if (!inClosed(successor, closed))
                 {
                     addToClosed(successor, closed);
-                    /*
-                    char *allActions = malloc(lenPastActions + 2); // pastActions + new action + '\0'
-                    
-                    for (int i = 0; i <= lenPastActions; i += 1)
-                    {
-                        allActions[i] = pastActions[i];
-                        i += 1;
-                    }
-                    allActions[lenPastActions] = successor->action;
-                    allActions[lenPastActions + 1] = '\0';
-    
-                    int costOfActions = pastCostOfActions + successor->cost;
-
-                    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));
-                    fn->state = successor;
-                    fn->allActions = allActions;
-                    fn->costOfActions = costOfActions;
-                    */
 
                     FringeNode *fn = newFringeNode(successor, pastActions, pastCostOfActions);
+
                     addToFringe(fn, fringe);
 
                 } else {
@@ -267,26 +246,6 @@ char *dfs (Game *game)
             free(thisNode);
         }
     } 
-}
-
-bool checkClosedSize(List *list)
-{
-    if (list->n_items >= list->capacity) 
-    {
-        int new_size = list->capacity * 2;
-        
-        Location **items = (Location**) list->items;
-        items = realloc(items, sizeof(Location*) * new_size);
-
-        if (items == NULL) 
-        {
-            return false;
-        }
-
-        list->items = items;
-        list->capacity = new_size; 
-    }
-    return true;
 }
 
 bool checkFringeSize(List *list)
