@@ -1,6 +1,32 @@
 #include <stdlib.h>
-#include "model.h"
+
+#include "fringe.h"
+#include "gamemodel.h"
 #include "list.h"
+
+FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
+{
+    int len = strlen(pastActions);
+    char* allActions = malloc((len + 2)); // pastActions + new action + '\0'
+    int i = 0;
+    while (i < len)
+    {
+        allActions[i] = pastActions[i]; 
+        i += 1; 
+    }
+    allActions[len] = state->action;
+    allActions[len + 1] = '\0';
+
+    int costOfActions = pastCost + state->cost;
+
+    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
+
+    fn->state = state;
+    fn->allActions = allActions;
+    fn->costOfActions = costOfActions;
+   
+    return fn;
+}
 
 bool checkFringeSize(List *list)
 {
@@ -35,7 +61,6 @@ List *newFringe(void)
     return fringe;
 }
 
-/*
 void deleteFringe(List *fringe)
 {
     FringeNode **items = (FringeNode **)fringe->items;
@@ -50,7 +75,6 @@ void deleteFringe(List *fringe)
     free(items);
     free(fringe);
 }
-*/
 
 FringeNode *popFromFringe(List *fringe)
 {

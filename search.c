@@ -6,125 +6,10 @@
 #include "list.h"
 #include "util.h"
 #include "hashtable.h"
-#include "searchhelper.h"
 #include "search.h"
-
-
-bool checkFringeSize(List *list);
-char *stateToString(StateNode *state);
-
-List *newFringe(void)
-{
-    List* fringe = (List *) malloc(sizeof(List));
-
-    FringeNode **items = (FringeNode **) malloc(sizeof(FringeNode*) * 32);
-    fringe->items = items;
-    fringe->capacity = 32;
-    fringe->n_items = 0;
-
-    return fringe;
-}
-
-void deleteFringe(List *fringe)
-{
-    FringeNode **items = (FringeNode **)fringe->items;
-    for (int i = 0; i < fringe->n_items; i += 1)
-    {
-        FringeNode *fn = (FringeNode *)items[i];
-        free(fn->state->location);
-        free(fn->state);
-        free(fn->allActions);
-        free(fn);
-    }
-    free(items);
-    free(fringe);
-}
-
-FringeNode *popFromFringe(List *fringe)
-{
-    if (fringe->n_items < 1)
-    {
-        return NULL;
-
-    } else {
-
-        // get list of pointers
-        FringeNode **items = (FringeNode **)fringe->items;
-        
-        // grab pointer to last item
-        FringeNode *fn = (FringeNode *)items[fringe->n_items - 1];
-
-        // decriment count of items
-        fringe->n_items -= 1;
-
-        // eliminate pointer from list
-        items[fringe->n_items] = NULL;
-        
-        // return pointer    
-        return fn;
-    }
-}
-
-void addToFringe(FringeNode *fn, List *fringe)
-{
-    if (checkFringeSize(fringe))
-    {
-        FringeNode **items = (FringeNode **) fringe->items;
-        items[fringe->n_items] = fn;
-        fringe->items = items;
-        fringe->n_items += 1; 
-    }
-}
-
-HashTable *newClosed(void)
-{
-    HashTable *closed = newHashTable();
-    return closed;
-}
-
-void deleteClosed(HashTable *closed)
-{
-    deleteHashTable(closed);
-}
-
-bool inClosed(StateNode *state, HashTable *closed)
-{
-    char *sh = stateToString(state);  
-    bool inClosed = inHashTable(sh, closed);
-    free(sh);
-    return inClosed;
-}
-
-void addToClosed(StateNode *state, HashTable *closed)
-{
-    char *sh = stateToString(state);
-    insertToHashTable(sh, closed);  
-}
-
-// accepts the new state, and the old fringenode's allActions and costOfActions
-FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
-{
-    int len = strlen(pastActions);
-    char* allActions = malloc((len + 2)); // pastActions + new action + '\0'
-    int i = 0;
-    while (i < len)
-    {
-        allActions[i] = pastActions[i]; 
-        i += 1; 
-    }
-    allActions[len] = state->action;
-    allActions[len + 1] = '\0';
-
-    int costOfActions = pastCost + state->cost;
-
-    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
-
-    fn->state = state;
-    fn->allActions = allActions;
-    fn->costOfActions = costOfActions;
-   
-    return fn;
-}
+#include "fringe.h"
+#include "gamemodel.h"
+#include "closed.h"
 
 char *dfs (Game *game)
 {
@@ -136,7 +21,7 @@ char *dfs (Game *game)
 
     List *fringe = newFringe();
     
-    HashTable *closed = newClosed();
+    HashTable *closed = newHashTable();
 
     StateNode *startState = (StateNode *) malloc(sizeof(StateNode));
     Location *l = malloc(sizeof(Location));
@@ -166,7 +51,7 @@ char *dfs (Game *game)
             printf("No Solution found :(\n");
 
             deleteFringe(fringe);
-            deleteClosed(closed);
+            deleteHashTable(closed);
 
             return NULL;
         } 
@@ -204,7 +89,7 @@ char *dfs (Game *game)
             free(thisNode);
 
             deleteFringe(fringe);
-            deleteClosed(closed);
+            deleteHashTable(closed);
 
             return pathToVictory;
 
@@ -244,38 +129,4 @@ char *dfs (Game *game)
             free(thisNode);
         }
     } 
-}
-
-bool checkFringeSize(List *list)
-{
-    if (list->n_items >= list->capacity) 
-    {
-        int new_size = list->capacity * 2;
-        
-        FringeNode **items = (FringeNode**) list->items;
-        
-        items = realloc(items, sizeof(FringeNode*) * new_size);
-
-        if (items == NULL) 
-        {
-            return false;
-        }
-
-        list->items = items;
-        list->capacity = new_size; 
-    }
-    return true;
-}
-
-char *stateToString(StateNode *state)
-{
-    char * sh = malloc(sizeof(char) * 5);
-
-    sh[0] = state->location->x + 48;
-    sh[1] = state->location->y + 48;
-    sh[2] = state->action;
-    sh[3] = state->cost + 48;
-    sh[4] = '\0';
-    
-    return sh; 
 }

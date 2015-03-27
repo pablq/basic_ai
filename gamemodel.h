@@ -9,6 +9,7 @@ typedef struct StateNode
 } StateNode;
 
 List* getSuccessorStateNodes(StateNode *parent, Grid grid);
+
 char *stateToString(StateNode *state);
 
 // note dif between generic board/location based items
