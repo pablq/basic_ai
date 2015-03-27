@@ -4,6 +4,12 @@
 #include "location.h"
 #include "list.h"
 
+int costFn(Location *location, Grid board)
+{
+    int val = board[location->x][location->y];
+    return val;
+}
+
 char *getLegalActions(Location *loc, Grid board)
 {
     int x = loc-> x;
@@ -112,7 +118,5 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     
     free(actions);
     
-    // trimListSize(successors);
-
     return successors;
 }

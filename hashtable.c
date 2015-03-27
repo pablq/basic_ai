@@ -2,6 +2,9 @@
 #include <string.h>
 #include "hashtable.h"
 #include "util.h"
+#include "gamemodel.h"
+
+#define TABLE_LENGTH 75
 
 unsigned int getHashTableIndex(char *str);
 
@@ -115,4 +118,20 @@ unsigned long hash(char *str)
     }
 
     return hash;
+}
+
+// SPECIFIC FUNCTIONS FOR USE IN THIS PROGRAM
+
+bool stateInHashTable(StateNode *state, HashTable *closed)
+{
+    char *sh = stateToString(state);  
+    bool inClosed = inHashTable(sh, closed);
+    free(sh);
+    return inClosed;
+}
+
+void addStateToHashTable(StateNode *state, HashTable *closed)
+{
+    char *sh = stateToString(state);
+    insertToHashTable(sh, closed);  
 }

@@ -2,8 +2,7 @@
 #define HASHTABLE
 
 #include <stdbool.h>
-
-#define TABLE_LENGTH 75
+#include "gamemodel.h"
 
 typedef struct HashTableNode
 {
@@ -15,10 +14,10 @@ typedef HashTableNode *HashTable;
 
 HashTable *newHashTable (void);
 
-bool inHashTable(char *str, HashTable *ht);
-
-void insertToHashTable(char *str, HashTable *ht);
-
 void deleteHashTable(HashTable *ht);
+
+bool stateInHashTable(StateNode *state, HashTable *closed);
+
+void addStateToHashTable(StateNode *state, HashTable *closed);
 
 #endif /* HASHTABLE */
