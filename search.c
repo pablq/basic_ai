@@ -147,14 +147,14 @@ char *dfs (Game *game)
     startState->action = 0;
     startState->cost = 0;
    
-    char *startPath = malloc(sizeof(char));
-    startPath[0] = '\0';
+    char *startPath = malloc(1);
+    startPath[0] = 0;
     int startCost = 0;
 
     //FringeNode *first = newFringeNode(startState, startPath, startCost);
     FringeNode *first = (FringeNode *) malloc(sizeof(FringeNode));
     first->state = startState;
-    first->allActions = &startPath;
+    first->allActions = startPath;
     first->costOfActions = startCost;
 
     addToFringe(first, fringe);
@@ -228,7 +228,7 @@ char *dfs (Game *game)
                 if (!inClosed(successor, closed))
                 {
                     addToClosed(successor, closed);
-
+                    /*
                     char *allActions = malloc(lenPastActions + 2); // pastActions + new action + '\0'
                     
                     for (int i = 0; i <= lenPastActions; i += 1)
@@ -245,7 +245,9 @@ char *dfs (Game *game)
                     fn->state = successor;
                     fn->allActions = allActions;
                     fn->costOfActions = costOfActions;
+                    */
 
+                    FringeNode *fn = newFringeNode(successor, pastActions, pastCostOfActions);
                     addToFringe(fn, fringe);
 
                 } else {
