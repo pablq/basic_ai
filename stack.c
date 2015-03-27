@@ -1,43 +1,10 @@
 #include <stdlib.h>
-#include <string.h>
 
-#include "fringe.h"
-#include "gamemodel.h"
-#include "list.h"
+#include fringe.h
+#include list.h
+#include 
 
-FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
-{
-    int len = strlen(pastActions);
-    char* allActions = malloc((len + 2)); // pastActions + new action + '\0'
-    int i = 0;
-    while (i < len)
-    {
-        allActions[i] = pastActions[i]; 
-        i += 1; 
-    }
-    allActions[len] = state->action;
-    allActions[len + 1] = '\0';
-
-    int costOfActions = pastCost + state->cost;
-
-    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
-
-    fn->state = state;
-    fn->allActions = allActions;
-    fn->costOfActions = costOfActions;
-   
-    return fn;
-}
-
-void deleteFringeNode(FringeNode *fn)
-{
-    free(fn->state->location);
-    free(fn->state);
-    free(fn->allActions);
-    free(fn);
-}
-
-bool checkFringeSize(List *list)
+bool checkStackSize(List *list)
 {
     if (list->n_items >= list->capacity) 
     {
@@ -58,7 +25,7 @@ bool checkFringeSize(List *list)
     return true;
 }
 
-List *newFringe(void)
+List *newStack(void)
 {
     List* fringe = (List *) malloc(sizeof(List));
 
@@ -70,25 +37,19 @@ List *newFringe(void)
     return fringe;
 }
 
-void deleteFringe(List *fringe)
+void deleteStack(List *fringe)
 {
     FringeNode **items = (FringeNode **)fringe->items;
     for (int i = 0; i < fringe->n_items; i += 1)
     {
         FringeNode *fn = (FringeNode *)items[i];
-        /*
-        free(fn->state->location);
-        free(fn->state);
-        free(fn->allActions);
-        free(fn);
-        */
         deleteFringeNode(fn);
     }
     free(items);
     free(fringe);
 }
 
-FringeNode *popFromFringe(List *fringe)
+FringeNode *popFromStack(List *fringe)
 {
     if (fringe->n_items < 1)
     {
@@ -113,9 +74,9 @@ FringeNode *popFromFringe(List *fringe)
     }
 }
 
-void addToFringe(FringeNode *fn, List *fringe)
+void pushToStack(FringeNode *fn, List *fringe)
 {
-    if (checkFringeSize(fringe))
+    if (checkStackSize(fringe))
     {
         FringeNode **items = (FringeNode **) fringe->items;
         items[fringe->n_items] = fn;

@@ -1,2 +1,4 @@
 *.gch
 exe/*
+*.o
+basicmake

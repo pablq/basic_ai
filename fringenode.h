@@ -1,5 +1,5 @@
-#ifndef FRINGE
-#define FRINGE
+#ifndef FRINGENODE
+#define FRINGENODE
 
 #include "gamemodel.h"
 
@@ -8,18 +8,11 @@ typedef struct FringeNode
     StateNode *state;
     char *allActions;
     int costOfActions;
+    struct FringeNode *next; // for linked lists ONLY
 } FringeNode;
 
-List *newFringe(void);
-
-void deleteFringe(List *fringe);
-
-FringeNode *popFromFringe(List *fringe);
-
-void addToFringe(FringeNode *fn, List *fringe);
-
-bool checkFringeSize(List *list);
-
 FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost);
+
+void deleteFringeNode(FringeNode *fn);
 
 #endif /* FRINGE */
