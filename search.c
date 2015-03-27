@@ -187,11 +187,14 @@ char *dfs (Game *game)
         {
 
             int len = strlen(thisNode->allActions);
-            char *pathToVictory = malloc(sizeof(len + 1));
+            char *pathToVictory = malloc(len + 1);
+
             for (int i = 0; i <= len; i += 1)
             {
                 pathToVictory[i] = thisNode->allActions[i];
             }
+
+            int totalCost = thisNode->costOfActions;
             
             free(thisNode->state->location);
             free(thisNode->state);
@@ -202,7 +205,7 @@ char *dfs (Game *game)
             deleteClosed(closed);
 
             printf("Solution found! :D\n");
-            printf("Total movement cost of solution: %d\n", thisNode->costOfActions);
+            printf("Total movement cost of solution: %d\n", totalCost);
             printf("Total locations explored: %ld\n", expanded);
             printf("Average number of locations stored: %ld\n", average_fringe);
 
