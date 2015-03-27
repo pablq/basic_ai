@@ -10,8 +10,4 @@ typedef struct List
     int capacity;
 } List;
 
-bool checkListSize(List *list);
-
-bool trimListSize(List *list);
-
 #endif /* LIST */

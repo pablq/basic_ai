@@ -112,7 +112,7 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     
     free(actions);
     
-    trimListSize(successors);
+    // trimListSize(successors);
 
     return successors;
 }

@@ -9,6 +9,7 @@ The efficiency of the algorithms will be determined by:
 
 TODO:
 1. Implement the other search algorithms
+    ^ expand fringe pseudoclass to act as queue and priority queue
     ^ this includes activating the movement costs
     ^ brush up on heuristic functions (make it a simple one)
 2. CREATE A MAKEFILE YOU LAZY SLAG
