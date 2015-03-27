@@ -204,7 +204,6 @@ char *dfs (Game *game)
             deleteFringe(fringe);
             deleteClosed(closed);
 
-            printf("Solution found! :D\n");
             printf("Total movement cost of solution: %d\n", totalCost);
             printf("Total locations explored: %ld\n", expanded);
             printf("Average number of locations stored: %ld\n", average_fringe);

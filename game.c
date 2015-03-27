@@ -42,8 +42,6 @@ Game *newGame(void)
     Location *agent = newLocation(start->x,start->y);
     game->agent = agent;
     
-    printGridAsChars(game->display);
-
     return game;
 }
 

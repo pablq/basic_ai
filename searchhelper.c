@@ -83,6 +83,7 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
         char action = actions[i];
 
         StateNode *successor = malloc(sizeof(StateNode));
+
         successor->location = getNeighbor(action, parent->location);
         successor->cost = 1;
         successor->action = action;
@@ -97,7 +98,7 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     
     free(actions);
     
-    trimListSize(successors);
+    // trimListSize(successors);
 
     return successors;
 }
