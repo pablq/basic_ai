@@ -12,8 +12,6 @@ bool isWin(Game *game);
 
 void drawMove(char move, Game *game);
 
-void drawWinner(Game *game);
-
 void placeStart(Location *start, Game *game);
 
 void placeGoal(Location *goal, Game *game);
@@ -70,13 +68,14 @@ void playGame(char *actions, Game *game)
             winner = true;
             break;
         }
+        
+        drawMove(action, game);
 
         i += 1;
     }
 
     if (winner)
     {
-        drawWinner(game);
         printf("WINNER!\n");
     } else {
         printf("YOU DID NOT REACH GOAL.\n");
@@ -133,9 +132,6 @@ bool moveAgent(char action, Game *game)
     game->agent->x = new_x;
     game->agent->y = new_y;
 
-    // this is a side effect -> it draw's the actual move to the game's display grid.
-    drawMove(action, game);
-
     return true;
 }
 
@@ -144,17 +140,6 @@ bool isWin(Game *game)
     return sameLocation(game->agent->x, game->agent->y, game->goal->x, game->goal->y);
 }
 
-// the below functions all use the drawCharToGrid function to actually draw on the grid
-
-bool writeCharToGrid(char c, int x, int y, Grid grid)
-{
-    if (isLegal(x, y, grid))
-    {
-        grid[x][y] = c;
-        return true;
-    }
-    return false;
-}
 
 Grid newDisplay(Grid board)
 {
@@ -191,11 +176,6 @@ Grid newDisplay(Grid board)
     }
 
     return display;
-}
-
-void drawWinner(Game *game)
-{
-    writeCharToGrid('W', game->goal->x, game->goal->y, game->display);
 }
 
 void drawMove(char move, Game *game)

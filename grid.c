@@ -179,3 +179,13 @@ void buildLayout(Grid grid)
         }
     }
 }
+
+bool writeCharToGrid(char c, int x, int y, Grid grid)
+{
+    if (isLegal(x, y, grid))
+    {
+        grid[x][y] = c;
+        return true;
+    }
+    return false;
+}

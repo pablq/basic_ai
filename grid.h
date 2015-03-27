@@ -18,8 +18,8 @@ void printGrid(Grid grid);
 
 void printGridAsChars(Grid grid);
 
-bool drawCharToGrid(char c, int x, int y, Grid grid);
-
 bool isLegal(int x, int y, Grid grid);
+
+bool writeCharToGrid(char c, int x, int y, Grid grid);
 
 #endif /* GRID */
