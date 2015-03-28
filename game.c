@@ -20,11 +20,19 @@ Grid newDisplay(Grid board);
 
 Grid newBoard(void);
 
-Game *newGame(void)
+Game *newGame(bool weighted)
 {
     Game *game = malloc(sizeof(Game));
 
-    Grid board = newBoard();
+    Grid board;
+    if (weighted)
+    {
+        board = newWeightedGrid();
+    }
+    else
+    {
+        board = newGrid();
+    }
     game->board = board;
 
     Grid display = newDisplay(board);
@@ -42,12 +50,6 @@ Game *newGame(void)
     game->agent = agent;
     
     return game;
-}
-
-Grid newBoard(void)
-{
-    Grid board = newGrid();
-    return board;
 }
 
 void playGame(char *actions, Game *game)
@@ -78,9 +80,9 @@ void playGame(char *actions, Game *game)
 
     if (winner)
     {
-        printf("WINNER!\n");
+        printf("WIN\n");
     } else {
-        printf("FAIL.\n");
+        printf("FAIL\n");
     }
 }
 
@@ -173,8 +175,14 @@ Grid newDisplay(Grid board)
                     c = '.';
                     break;
                 case 2:
+                    c = ':';
+                    break;
                 case 3:
+                    c = '~';
+                    break;
                 case 4:
+                    c = '+';
+                    break;
                 case 5:
                 case 6:
                 case 7:

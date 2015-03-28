@@ -7,8 +7,7 @@
 
 int main (int argc, char *argv[])
 {
-
-    Game *game = newGame();
+    Game *game = newGame(true);
 
     printf("\nDEPTH FIRST SEARCH\n");
 

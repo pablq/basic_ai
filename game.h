@@ -13,7 +13,7 @@ typedef struct Game {
     Location *agent;
 } Game;
 
-Game *newGame(void);
+Game *newGame(bool weighted);
 
 void playGame(char *actions, Game *game);
 

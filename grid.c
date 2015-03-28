@@ -4,6 +4,7 @@
 #include "grid.h"
 
 void buildLayout(Grid grid);
+bool inBounds(int x, int y);
 
 Grid newBlankGrid(void)
 {
@@ -23,18 +24,69 @@ Grid newGrid(void)
     return grid;
 }
 
+// creates 9 sections with random cost
+void setCostAreas(Grid grid)
+{
+    int third_width = GRID_WIDTH / 3;
+    int third_height = GRID_HEIGHT / 3;
+
+    int vals[] = { 1, 1, 1, 2, 2, 4 };
+    int sections_vals[9];
+    for (int i = 0; i < 9; i += 1)
+    {
+        int val_i = randInRange(0,5);
+        sections_vals[i] = vals[val_i];
+    }
+
+    bool is1, is2, is3, is4, is5, is6, is7, is8, is9;
+
+    int the_val;
+    for (int x = 0; x < GRID_WIDTH; x += 1)
+    {
+        for (int y = 0; y < GRID_HEIGHT; y += 1)
+        {
+            is1 = (x <= third_width && y <= third_height);
+            is2 = ((x > third_width && x <= third_width * 2) && y <= third_height);
+            is3 = (x > third_width * 2 && y <= third_height);
+            is4 = (x <= third_width && (y > third_height && y <= third_height * 2));
+            is5 = ((x > third_width && x <= third_width * 2) && (y > third_height && y <= third_height * 2));
+            is6 = (x > third_width * 2 && (y > third_height && y <= third_height * 2));
+            is7 = (x <= third_width && y > third_height * 2);
+            is8 = ((x > third_width && x <= third_width * 2) && y > third_height * 2);
+            is9 = (x > third_width * 2 && y > third_height * 2);
+            if (is1)
+                the_val = sections_vals[0];
+            if (is2)
+                the_val = sections_vals[1];
+            if (is3)
+                the_val = sections_vals[2];
+            if (is4)
+                the_val = sections_vals[3];
+            if (is5)
+                the_val = sections_vals[4];
+            if (is6)
+                the_val = sections_vals[5];
+            if (is7)
+                the_val = sections_vals[6];
+            if (is8)
+                the_val = sections_vals[7];
+            if (is9)
+                the_val = sections_vals[8];
+            if (isLegal(x,y,grid))
+                grid[x][y] = the_val;
+        }
+    }
+}
+
 Grid newWeightedGrid(void)
 {
     Grid grid = newBlankGrid();
-
+    
     buildLayout(grid);
 
-}
+    setCostAreas(grid);
 
-void setCostAreas(Grid grid)
-{
-
-
+    return grid;
 }
 
 void deleteGrid(Grid grid)
