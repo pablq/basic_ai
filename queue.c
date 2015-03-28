@@ -36,13 +36,13 @@ void pushToQueueByCost(FringeNode *fn, FringeNode **fringe)
     if (last == NULL)
     {
         *fringe = fn;
+
     } else {
        
         FringeNode *next = last->next;
     
         while (next != NULL)
         {
-    
             if (fn->totalCost < next->totalCost)
             {
                 last->next = fn;
@@ -55,7 +55,6 @@ void pushToQueueByCost(FringeNode *fn, FringeNode **fringe)
                 next = next->next;
             }
         }
-
         last->next = fn;
     }
 }

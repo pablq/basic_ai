@@ -9,7 +9,7 @@ The efficiency of the algorithms will be determined by:
 
 TODO:
 1. Implement the other search algorithms
-    ^ implement priority queue
+    ^ implement priority queue that works with a heuristic function
     ^ brush up on heuristic functions (make it a simple one)
         ^ maybe pass function pointer to priority queue sort ?
 2. Build main.c to allow you to try different functions w/ cl arguments.

@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define GRID_WIDTH 50 
-#define GRID_HEIGHT 30 
+#define GRID_HEIGHT 25 
 
 typedef int **Grid; 
 
