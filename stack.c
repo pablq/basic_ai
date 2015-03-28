@@ -38,11 +38,11 @@ FringeNode *popFromStack(List *fringe)
         // get list of pointers
         FringeNode **items = (FringeNode **)fringe->items;
         
-        // grab pointer to last item
-        FringeNode *fn = (FringeNode *)items[fringe->n_items - 1];
-
         // decriment count of items
         fringe->n_items -= 1;
+
+        // grab pointer to last item
+        FringeNode *fn = (FringeNode *)items[fringe->n_items];
 
         // eliminate pointer from list
         items[fringe->n_items] = NULL;
