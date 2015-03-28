@@ -11,4 +11,6 @@ FringeNode *nextInQueue(FringeNode **fringe);
 
 void pushToQueue(FringeNode *fn, FringeNode **fringe);
 
+void pushToQueueByCost(FringeNode *fn, FringeNode **fringe);
+
 #endif /* QUEUE */

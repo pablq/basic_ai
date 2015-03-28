@@ -27,6 +27,16 @@ int main (int argc, char *argv[])
 
     free(bfs_moves);
 
+    game = resetGame(game);
+    
+    printf("\nUNIFORM COST SEARCH\n");
+
+    char *ucs_moves = ucs(game);
+    
+    playGame(ucs_moves, game);
+
+    free(ucs_moves);
+
     deleteGame(game);
 
     return 0;
