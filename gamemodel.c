@@ -49,13 +49,13 @@ char *getLegalActions(Location *loc, Grid board)
 
 char *stateToString(StateNode *state)
 {
-    char * sh = malloc(sizeof(char) * 5);
+    char * sh = malloc(sizeof(char) * 4);
 
     sh[0] = state->loc->x + 48;
     sh[1] = state->loc->y + 48;
-    sh[2] = state->action;
-    sh[3] = state->cost + 48;
-    sh[4] = '\0';
+    //sh[2] = state->action;
+    sh[2] = state->cost + 48;
+    sh[3] = '\0';
     
     return sh; 
 }
