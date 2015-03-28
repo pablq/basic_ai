@@ -51,8 +51,8 @@ char *stateToString(StateNode *state)
 {
     char * sh = malloc(sizeof(char) * 4);
 
-    sh[0] = state->loc->x + 48;
-    sh[1] = state->loc->y + 48;
+    sh[0] = state->loc->x;
+    sh[1] = state->loc->y;
     //sh[2] = state->action;
     sh[2] = state->cost + 48;
     sh[3] = '\0';
