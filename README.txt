@@ -11,5 +11,4 @@ The following information is presented for each algorithm:
 The goal of this program is to provide the user with a basic introduction to pathfinding considerations.
 
 to build: make
-to clean: make clean
 to run: ./basic_ai
