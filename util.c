@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-int randInRange(int low, int high) // *INCLUSIVE
+int randInRange(int low, int high) // INCLUSIVE
 {
     int offset, r;
 

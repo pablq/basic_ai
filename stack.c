@@ -6,8 +6,8 @@
 List *newStack(void)
 {
     List* fringe = malloc(sizeof(List));
-
     FringeNode **items = malloc(sizeof(FringeNode*) * 32);
+
     fringe->items = items;
     fringe->capacity = 32;
     fringe->n_items = 0;
@@ -23,7 +23,7 @@ void deleteStack(List *fringe)
         FringeNode *fn = (FringeNode *)items[i];
         deleteFringeNode(fn);
     }
-    free(items);
+    free(items); // fringe->items
     free(fringe);
 }
 
@@ -35,7 +35,6 @@ FringeNode *popFromStack(List *fringe)
 
     } else {
 
-        // get list of pointers
         FringeNode **items = (FringeNode **)fringe->items;
         
         // decriment count of items
@@ -52,14 +51,14 @@ FringeNode *popFromStack(List *fringe)
     }
 }
 
-// helper function for pushToStack
-bool checkStackSize(List *list)
+// dynamically grow list if neccessary
+bool checkStackSize(List *fringe)
 {
-    if (list->n_items >= list->capacity) 
+    if (fringe->n_items >= fringe->capacity) 
     {
-        int new_size = list->capacity * 2;
+        int new_size = fringe->capacity * 2;
         
-        FringeNode **items = (FringeNode**) list->items;
+        FringeNode **items = (FringeNode**) fringe->items;
         
         items = realloc(items, sizeof(FringeNode*) * new_size);
 
@@ -68,15 +67,15 @@ bool checkStackSize(List *list)
             return false;
         }
 
-        list->items = items;
-        list->capacity = new_size; 
+        fringe->items = items;
+        fringe->capacity = new_size; 
     }
     return true;
 }
 
 void pushToStack(FringeNode *fn, List *fringe)
 {
-    if (checkStackSize(fringe))
+    if (checkStackSize(fringe)) // make sure we have space
     {
         FringeNode **items = (FringeNode **) fringe->items;
         items[fringe->n_items] = fn;

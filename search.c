@@ -1,8 +1,6 @@
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 #include "game.h"
-#include "grid.h"
 #include "list.h"
 #include "util.h"
 #include "hashtable.h"
@@ -70,13 +68,6 @@ char *dfs (Game *game)
         // book-keeping
         expanded += 1;
 
-        // how manys actions in path?
-        int len = 0;
-        if (fn->path != NULL)
-        {
-            len = strlen(fn->path);
-        }
-
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
         {
@@ -117,7 +108,7 @@ char *dfs (Game *game)
                     // add to state to closed list
                     addStateToHashTable(successor, closed);
 
-                    // create a new FringeNode with that state and old FringeNode's path/totalCost
+                    // create a new FringeNode with new state and old FringeNode's path and totalCost
                     FringeNode *new = newFringeNode(successor, fn->path, fn->totalCost);
 
                     // add it to the fringe
@@ -175,7 +166,7 @@ char *bfs(Game *game)
     // variables for book-keeping
     int expanded = 0;
     int n_items = 1; // for the first FringeNode
-    int max_in_fringe = 1;  
+    int max_in_fringe = 1;
     
     // let's get goin!
     while(true)
@@ -183,7 +174,7 @@ char *bfs(Game *game)
         // book-keeping
         max_in_fringe = max(max_in_fringe, n_items);
 
-        // get the most recently added FringeNode
+        // get the next FringeNode in the queue
         FringeNode *fn = nextInQueue(&fringe);
 
         // if there was nothing there, we failed :/
@@ -201,13 +192,6 @@ char *bfs(Game *game)
         // book-keeping
         expanded += 1;
         n_items -= 1;
-
-        // how manys actions in path?
-        int len = 0;
-        if (fn->path != NULL)
-        {
-            len = strlen(fn->path);
-        }
 
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
@@ -249,7 +233,7 @@ char *bfs(Game *game)
                     // add to state to closed list
                     addStateToHashTable(successor, closed);
 
-                    // create a new FringeNode with that state and old FringeNode's path/totalCost
+                    // create a new FringeNode with new state and old FringeNode's path and totalCost
                     FringeNode *new = newFringeNode(successor, fn->path, fn->totalCost);
 
                     // add it to the fringe
@@ -303,11 +287,11 @@ char *ucs(Game *game)
     char *startPath = "\0";
     int startCost = 0;
     
-    // build fringe node and push it to the fringe
+    // build fringe node and push it to the fringe by cost
     FringeNode *first = newFringeNode(startState, startPath, startCost);
     pushToQueueByCost(first, &fringe);
 
-    // variables for book-keeping
+    // for book-keeping
     int expanded = 0;
     int n_items = 1; // for the first FringeNode
     int max_in_fringe = 1;
@@ -318,7 +302,7 @@ char *ucs(Game *game)
         // book-keeping
         max_in_fringe = max(max_in_fringe, n_items);
 
-        // get the most recently added FringeNode
+        // get the next fringenode in queue
         FringeNode *fn = nextInQueue(&fringe);
 
         // if there was nothing there, we failed :/
@@ -336,13 +320,6 @@ char *ucs(Game *game)
         // book-keeping
         expanded += 1;
         n_items -= 1;
-
-        // how manys actions in path?
-        int len = 0;
-        if (fn->path != NULL)
-        {
-            len = strlen(fn->path);
-        }
 
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
@@ -384,10 +361,10 @@ char *ucs(Game *game)
                     // add to state to closed list
                     addStateToHashTable(successor, closed);
 
-                    // create a new FringeNode with that state and old FringeNode's path/totalCost
+                    // create a new FringeNode with new state and old FringeNode's path and totalCost
                     FringeNode *new = newFringeNode(successor, fn->path, fn->totalCost);
 
-                    // add it to the fringe
+                    // add it to the fringe by cost
                     pushToQueueByCost(new, &fringe);
                    
                     // book-keeping 
@@ -419,7 +396,7 @@ char *ucs(Game *game)
  * with a good heuristic it can be VERY efficient.
  */
 
-int heuristicfn(FringeNode *fn, void *data);
+int manhattanDistanceHeuristic(FringeNode *fn, void *data);
 
 char *astar(Game *game)
 {
@@ -443,15 +420,14 @@ char *astar(Game *game)
     // build fringe node and push it to the fringe
     FringeNode *first = newFringeNode(startState, startPath, startCost);
 
-    // create pointer to our heuristic function
-    int (*heurfn)(FringeNode*, void*);
-    heurfn = &heuristicfn;
+    // heuristic is a container that holds a reference to the game and a function.
+    // the function returns a node's totalCost plus a computed 'heuristic' value for its state.
+    // it is used to determine the priority of a node in the queue. this is the source of A*'s power.
+    Heuristic *heur = malloc(sizeof(Heuristic));
+    heur->heurfn = &manhattanDistanceHeuristic;
+    heur->data = game;
 
-    Heuristic *heuristic = malloc(sizeof(Heuristic));
-    heuristic->heurfn = &heuristicfn;
-    heuristic->data = game;
-
-    pushToQueueByHeuristic(first, heuristic, &fringe);
+    pushToQueueByHeuristic(first, heur, &fringe);
 
     // variables for book-keeping
     int expanded = 0;
@@ -464,7 +440,7 @@ char *astar(Game *game)
         // book-keeping
         max_in_fringe = max(max_in_fringe, n_items);
 
-        // get the most recently added FringeNode
+        // get next FringeNode in the queue
         FringeNode *fn = nextInQueue(&fringe);
 
         // if there was nothing there, we failed :/
@@ -473,7 +449,7 @@ char *astar(Game *game)
             printf("No Solution found :(\n");
 
             // clean up
-            free(heuristic);
+            free(heur);
             deleteQueue(&fringe);
             deleteHashTable(closed);
 
@@ -483,13 +459,6 @@ char *astar(Game *game)
         // book-keeping
         expanded += 1;
         n_items -= 1;
-
-        // how manys actions in path?
-        int len = 0;
-        if (fn->path != NULL)
-        {
-            len = strlen(fn->path);
-        }
 
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
@@ -505,8 +474,8 @@ char *astar(Game *game)
             printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
 
             // clean up
+            free(heur);
             deleteFringeNode(fn);
-            free(heuristic);
             deleteQueue(&fringe);
             deleteHashTable(closed);
 
@@ -532,11 +501,11 @@ char *astar(Game *game)
                     // add to state to closed list
                     addStateToHashTable(successor, closed);
 
-                    // create a new FringeNode with that state and old FringeNode's path/totalCost
+                    // create a new FringeNode with new state and old FringeNode's path and totalCost
                     FringeNode *new = newFringeNode(successor, fn->path, fn->totalCost);
 
-                    // add it to the fringe
-                    pushToQueueByHeuristic(new, heuristic, &fringe);
+                    // add it to the fringe by heuristic
+                    pushToQueueByHeuristic(new, heur, &fringe);
                    
                     // book-keeping 
                     n_items += 1;
@@ -559,7 +528,7 @@ char *astar(Game *game)
     } 
 }
 
-int heuristicfn(FringeNode *fn, void *data)
+int manhattanDistanceHeuristic(FringeNode *fn, void *data)
 {
     Game *game = data;
     return fn->totalCost + manhattanDistance(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y);
