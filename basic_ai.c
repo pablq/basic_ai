@@ -37,6 +37,16 @@ int main (int argc, char *argv[])
 
     free(ucs_moves);
 
+    game = resetGame(game);
+    
+    printf("\nASTAR SEARCH\n");
+
+    char *astar_moves = astar(game);
+    
+    playGame(astar_moves, game);
+
+    free(astar_moves);
+
     deleteGame(game);
 
     return 0;

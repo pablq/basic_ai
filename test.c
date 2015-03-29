@@ -1,12 +1,15 @@
 #include <stdio.h>
 
-#include "grid.h"
+int addInt(int n, int n1);
 
 int main (void) {
     
-    Grid grid = newWeightedGrid();
-
-    printGrid(grid);
+    
 
     return 0;
 } 
+
+int addInt(int n, int n1)
+{
+    return n + n1;
+}
