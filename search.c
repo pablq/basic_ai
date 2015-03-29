@@ -423,6 +423,7 @@ char *astar(Game *game)
             printf("No Solution found :(\n");
 
             // clean up
+            free(heuristic);
             deleteQueue(&fringe);
             deleteHashTable(closed);
 
@@ -454,6 +455,7 @@ char *astar(Game *game)
 
             // clean up
             deleteFringeNode(fn);
+            free(heuristic);
             deleteQueue(&fringe);
             deleteHashTable(closed);
 
