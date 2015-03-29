@@ -20,7 +20,7 @@ char *getLegalActions(Location *loc, Grid board)
     bool e = isLegal(x + 1, y, board);
     bool w = isLegal(x - 1, y, board);
 
-    char *actions = (char *) malloc(sizeof(char) * 5);
+    char *actions = malloc(sizeof(char) * 5);
 
     int i = 0;
     if (n) {
@@ -49,7 +49,7 @@ char *getLegalActions(Location *loc, Grid board)
 
 char *stateToString(StateNode *state)
 {
-    char * sh = malloc(sizeof(char) * 5);
+    char *sh = malloc(sizeof(char) * 5);
 
     sh[0] = state->loc->x;
     sh[1] = state->loc->y;
@@ -64,8 +64,8 @@ char *stateToString(StateNode *state)
 // a search algorithem will call this to get the neighboring 'state's to a given parent node.
 List *getSuccessorStateNodes(StateNode *parent, Grid board) 
 {
-    List* successors = (List *) malloc(sizeof(List));
-    StateNode **items = (StateNode **) malloc(sizeof(StateNode *) * 4);
+    List* successors = malloc(sizeof(List));
+    StateNode **items = malloc(sizeof(StateNode *) * 4);
     successors->items = items;
     successors->n_items = 0;
     successors->capacity = 4; 

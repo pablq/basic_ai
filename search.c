@@ -6,11 +6,18 @@
 #include "list.h"
 #include "util.h"
 #include "hashtable.h"
-#include "search.h"
 #include "fringenode.h"
 #include "stack.h"
 #include "queue.h"
 #include "gamemodel.h"
+
+/*
+ * DEPTH FIRST SEARCH
+ * returns a path to the goal.
+ * does not consider movement costs.
+ * explores deepest gamestates in the tree (characterized by use of stack)
+ * supposedly very memory efficient
+ */
 
 char *dfs (Game *game)
 {
@@ -21,7 +28,7 @@ char *dfs (Game *game)
     HashTable *closed = newHashTable();
 
     // prepare state and values for first fringe node
-    StateNode *startState = (StateNode *) malloc(sizeof(StateNode));
+    StateNode *startState = malloc(sizeof(StateNode));
     startState->loc = malloc(sizeof(Location));
     startState->loc->x = game->start->x; // <-Here
     startState->loc->y = game->start->y; // <-Here
@@ -129,6 +136,14 @@ char *dfs (Game *game)
     } 
 }
 
+/*
+ * BREADTH FIRST SEARCH
+ * returns a direct path to goal.
+ * does not consider movement costs.
+ * explores outwards gradually (characterized by use of a queue)
+ * supposedly very memory expensive
+ */
+
 char *bfs(Game *game)
 {
     // create our fringe as a FIFO Queue
@@ -138,7 +153,7 @@ char *bfs(Game *game)
     HashTable *closed = newHashTable();
 
     // prepare state and values for first fringe node
-    StateNode *startState = (StateNode *) malloc(sizeof(StateNode));
+    StateNode *startState = malloc(sizeof(StateNode));
     startState->loc = malloc(sizeof(Location));
     startState->loc->x = game->start->x; // <-Here
     startState->loc->y = game->start->y; // <-Here
@@ -251,6 +266,14 @@ char *bfs(Game *game)
     } 
 }
 
+/*
+ * UNIFORM COST SEARCH
+ * returns optimal path to goal.
+ * does consider movement costs.
+ * explores outwards gradually with preference for least expensive action (characterized by use of a priority queue)
+ * supposedly very memory expensive
+ */
+
 char *ucs(Game *game)
 {
     // we'll use our fringe as a priority queue
@@ -260,7 +283,7 @@ char *ucs(Game *game)
     HashTable *closed = newHashTable();
 
     // prepare state and values for first fringe node
-    StateNode *startState = (StateNode *) malloc(sizeof(StateNode));
+    StateNode *startState = malloc(sizeof(StateNode));
     startState->loc = malloc(sizeof(Location));
     startState->loc->x = game->start->x; // <-Here
     startState->loc->y = game->start->y; // <-Here
@@ -373,6 +396,14 @@ char *ucs(Game *game)
     } 
 }
 
+/*
+ * ASTAR SEARCH
+ * returns optimal path to goal.
+ * does consider movement costs.
+ * exploration is guided by a heuristic function (characterized by use of a priority queue with heuristic)
+ * with a good heuristic it can be VERY efficient.
+ */
+
 int heuristicfn(FringeNode *fn, void *data);
 
 char *astar(Game *game)
@@ -384,7 +415,7 @@ char *astar(Game *game)
     HashTable *closed = newHashTable();
 
     // prepare state and values for first fringe node
-    StateNode *startState = (StateNode *) malloc(sizeof(StateNode));
+    StateNode *startState = malloc(sizeof(StateNode));
     startState->loc = malloc(sizeof(Location));
     startState->loc->x = game->start->x; // <-Here
     startState->loc->y = game->start->y; // <-Here
