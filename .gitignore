@@ -1,4 +1,2 @@
-*.gch
-exe/*
-*.o
-basicmake
+obj
+basic_ai
