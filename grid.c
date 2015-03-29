@@ -24,6 +24,16 @@ Grid newGrid(void)
     return grid;
 }
 
+void setCostAreas(Grid grid);
+
+Grid newWeightedGrid(void)
+{
+    Grid grid = newBlankGrid();
+    buildLayout(grid);
+    setCostAreas(grid);
+    return grid;
+}
+
 // sets 9 sections with cost of either 1, 2, or 4
 void setCostAreas(Grid grid)
 {
@@ -76,17 +86,6 @@ void setCostAreas(Grid grid)
                 grid[x][y] = the_val;
         }
     }
-}
-
-Grid newWeightedGrid(void)
-{
-    Grid grid = newBlankGrid();
-    
-    buildLayout(grid);
-
-    setCostAreas(grid);
-
-    return grid;
 }
 
 void deleteGrid(Grid grid)

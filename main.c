@@ -25,6 +25,12 @@ int main (int argc, char *argv[])
     free(ucs_moves);
     game = resetGame(game);
     
+    printf("\nGREEDY SEARCH:\n");
+    char *greedy_moves = greedy(game);
+    playGame(greedy_moves, game);
+    free(greedy_moves);
+    game = resetGame(game);
+
     printf("\nASTAR SEARCH:\n");
     char *astar_moves = astar(game);
     playGame(astar_moves, game);

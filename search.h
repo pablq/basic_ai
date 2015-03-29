@@ -9,6 +9,8 @@ char *bfs(Game *game);
 
 char *ucs(Game *game);
 
+char *greedy(Game *game);
+
 char *astar(Game *game);
 
 #endif /* SEARCH */
