@@ -390,9 +390,10 @@ char *ucs(Game *game)
 
 /*
  * GREEDY SEARCH
- * returns a path to goal.
+ * quickly returns a path to goal.
  * does not consider movement costs.
  * exploration is guided by a heuristic function (characterized by use of a priority queue with heuristic)
+ * can have funny behavior sometimes.
  */
 
 int greedyHeuristic(FringeNode *fn, void *data);
@@ -525,6 +526,12 @@ char *greedy(Game *game)
             deleteFringeNode(fn);
         }
     } 
+}
+
+int greedyHeuristic(FringeNode *fn, void *data)
+{
+    Game *game = data;
+    return manhattanDistance(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y);
 }
 
 /*
@@ -665,12 +672,6 @@ char *astar(Game *game)
             deleteFringeNode(fn);
         }
     } 
-}
-
-int greedyHeuristic(FringeNode *fn, void *data)
-{
-    Game *game = data;
-    return manhattanDistance(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y);
 }
 
 int astarHeuristic(FringeNode *fn, void *data)

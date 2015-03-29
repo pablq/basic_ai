@@ -1,13 +1,20 @@
 Project Description: 
-This program demonstrates four basic search algorithms and their relative efficiency.
-The algorithms explored are Depth First Search, Breadth First Search, Uniform Cost Search, and A* search.
-The following information is presented for each algorithm:
-    - Movement cost of path found.
-    - Approximate computational time spent
-    - Approximate memory usage.
-*All of algorithms make use of a closed set to avoid re-checking gamestates
 
-The goal of this program is to provide the user with a basic introduction to pathfinding considerations.
+This program presents five basic search algorithms and provides basic data from each one.
+
+The algorithms explored are:
+1. Depth First Search
+2. Breadth First Search
+3. Uniform Cost Search
+4. Greedy Search
+5. A* Search.
+
+The following information is presented for each algorithm:
+1. Movement cost of path found.
+2. Approximate computational time spent.
+3. Approximate memory usage.
+
+*All algorithm implementations make use of a closed set to avoid re-checking gamestates
 
 to build: make
 to run: ./basic_ai
