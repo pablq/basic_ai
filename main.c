@@ -5,7 +5,7 @@
 
 int main (int argc, char *argv[])
 {
-    Game *game = newGame(true);
+    Game *game = newGame(true); // true for weighted gameboard
 
     printf("\nDEPTH FIRST SEARCH:\n");
     char *dfs_moves = dfs(game);
@@ -13,7 +13,6 @@ int main (int argc, char *argv[])
     free(dfs_moves);
     game = resetGame(game);
 
-    // Repeat steps 1 - 5 for all algorithms
     printf("\nBREADTH FIRST SEARCH:\n");
     char *bfs_moves = bfs(game);
     playGame(bfs_moves, game);
