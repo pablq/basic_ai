@@ -8,8 +8,6 @@
 
 unsigned int getHashTableIndex(char *str);
 
-unsigned long hash(char *str);
-
 HashTable *newHashTable (void)
 {
     HashTable *ht = malloc(sizeof(HashTableNode*) * TABLE_LENGTH);
@@ -99,11 +97,7 @@ void deleteHashTable(HashTable *ht)
     free(ht);
 }
 
-unsigned int getHashTableIndex(char *str) 
-{
-    return hash(str) % TABLE_LENGTH;
-}
-
+// DJB2 - www.cse.yorku.ca/~oz/hash.html
 unsigned long hash(char *str)
 {
     unsigned long hash = 5381;
@@ -120,7 +114,12 @@ unsigned long hash(char *str)
     return hash;
 }
 
-// SPECIFIC FUNCTIONS FOR USE IN THIS PROGRAM
+unsigned int getHashTableIndex(char *str) 
+{
+    return hash(str) % TABLE_LENGTH;
+}
+
+// SPECIFIC FUNCTIONS FOR GAMESTATES
 
 bool stateInHashTable(StateNode *state, HashTable *closed)
 {

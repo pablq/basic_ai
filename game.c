@@ -26,13 +26,9 @@ Game *newGame(bool weighted)
 
     Grid board;
     if (weighted)
-    {
         board = newWeightedGrid();
-    }
     else
-    {
         board = newGrid();
-    }
     game->board = board;
 
     Grid display = newDisplay(board);
@@ -61,9 +57,7 @@ void playGame(char *actions, Game *game)
         char action = actions[i];
 
         if (!moveAgent(action, game))
-        {
             break;
-        }
 
         if (isWin(game)) 
         {
@@ -79,21 +73,20 @@ void playGame(char *actions, Game *game)
     printGridAsChars(game->display);
 
     if (winner)
-    {
         printf("WIN\n");
-    } else {
+    else
         printf("FAIL\n");
-    }
 }
 
-Game *resetGame(Game *game)
+Game *resetGame(Game *game) // agh this function is a bit rushed.
 {
+    // get us a new display and draw start/goal
     deleteGrid(game->display);
-     
     game->display = newDisplay(game->board);
     writeCharToGrid('G',game->goal->x,game->goal->y,game->display);
     writeCharToGrid('S',game->start->x,game->start->y,game->display);
 
+    // reset agent
     game->agent->x = game->start->x;
     game->agent->y = game->start->y;
     
@@ -156,7 +149,7 @@ bool isWin(Game *game)
     return sameLocation(game->agent->x, game->agent->y, game->goal->x, game->goal->y);
 }
 
-
+// returns a new grid that will be the game's display (the thing printed);
 Grid newDisplay(Grid board)
 {
     Grid display = copyGrid(board);
@@ -183,28 +176,23 @@ Grid newDisplay(Grid board)
                 case 4:
                     c = '+';
                     break;
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                    c = display[x][y] + 48;
-                    break;
                 default:
                     c = display[x][y];
             }
             display[x][y] = c;
         }
     }
-
     return display;
 }
 
+// draws a char on the display representing an agent's location and
+// action taken to arrive there.
 void drawMove(char move, Game *game)
 {
     int x = game->agent->x;
     int y = game->agent->y;
-    char mark = 'Z';
+
+    char mark;
     switch (move)
     {
         case 'n':
@@ -219,7 +207,7 @@ void drawMove(char move, Game *game)
         case 'w':
             mark = '<';
             break;
-        default:
+        default: // default should never be reached, but i have it as a fail-safe
             mark = 'x';
             break;
     }
@@ -230,8 +218,7 @@ void drawMove(char move, Game *game)
     }
 }
 
-// these two are special because they draw to the grid AND populate Location structs
-        
+// placeStart and placeGoal are special because they draw to the grid AND populate Locations
 void placeStart(Location *start, Game *game)
 {
     bool placed = false;

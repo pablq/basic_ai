@@ -4,12 +4,7 @@
 #include "location.h"
 #include "list.h"
 
-int costFn(Location *loc, Grid board)
-{
-    int val = board[loc->x][loc->y];
-    return val;
-}
-
+// returns a string of legal actions from a given location on the gameboard
 char *getLegalActions(Location *loc, Grid board)
 {
     int x = loc-> x;
@@ -20,6 +15,7 @@ char *getLegalActions(Location *loc, Grid board)
     bool e = isLegal(x + 1, y, board);
     bool w = isLegal(x - 1, y, board);
 
+    // max length is 4 actions.
     char *actions = malloc(sizeof(char) * 5);
 
     int i = 0;
@@ -44,9 +40,7 @@ char *getLegalActions(Location *loc, Grid board)
     return actions;
 }
 
-
-// STATE SPECIFIC BELOW
-
+// used to store states in closed set hashtable
 char *stateToString(StateNode *state)
 {
     char *sh = malloc(sizeof(char) * 5);
@@ -60,10 +54,18 @@ char *stateToString(StateNode *state)
     return sh; 
 }
 
-// this function is exposed in the api.
-// a search algorithem will call this to get the neighboring 'state's to a given parent node.
+// gets cost on board for a given location
+// should only ever return 1, 2, or 4
+int costFn(Location *loc, Grid board)
+{
+    int val = board[loc->x][loc->y];
+    return val;
+}
+
+// called in search algorithms to get successor states from a given state
 List *getSuccessorStateNodes(StateNode *parent, Grid board) 
 {
+    // list will never be greater than 4 items (n,s,e,w)
     List* successors = malloc(sizeof(List));
     StateNode **items = malloc(sizeof(StateNode *) * 4);
     successors->items = items;

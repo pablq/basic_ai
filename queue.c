@@ -13,7 +13,6 @@ FringeNode *newQueue(void)
 void pushToQueue(FringeNode *fn, FringeNode **fringe)
 {
     FringeNode *last = *fringe;
-
     if (last == NULL)
     {
         *fringe = fn;
@@ -21,7 +20,6 @@ void pushToQueue(FringeNode *fn, FringeNode **fringe)
     } else {
 
         FringeNode *next = last->next;
-        
         while (next != NULL)
         {
             last = next;
@@ -34,7 +32,6 @@ void pushToQueue(FringeNode *fn, FringeNode **fringe)
 void pushToQueueByCost(FringeNode *fn, FringeNode **fringe)
 {
     FringeNode *last = *fringe;
-    
     if (last == NULL)
     {
         *fringe = fn;
@@ -42,7 +39,6 @@ void pushToQueueByCost(FringeNode *fn, FringeNode **fringe)
     } else {
        
         FringeNode *next = last->next;
-    
         while (next != NULL)
         {
             if (fn->totalCost < next->totalCost)
@@ -64,7 +60,6 @@ void pushToQueueByCost(FringeNode *fn, FringeNode **fringe)
 void pushToQueueByHeuristic(FringeNode *fn, Heuristic *h, FringeNode **fringe)
 {
     FringeNode *last = *fringe;
-    
     if (last == NULL)
     {
         *fringe = fn;
@@ -72,7 +67,6 @@ void pushToQueueByHeuristic(FringeNode *fn, Heuristic *h, FringeNode **fringe)
     } else {
        
         FringeNode *next = last->next;
-    
         while (next != NULL)
         {
             if (h->heurfn(fn, h->data) < h->heurfn(next, h->data))
@@ -110,7 +104,6 @@ void deleteQueue(FringeNode **fringe)
 FringeNode *nextInQueue(FringeNode **fringe)
 {
     FringeNode *first = *fringe;
-
     if (first == NULL)
     {
         return NULL;
@@ -120,6 +113,5 @@ FringeNode *nextInQueue(FringeNode **fringe)
         FringeNode *next = first->next;
         *fringe = next;
     }
-
     return first;
 }

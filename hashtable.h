@@ -16,6 +16,7 @@ HashTable *newHashTable (void);
 
 void deleteHashTable(HashTable *ht);
 
+// gamestate specific methods below
 bool stateInHashTable(StateNode *state, HashTable *closed);
 
 void addStateToHashTable(StateNode *state, HashTable *closed);

@@ -5,8 +5,6 @@
 #include "grid.h"
 #include "list.h"
 
-int costFn(Location *location, Grid board);
-
 typedef struct StateNode
 {
     Location *loc;

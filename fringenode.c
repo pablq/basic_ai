@@ -28,7 +28,6 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
     /* NOTE
         fn->next is specifically for use in linked lists.
         it should always be NULL otherwise */
-
     fn->next = NULL;
    
     return fn;
@@ -39,7 +38,7 @@ void deleteFringeNode(FringeNode *fn)
     /* NOTE
         fn->next does not get freed here. it's specifically
         for the use of linked lists and never otherwise. in
-        that case, it's the linked list's responsibility to 
+        such a  case it's the linked list's responsibility to 
         delete fringe nodes individually */
 
     free(fn->state->loc);

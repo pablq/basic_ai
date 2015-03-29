@@ -24,7 +24,7 @@ Grid newGrid(void)
     return grid;
 }
 
-// creates 9 sections with random cost
+// sets 9 sections with cost of either 1, 2, or 4
 void setCostAreas(Grid grid)
 {
     int third_width = GRID_WIDTH / 3;
@@ -117,7 +117,7 @@ bool inBounds(int x, int y)
     return (x >= 0 && x < GRID_WIDTH && y>= 0 && y < GRID_HEIGHT);
 }
 
-bool isLegal(int x, int y, Grid grid)
+bool isLegal(int x, int y, Grid grid) // mega important method. used throughout program (especially game)
 {
     if (!inBounds(x,y))
     {
@@ -220,27 +220,18 @@ void buildLayout(Grid grid)
                 // if you're in the middle of a wall and the next space is already a wall
                 // or there is already a wall directly above or below - stop
                 if ((!isFirst && !isLast) && (!rightIsOpen || !aboveIsOpen || !belowIsOpen))
-                {
                     break;
-
-                } else {
-
+                else
                     x += 1;
-                }
 
             } else {
 
                 // if you're in the middle of a wall and the next space is already a wall
                 // or there is already a wall directly left or right - stop
                 if ((!isFirst && !isLast) && (!belowIsOpen || !rightIsOpen || !leftIsOpen))
-                {
-
                     break;
-
-                } else { // otherwise, advance to the next block
-
+                else
                     y += 1;
-                }
             }
         }
     }
