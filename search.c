@@ -43,11 +43,15 @@ char *dfs (Game *game)
     pushToStack(first, fringe);
 
     // variables for book-keeping
-    long expanded = 0;
+    int expanded = 0;
+    int max_in_fringe = 1; // for first Node we just added
     
     // let's get goin!
     while(true)
     {
+        // book-keeping
+        max_in_fringe = max(max_in_fringe, fringe->n_items);
+
         // get the most recently added FringeNode
         FringeNode *fn = popFromStack(fringe);
 
@@ -82,8 +86,9 @@ char *dfs (Game *game)
 
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
-            printf("Total gamestates considered: %ld\n", expanded);
-            printf("Bytes in fringe at solution: %ld\n", fringe->n_items * sizeof(FringeNode));
+            printf("Total gamestates considered: %d\n", expanded);
+            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", fringe->n_items * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -168,12 +173,16 @@ char *bfs(Game *game)
     pushToQueue(first, &fringe);
 
     // variables for book-keeping
-    long expanded = 0;
-    long n_items = 1; // for the first FringeNode
+    int expanded = 0;
+    int n_items = 1; // for the first FringeNode
+    int max_in_fringe = 1;  
     
     // let's get goin!
     while(true)
     {
+        // book-keeping
+        max_in_fringe = max(max_in_fringe, n_items);
+
         // get the most recently added FringeNode
         FringeNode *fn = nextInQueue(&fringe);
 
@@ -209,8 +218,9 @@ char *bfs(Game *game)
 
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
-            printf("Total gamestates considered: %ld\n", expanded);
-            printf("Bytes in fringe at solution: %ld\n", n_items * sizeof(FringeNode));
+            printf("Total gamestates considered: %d\n", expanded);
+            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -298,12 +308,16 @@ char *ucs(Game *game)
     pushToQueueByCost(first, &fringe);
 
     // variables for book-keeping
-    long expanded = 0;
-    long n_items = 1; // for the first FringeNode
+    int expanded = 0;
+    int n_items = 1; // for the first FringeNode
+    int max_in_fringe = 1;
     
     // let's get goin!
     while(true)
     {
+        // book-keeping
+        max_in_fringe = max(max_in_fringe, n_items);
+
         // get the most recently added FringeNode
         FringeNode *fn = nextInQueue(&fringe);
 
@@ -339,8 +353,9 @@ char *ucs(Game *game)
 
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
-            printf("Total gamestates considered: %ld\n", expanded);
-            printf("Bytes in fringe at solution: %ld\n", n_items * sizeof(FringeNode));
+            printf("Total gamestates considered: %d\n", expanded);
+            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -439,12 +454,16 @@ char *astar(Game *game)
     pushToQueueByHeuristic(first, heuristic, &fringe);
 
     // variables for book-keeping
-    long expanded = 0;
-    long n_items = 1; // for the first FringeNode
+    int expanded = 0;
+    int n_items = 1; // for the first FringeNode
+    int max_in_fringe = 1;
     
     // let's get goin!
     while(true)
     {
+        // book-keeping
+        max_in_fringe = max(max_in_fringe, n_items);
+
         // get the most recently added FringeNode
         FringeNode *fn = nextInQueue(&fringe);
 
@@ -481,8 +500,9 @@ char *astar(Game *game)
 
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
-            printf("Total gamestates considered: %ld\n", expanded);
-            printf("Bytes in fringe at solution: %ld\n", n_items * sizeof(FringeNode));
+            printf("Total gamestates considered: %d\n", expanded);
+            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);

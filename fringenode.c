@@ -19,7 +19,7 @@ FringeNode *newFringeNode(StateNode *state, char *pastActions, int pastCost)
 
     int totalCost = pastCost + state->cost;
 
-    FringeNode *fn = (FringeNode *) malloc(sizeof(FringeNode));    
+    FringeNode *fn = malloc(sizeof(FringeNode));    
 
     fn->state = state;
     fn->path = path;

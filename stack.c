@@ -5,9 +5,9 @@
 
 List *newStack(void)
 {
-    List* fringe = (List *) malloc(sizeof(List));
+    List* fringe = malloc(sizeof(List));
 
-    FringeNode **items = (FringeNode **) malloc(sizeof(FringeNode*) * 32);
+    FringeNode **items = malloc(sizeof(FringeNode*) * 32);
     fringe->items = items;
     fringe->capacity = 32;
     fringe->n_items = 0;
