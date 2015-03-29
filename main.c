@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "grid.h"
-#include "location.h"
 #include "game.h"
 #include "search.h"
 

@@ -6,5 +6,5 @@ OBJ = basic_ai.o game.o grid.o util.o search.o hashtable.o fringenode.o gamemode
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-exe/basic_ai: $(OBJ)
+exe/main: $(OBJ)
 	gcc -o $@ $^ $(CFLAGS)
