@@ -7,13 +7,5 @@ The efficiency of the algorithms will be determined by:
     - computational time spent searching
     - amount of memory used
 
-TODO:
-1. Implement the other search algorithms
-    ^ implement priority queue that works with a heuristic function
-    ^ brush up on heuristic functions (make it a simple one)
-        ^ maybe pass function pointer to priority queue sort ?
-2. Build main.c to allow you to try different functions w/ cl arguments.
-    ^ maybe have an option where it runs all three on the same board!
-3. Show all your friends.
-
 to build: make
+to run: ./basic_ai

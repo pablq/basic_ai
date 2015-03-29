@@ -7,7 +7,7 @@ int main (int argc, char *argv[])
 {
     Game *game = newGame(true);
 
-    printf("\nDEPTH FIRST SEARCH\n");
+    printf("\nDEPTH FIRST SEARCH:\n");
 
     char *dfs_moves = dfs(game);
 
@@ -17,7 +17,7 @@ int main (int argc, char *argv[])
 
     game = resetGame(game);
 
-    printf("\nBREADTH FIRST SEARCH\n");
+    printf("\nBREADTH FIRST SEARCH:\n");
     
     char *bfs_moves = bfs(game);
     
@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
 
     game = resetGame(game);
     
-    printf("\nUNIFORM COST SEARCH\n");
+    printf("\nUNIFORM COST SEARCH:\n");
 
     char *ucs_moves = ucs(game);
     
@@ -37,7 +37,7 @@ int main (int argc, char *argv[])
 
     game = resetGame(game);
     
-    printf("\nASTAR SEARCH\n");
+    printf("\nASTAR SEARCH:\n");
 
     char *astar_moves = astar(game);
     
