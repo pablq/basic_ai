@@ -1,2 +1,2 @@
-obj
+obj/*.o
 basic_ai
