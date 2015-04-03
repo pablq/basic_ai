@@ -18,7 +18,7 @@ int main (int argc, char *argv[])
 {
     if (!validateArgs(argc, argv))
     {
-        printf("USAGE: ./basic_ai [-fn < dfs || bfs || ucs || greedy || astar >] [-w]\n");
+        printf("USAGE: ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]\n");
         return 1;
     }
     
@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
     bool *functionsToUse = useFunctions(argc, argv, fns);
     if (functionsToUse == NULL)
     {
-        printf("Please provide at least one of the following functions: dfs bfs ucs greedy astar\n");
+        printf("USAGE: ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]\n");
         return 1;
     }
 
@@ -134,10 +134,8 @@ bool *useFunctions(int ac, char **args, bool fns[5])
         return fns;
 }
 
-// this program now accepts command line arguments. they are -w for a weighted grid and -fn followed by
-// function names to be run with only specific functions.
 // valid usage:
-// ./basic_ai [-w] [-fn dfs bfs ucs greedy astar]
+// ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]
 
 bool validateArgs(int ac, char **args)
 {
