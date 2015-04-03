@@ -18,7 +18,7 @@ int main (int argc, char *argv[])
 {
     if (!validateArgs(argc, argv))
     {
-        printf("USAGE: ./basic_ai [-fn dfs bfs ucs greedy astar] [-w]\n");
+        printf("USAGE: ./basic_ai [-fn < dfs || bfs || ucs || greedy || astar >] [-w]\n");
         return 1;
     }
     
@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
     bool *functionsToUse = useFunctions(argc, argv, fns);
     if (functionsToUse == NULL)
     {
-        printf("Please provide at least one of the following functions:\ndfs bfs ucs greedy astar\n");
+        printf("Please provide at least one of the following functions: dfs bfs ucs greedy astar\n");
         return 1;
     }
 
@@ -170,10 +170,12 @@ bool validateArgs(int ac, char **args)
     {
         if (!(wIndex ==  1 || fnIndex == 1)) // either -w or -fn must be the first argument after ./basic_ai
             valid = false;
-        if (!(wIndex - fnIndex >= 1)) // there must be at least one arg between -fn flag and -w flag and -w must come after -fn
-            valid =  false;
-        if (!(ac == wIndex + 1)) // -w must be the last argument 
-            valid =  false;
+        if (!(wIndex - fnIndex >= 1) && !(fnIndex - wIndex == 1)) // if wIndex is after fnIndex there must be at least one arg between them.
+            valid = false;                                        // but if fnIndex is after wIndex then there must be no args between them.
+        if ((wIndex > fnIndex) && !(ac == wIndex + 1)) // if wIndex is after fnIndex, -w must be the last arg
+            valid = false;
+        if ((fnIndex > wIndex) && !(ac > fnIndex + 1)) // if fnIndex is after wIndex, there must be at least one arg after -fn
+            valid = false;
         
     } else if (fn) {
 
