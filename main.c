@@ -4,74 +4,149 @@
 #include "game.h"
 #include "search.h"
 
-void playDFS(Game *game);
-void playBFS(Game *game);
-void playUCS(Game *game);
-void playGreedy(Game *game);
-void playAstar(Game *game);
+void playUsingDFS(Game *game);
+void playUsingBFS(Game *game);
+void playUsingUCS(Game *game);
+void playUsingGreedy(Game *game);
+void playUsingAstar(Game *game);
 
 bool validateArgs(int ac, char **arv);
+bool useWeightedGrid(int ac, char **args);
+bool *useFunctions(int ac, char **args, bool fns[5]);
 
 int main (int argc, char *argv[])
 {
-    
-    if (validateArgs(argc, argv))
-        printf("VALID ARGS:\n");
-    else
-        printf("INVALID ARGS:\n");
-
-    for (int i = 0; i < argc; i += 1)
+    if (!validateArgs(argc, argv))
     {
-        printf("%s\n",argv[i]);
+        printf("USAGE: ./basic_ai [-fn dfs bfs ucs greedy astar] [-w]\n");
+        return 1;
     }
     
-    /*
-    Game *game = newGame(true); // true for weighted gameboard
-    playDFS(game); 
-    playBFS(game);
-    playUCS(game);
-    playGreedy(game);
-    playAstar(game);
+    // get functions to use. default is all.
+    bool fns[5];
+    bool *functionsToUse = useFunctions(argc, argv, fns);
+    if (functionsToUse == NULL)
+    {
+        printf("Please provide at least one of the following functions:\ndfs bfs ucs greedy astar\n");
+        return 1;
+    }
+
+    // determine whether to use weighted grid
+    bool weighted = useWeightedGrid(argc, argv);
+    
+    // and now, game time.
+    Game *game = newGame(weighted);
+    
+    if (functionsToUse[0])
+        playUsingDFS(game);
+    if (functionsToUse[1])
+        playUsingBFS(game);
+    if (functionsToUse[2])
+        playUsingUCS(game);
+    if (functionsToUse[3])
+        playUsingGreedy(game);
+    if (functionsToUse[4])
+        playUsingAstar(game);
+
     deleteGame(game);
-    */
 
     return 0;
 }
 
-bool weightedGrid(int ac, char **args)
+bool useWeightedGrid(int ac, char **args) // searches argv for -w flag. returns true if it's present
 {
-    bool weighted = true;
+    bool weighted = false;
 
-    int wFlagIndex;
-    for (int i = 1; i < ac; i += 1)
+    for (int i = 1; i < ac; i += 1) // no need to check first arg as it's always ./basic_ai
     {
-        if (strncmp("-w", args[i], 2))
+        if (strncmp("-w", args[i], 2) == 0)
         {
-            wFlag = true;
-            wFlagIndex = i;
+            weighted = true;
         }
     }
-    if (wFlag)
-    {
-        if (strncmp("n",args[wFlagIndex + 1],1) == 0) // if the arg after the -w flag is "n" then we don't want weighted
-            weighted = false;
-    } 
-    
     return weighted;
 }
 
-// options -fn a || -fn bfs dfs ucs greedy astar -b y || -b n
+/*
+Index Map:
+0 -> dfs
+1 -> bfs
+2 -> ucs
+3 -> greedy
+4 -> astar
+
+I WILL HAVE TO WORK OUT THIS FUNCTION A BIT BETTER. I WOULD LIKE SOME FEEDBACK TO DO SO EFFICIENTLY
+RIGHT NOW I AM FED AN ARRAY OF 5 BOOLS WITH SPECIFICALLY DESIGNATED INDEXES FOR DIFFERENT FUNCTIONS.
+
+*/
+bool *useFunctions(int ac, char **args, bool fns[5])
+{
+    bool fn = false;
+    for (int i = 1; i < ac; i += 1)
+    {
+        if (strncmp("-fn", args[i], 3) == 0)
+        {
+            fn = true;     
+        } 
+    } 
+    
+    int total = 0;
+    if (fn)
+    {
+        for (int i = 0; i < 5; i += 1) // set all functions to false as we'll activate them individually
+        {
+            fns[i] = false;
+        }
+
+        for (int i = 2; i < ac; i += 1) // no need to check second arg as it's either -fn or -w
+        {
+            if (strcmp("dfs", args[i]) == 0)
+            {
+                fns[0] = true;
+                total += 1;
+
+            } else if (strcmp("bfs", args[i]) == 0) {
+                fns[1] = true;
+                total += 1;
+            } else if (strcmp("ucs", args[i]) == 0) {
+                fns[2] = true;
+                total += 1;
+            } else if (strcmp("greedy", args[i]) == 0) {
+                fns[3] = true;
+                total += 1;
+            } else if (strcmp("astar", args[i]) == 0) {
+                fns[4] = true;
+                total += 1;
+            }
+        }
+    } else {
+
+        total = 5;
+        for (int i = 0; i < 5; i += 1) // default is all functions active
+        {
+            fns[i] = true;
+        }
+    }
+
+    if (total == 0)
+        return NULL;
+    else
+        return fns;
+}
+
+// this program now accepts command line arguments. they are -w for a weighted grid and -fn followed by
+// function names to be run with only specific functions.
+// valid usage:
+// ./basic_ai [-w] [-fn dfs bfs ucs greedy astar]
+
 bool validateArgs(int ac, char **args)
 {
     bool valid = true;
 
-    if (ac == 1)
-        valid = false;
-    
     bool fn = false;
     int fnIndex;
-    bool b = false; 
-    int bIndex;
+    bool w = false; 
+    int wIndex;
 
     for (int i = 1; i < ac; i += 1) // no need to check first index
     {
@@ -80,36 +155,48 @@ bool validateArgs(int ac, char **args)
             fn = true;
             fnIndex = i;
         }
-        if (strncmp("-b",args[i],2) == 0) // check if -b flag is present
+        if (strncmp("-w",args[i],2) == 0) // check if -w flag is present
         {
-            b = true;        
-            bIndex = i;
+            w = true;        
+            wIndex = i;
         }
     }
+
+    if (ac > 1 && !(fn || w)) // if at least one argument is passed one of them MUST be -fn or -w
+        valid = false;
+
     
-    if (fn && b) 
+    if (fn && w) 
     {
-        if (!(bIndex - fnIndex > 0)) // -fn must come before -b for now! 
+        if (!(wIndex ==  1 || fnIndex == 1)) // either -w or -fn must be the first argument after ./basic_ai
+            valid = false;
+        if (!(wIndex - fnIndex >= 1)) // there must be at least one arg between -fn flag and -w flag and -w must come after -fn
             valid =  false;
-        if (!(bIndex - fnIndex >= 1)) // there must be at least one arg between -fn flag and -b flag
-            valid =  false;
-        if (!(ac == bIndex + 2)) // there must be exactly one argument after the -b flag (+2 because ./basic_ai is always included in args)
+        if (!(ac == wIndex + 1)) // -w must be the last argument 
             valid =  false;
         
     } else if (fn) {
 
+        if (fnIndex != 1) // -fn must be the first argument after ./basic_ai
+            valid = false;
         if (!(ac >= fnIndex + 2)) // there must be at least one arg after -fn flag
             valid = false;
 
-    } else if (b) {
-        if (!(ac == bIndex + 2)) // there must be exactly one arg after -b flag
+    } else if (w) {
+
+        if (ac != 2) // -w must be the only argument after ./basic_ai
+            valid = false;
+
+    } else if (!fn && !w) {
+
+        if (ac > 1)
             valid = false;
     }
-
+    
     return valid;
 }
 
-void playDFS(Game *game)
+void playUsingDFS(Game *game)
 {
     printf("\nDEPTH FIRST SEARCH:\n");
     char *moves = dfs(game);
@@ -118,7 +205,7 @@ void playDFS(Game *game)
     game = resetGame(game);
 }
 
-void playBFS(Game *game)
+void playUsingBFS(Game *game)
 {
     printf("\nBREADTH FIRST SEARCH:\n");
     char *moves = bfs(game);
@@ -127,7 +214,7 @@ void playBFS(Game *game)
     game = resetGame(game);
 }
 
-void playUCS(Game *game)
+void playUsingUCS(Game *game)
 {
     printf("\nUNIFORM COST SEARCH:\n");
     char *moves = ucs(game);
@@ -136,20 +223,20 @@ void playUCS(Game *game)
     game = resetGame(game);
 }
 
-void playAstar(Game *game)
-{
-    printf("\nASTAR SEARCH:\n");
-    char *moves = astar(game);
-    playGame(moves, game);
-    free(moves);
-    resetGame(game);
-}
-
-void playGreedy(Game *game)
+void playUsingGreedy(Game *game)
 {
     printf("\nGREEDY SEARCH:\n");
     char *greedy_moves = greedy(game);
     playGame(greedy_moves, game);
     free(greedy_moves);
     game = resetGame(game);
+}
+
+void playUsingAstar(Game *game)
+{
+    printf("\nASTAR SEARCH:\n");
+    char *moves = astar(game);
+    playGame(moves, game);
+    free(moves);
+    resetGame(game);
 }
