@@ -69,7 +69,7 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     List* successors = malloc(sizeof(List));
     StateNode **items = malloc(sizeof(StateNode *) * 4);
     successors->items = items;
-    successors->n_items = 0;
+    successors->nItems = 0;
     successors->capacity = 4; 
 
     char *actions = getLegalActions(parent->loc, board);
@@ -79,31 +79,31 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
     {
         char action = actions[i];
 
-        int next_x, next_y;
+        int nextX, nextY;
 
         switch (action) 
         {
             case 'n':
-                next_x = parent->loc->x;
-                next_y = parent->loc->y - 1;
+                nextX = parent->loc->x;
+                nextY = parent->loc->y - 1;
                 break;
             case 's':
-                next_x = parent->loc->x;
-                next_y = parent->loc->y + 1;
+                nextX = parent->loc->x;
+                nextY = parent->loc->y + 1;
                 break;
             case 'e': 
-                next_x = parent->loc->x + 1;
-                next_y = parent->loc->y;
+                nextX = parent->loc->x + 1;
+                nextY = parent->loc->y;
                 break;
             case 'w':
-                next_x = parent->loc->x - 1;
-                next_y = parent->loc->y;
+                nextX = parent->loc->x - 1;
+                nextY = parent->loc->y;
                 break;
         }
 
         Location *loc = malloc(sizeof(Location));
-        loc->x = next_x;
-        loc->y = next_y;
+        loc->x = nextX;
+        loc->y = nextY;
 
         StateNode *s = malloc(sizeof(StateNode));
         s->loc = loc;
@@ -115,7 +115,7 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
         successors->items = list;
 
         i += 1;
-        successors->n_items = i;
+        successors->nItems = i;
     }
     
     free(actions);

@@ -226,9 +226,9 @@ void playUsingUCS(Game *game)
 void playUsingGreedy(Game *game)
 {
     printf("\nGREEDY SEARCH:\n");
-    char *greedy_moves = greedy(game);
-    playGame(greedy_moves, game);
-    free(greedy_moves);
+    char *moves = greedy(game);
+    playGame(moves, game);
+    free(moves);
     game = resetGame(game);
 }
 

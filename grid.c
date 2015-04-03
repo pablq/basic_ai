@@ -37,53 +37,53 @@ Grid newWeightedGrid(void)
 // sets 9 sections with cost of either 1, 2, or 4
 void setCostAreas(Grid grid)
 {
-    int third_width = GRID_WIDTH / 3;
-    int third_height = GRID_HEIGHT / 3;
+    int thirdWidth = GRID_WIDTH / 3;
+    int thirdHeight = GRID_HEIGHT / 3;
 
     int vals[] = { 1, 1, 1, 2, 2, 4 };
-    int sections_vals[9];
+    int sectionVals[9];
     for (int i = 0; i < 9; i += 1)
     {
-        int val_i = randInRange(0,5);
-        sections_vals[i] = vals[val_i];
+        int valIndex = randInRange(0,5);
+        sectionVals[i] = vals[valIndex];
     }
 
     bool is1, is2, is3, is4, is5, is6, is7, is8, is9;
 
-    int the_val;
+    int thisVal;
     for (int x = 0; x < GRID_WIDTH; x += 1)
     {
         for (int y = 0; y < GRID_HEIGHT; y += 1)
         {
-            is1 = (x <= third_width && y <= third_height);
-            is2 = ((x > third_width && x <= third_width * 2) && y <= third_height);
-            is3 = (x > third_width * 2 && y <= third_height);
-            is4 = (x <= third_width && (y > third_height && y <= third_height * 2));
-            is5 = ((x > third_width && x <= third_width * 2) && (y > third_height && y <= third_height * 2));
-            is6 = (x > third_width * 2 && (y > third_height && y <= third_height * 2));
-            is7 = (x <= third_width && y > third_height * 2);
-            is8 = ((x > third_width && x <= third_width * 2) && y > third_height * 2);
-            is9 = (x > third_width * 2 && y > third_height * 2);
+            is1 = (x <= thirdWidth && y <= thirdHeight);
+            is2 = ((x > thirdWidth && x <= thirdWidth * 2) && y <= thirdHeight);
+            is3 = (x > thirdWidth * 2 && y <= thirdHeight);
+            is4 = (x <= thirdWidth && (y > thirdHeight && y <= thirdHeight * 2));
+            is5 = ((x > thirdWidth && x <= thirdWidth * 2) && (y > thirdHeight && y <= thirdHeight * 2));
+            is6 = (x > thirdWidth * 2 && (y > thirdHeight && y <= thirdHeight * 2));
+            is7 = (x <= thirdWidth && y > thirdHeight * 2);
+            is8 = ((x > thirdWidth && x <= thirdWidth * 2) && y > thirdHeight * 2);
+            is9 = (x > thirdWidth * 2 && y > thirdHeight * 2);
             if (is1)
-                the_val = sections_vals[0];
+                thisVal = sectionVals[0];
             if (is2)
-                the_val = sections_vals[1];
+                thisVal = sectionVals[1];
             if (is3)
-                the_val = sections_vals[2];
+                thisVal = sectionVals[2];
             if (is4)
-                the_val = sections_vals[3];
+                thisVal = sectionVals[3];
             if (is5)
-                the_val = sections_vals[4];
+                thisVal = sectionVals[4];
             if (is6)
-                the_val = sections_vals[5];
+                thisVal = sectionVals[5];
             if (is7)
-                the_val = sections_vals[6];
+                thisVal = sectionVals[6];
             if (is8)
-                the_val = sections_vals[7];
+                thisVal = sectionVals[7];
             if (is9)
-                the_val = sections_vals[8];
+                thisVal = sectionVals[8];
             if (isLegal(x,y,grid))
-                grid[x][y] = the_val;
+                grid[x][y] = thisVal;
         }
     }
 }
@@ -160,12 +160,12 @@ void buildLayout(Grid grid)
     {
         for (int y = 0; y < GRID_HEIGHT; y += 1) 
         {
-            bool left_border = (x == 0);
-            bool right_border = (x == GRID_WIDTH - 1);
-            bool top_border = (y == 0);
-            bool bottom_border = (y == GRID_HEIGHT - 1);
+            bool leftBorder = (x == 0);
+            bool rightBorder = (x == GRID_WIDTH - 1);
+            bool topBorder = (y == 0);
+            bool bottomBorder = (y == GRID_HEIGHT - 1);
 
-            if (left_border || right_border || top_border || bottom_border)
+            if (leftBorder || rightBorder || topBorder || bottomBorder)
             {
                 // 0 is the value for walls
                 grid[x][y] = 0;
@@ -179,19 +179,19 @@ void buildLayout(Grid grid)
     }
 
     // Now add some interior walls
-    int num_walls = randInRange(15,30);
-    for (int i = 0; i < num_walls; i += 1)
+    int numWalls = randInRange(15,30);
+    for (int i = 0; i < numWalls; i += 1)
     {
         // give walls varied lengths
         int len = randInRange(3,10);
         int x, y;
 
         // decide whether wall will be horizontal or vertical.
-        int is_horiz = randInRange(0,1);
+        int isHoriz = randInRange(0,1);
 
         // pick the starting point of the wall:
         // horizontal =  left->right, vertical = top->down 
-        if(is_horiz) 
+        if(isHoriz) 
         {
             x = randInRange(0, (GRID_WIDTH - 1) - len);
             y = randInRange(0, GRID_HEIGHT - 1);
@@ -214,7 +214,7 @@ void buildLayout(Grid grid)
             bool belowIsOpen = isLegal(x, y+1, grid); 
 
             grid[x][y] = 0;
-            if (is_horiz) {
+            if (isHoriz) {
 
                 // if you're in the middle of a wall and the next space is already a wall
                 // or there is already a wall directly above or below - stop

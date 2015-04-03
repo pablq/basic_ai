@@ -7,6 +7,4 @@ typedef struct Location
     int y;
 } Location;
 
-Location *newLocation(int x, int y);
-
 #endif /* LOCATION */

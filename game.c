@@ -105,41 +105,41 @@ void deleteGame(Game *game)
 
 bool moveAgent(char action, Game *game)
 {
-    int new_x, new_y;
+    int newX, newY;
     int x = game->agent->x;
     int y = game->agent->y;
 
     switch (action) 
     {
         case 'n':
-            new_x = x;
-            new_y = y - 1;
+            newX = x;
+            newY = y - 1;
             break;
         case 's':
-            new_x = x;
-            new_y = y + 1;
+            newX = x;
+            newY = y + 1;
             break;
         case 'e':
-            new_x = x + 1;
-            new_y = y;
+            newX = x + 1;
+            newY = y;
             break;
         case 'w':
-            new_x = x - 1;
-            new_y = y;
+            newX = x - 1;
+            newY = y;
             break;
         default:
             printf("UNRECOGNIZED ACTION: %c\n", action);
             return false;
     }
 
-    if (!isLegal(new_x, new_y, game->board)) 
+    if (!isLegal(newX, newY, game->board)) 
     {
-        printf("ILLEGAL MOVE: (%d,%d)->(%d,%d) with action '%c'.\n",x,y,new_x,new_y,action);
+        printf("ILLEGAL MOVE: (%d,%d)->(%d,%d) with action '%c'.\n",x,y,newX,newY,action);
         return false;
     }
 
-    game->agent->x = new_x;
-    game->agent->y = new_y;
+    game->agent->x = newX;
+    game->agent->y = newY;
 
     return true;
 }

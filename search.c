@@ -42,13 +42,13 @@ char *dfs (Game *game)
 
     // variables for book-keeping
     int expanded = 0;
-    int max_in_fringe = 1; // for first Node we just added
+    int maxInFringe = 1; // for first Node we just added
     
     // let's get goin!
     while(true)
     {
         // book-keeping
-        max_in_fringe = max(max_in_fringe, fringe->n_items);
+        maxInFringe = max(maxInFringe, fringe->nItems);
 
         // get the most recently added FringeNode
         FringeNode *fn = popFromStack(fringe);
@@ -78,8 +78,8 @@ char *dfs (Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %d\n", expanded);
-            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
-            printf("Bytes in fringe at solution: %lu\n", fringe->n_items * sizeof(FringeNode));
+            printf("Maximum bytes in fringe during search: %lu\n", maxInFringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", fringe->nItems * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -98,7 +98,7 @@ char *dfs (Game *game)
             StateNode **items = successors->items;
 
             // create a new FringeNode for each appropriate state in the list
-            for (int i = 0; i < successors->n_items; i += 1)
+            for (int i = 0; i < successors->nItems; i += 1)
             {
                 StateNode *successor = items[i];
                 
@@ -165,14 +165,14 @@ char *bfs(Game *game)
 
     // variables for book-keeping
     int expanded = 0;
-    int n_items = 1; // for the first FringeNode
-    int max_in_fringe = 1;
+    int nItemsInFringe = 1; // for the first FringeNode
+    int maxInFringe = 1;
     
     // let's get goin!
     while(true)
     {
         // book-keeping
-        max_in_fringe = max(max_in_fringe, n_items);
+        maxInFringe = max(maxInFringe, nItemsInFringe);
 
         // get the next FringeNode in the queue
         FringeNode *fn = nextInQueue(&fringe);
@@ -191,7 +191,7 @@ char *bfs(Game *game)
 
         // book-keeping
         expanded += 1;
-        n_items -= 1;
+        nItemsInFringe -= 1;
 
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
@@ -203,8 +203,8 @@ char *bfs(Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %d\n", expanded);
-            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
-            printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
+            printf("Maximum bytes in fringe during search: %lu\n", maxInFringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", nItemsInFringe * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -223,7 +223,7 @@ char *bfs(Game *game)
             StateNode **items = successors->items;
 
             // create a new FringeNode for each appropriate state in the list
-            for (int i = 0; i < successors->n_items; i += 1)
+            for (int i = 0; i < successors->nItems; i += 1)
             {
                 StateNode *successor = items[i];
                 
@@ -240,7 +240,7 @@ char *bfs(Game *game)
                     pushToQueue(new, &fringe);
                    
                     // book-keeping 
-                    n_items += 1;
+                    nItemsInFringe += 1;
 
                 } else {
 
@@ -293,14 +293,14 @@ char *ucs(Game *game)
 
     // for book-keeping
     int expanded = 0;
-    int n_items = 1; // for the first FringeNode
-    int max_in_fringe = 1;
+    int nItemsInFringe = 1; // for the first FringeNode
+    int maxInFringe = 1;
     
     // let's get goin!
     while(true)
     {
         // book-keeping
-        max_in_fringe = max(max_in_fringe, n_items);
+        maxInFringe = max(maxInFringe, nItemsInFringe);
 
         // get the next fringenode in queue
         FringeNode *fn = nextInQueue(&fringe);
@@ -319,7 +319,7 @@ char *ucs(Game *game)
 
         // book-keeping
         expanded += 1;
-        n_items -= 1;
+        nItemsInFringe -= 1;
 
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
@@ -331,8 +331,8 @@ char *ucs(Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %d\n", expanded);
-            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
-            printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
+            printf("Maximum bytes in fringe during search: %lu\n", maxInFringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", nItemsInFringe * sizeof(FringeNode));
 
             // clean up
             deleteFringeNode(fn);
@@ -351,7 +351,7 @@ char *ucs(Game *game)
             StateNode **items = successors->items;
 
             // create a new FringeNode for each appropriate state in the list
-            for (int i = 0; i < successors->n_items; i += 1)
+            for (int i = 0; i < successors->nItems; i += 1)
             {
                 StateNode *successor = items[i];
                 
@@ -368,7 +368,7 @@ char *ucs(Game *game)
                     pushToQueueByCost(new, &fringe);
                    
                     // book-keeping 
-                    n_items += 1;
+                    nItemsInFringe += 1;
 
                 } else {
 
@@ -431,14 +431,14 @@ char *greedy(Game *game)
 
     // variables for book-keeping
     int expanded = 0;
-    int n_items = 1; // for the first FringeNode
-    int max_in_fringe = 1;
+    int nItemsInFringe = 1; // for the first FringeNode
+    int maxInFringe = 1;
     
     // let's get goin!
     while(true)
     {
         // book-keeping
-        max_in_fringe = max(max_in_fringe, n_items);
+        maxInFringe = max(maxInFringe, nItemsInFringe);
 
         // get next FringeNode in the queue
         FringeNode *fn = nextInQueue(&fringe);
@@ -458,7 +458,7 @@ char *greedy(Game *game)
 
         // book-keeping
         expanded += 1;
-        n_items -= 1;
+        nItemsInFringe -= 1;
 
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
@@ -470,8 +470,8 @@ char *greedy(Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %d\n", expanded);
-            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
-            printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
+            printf("Maximum bytes in fringe during search: %lu\n", maxInFringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", nItemsInFringe * sizeof(FringeNode));
 
             // clean up
             free(heur);
@@ -491,7 +491,7 @@ char *greedy(Game *game)
             StateNode **items = successors->items;
 
             // create a new FringeNode for each appropriate state in the list
-            for (int i = 0; i < successors->n_items; i += 1)
+            for (int i = 0; i < successors->nItems; i += 1)
             {
                 StateNode *successor = items[i];
                 
@@ -508,7 +508,7 @@ char *greedy(Game *game)
                     pushToQueueByHeuristic(new, heur, &fringe);
                    
                     // book-keeping 
-                    n_items += 1;
+                    nItemsInFringe += 1;
 
                 } else {
 
@@ -577,14 +577,14 @@ char *astar(Game *game)
 
     // variables for book-keeping
     int expanded = 0;
-    int n_items = 1; // for the first FringeNode
-    int max_in_fringe = 1;
+    int nItemsInFringe = 1; // for the first FringeNode
+    int maxInFringe = 1;
     
     // let's get goin!
     while(true)
     {
         // book-keeping
-        max_in_fringe = max(max_in_fringe, n_items);
+        maxInFringe = max(maxInFringe, nItemsInFringe);
 
         // get next FringeNode in the queue
         FringeNode *fn = nextInQueue(&fringe);
@@ -604,7 +604,7 @@ char *astar(Game *game)
 
         // book-keeping
         expanded += 1;
-        n_items -= 1;
+        nItemsInFringe -= 1;
 
         // if this state's location is the winning state we win!
         if (sameLocation(fn->state->loc->x, fn->state->loc->y, game->goal->x, game->goal->y))
@@ -616,8 +616,8 @@ char *astar(Game *game)
             // report stats
             printf("Total cost of solution: %d\n", fn->totalCost);
             printf("Total gamestates considered: %d\n", expanded);
-            printf("Maximum bytes in fringe during search: %lu\n", max_in_fringe * sizeof(FringeNode));
-            printf("Bytes in fringe at solution: %lu\n", n_items * sizeof(FringeNode));
+            printf("Maximum bytes in fringe during search: %lu\n", maxInFringe * sizeof(FringeNode));
+            printf("Bytes in fringe at solution: %lu\n", nItemsInFringe * sizeof(FringeNode));
 
             // clean up
             free(heur);
@@ -637,7 +637,7 @@ char *astar(Game *game)
             StateNode **items = successors->items;
 
             // create a new FringeNode for each appropriate state in the list
-            for (int i = 0; i < successors->n_items; i += 1)
+            for (int i = 0; i < successors->nItems; i += 1)
             {
                 StateNode *successor = items[i];
                 
@@ -654,7 +654,7 @@ char *astar(Game *game)
                     pushToQueueByHeuristic(new, heur, &fringe);
                    
                     // book-keeping 
-                    n_items += 1;
+                    nItemsInFringe += 1;
 
                 } else {
 

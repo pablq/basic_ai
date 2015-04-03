@@ -6,7 +6,7 @@
 typedef struct List
 {
     void *items;
-    int n_items;
+    int nItems;
     int capacity;
 
 } List;
