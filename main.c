@@ -24,7 +24,7 @@ int main (int argc, char *argv[])
     {
         printf("%s\n",argv[i]);
     }
-
+    
     /*
     Game *game = newGame(true); // true for weighted gameboard
     playDFS(game); 
@@ -38,56 +38,75 @@ int main (int argc, char *argv[])
     return 0;
 }
 
+bool weightedGrid(int ac, char **args)
+{
+    bool weighted = true;
+
+    int wFlagIndex;
+    for (int i = 1; i < ac; i += 1)
+    {
+        if (strncmp("-w", args[i], 2))
+        {
+            wFlag = true;
+            wFlagIndex = i;
+        }
+    }
+    if (wFlag)
+    {
+        if (strncmp("n",args[wFlagIndex + 1],1) == 0) // if the arg after the -w flag is "n" then we don't want weighted
+            weighted = false;
+    } 
+    
+    return weighted;
+}
+
 // options -fn a || -fn bfs dfs ucs greedy astar -b y || -b n
 bool validateArgs(int ac, char **args)
 {
-    if (ac == 2)
-        return false;
+    bool valid = true;
+
+    if (ac == 1)
+        valid = false;
     
     bool fn = false;
     int fnIndex;
     bool b = false; 
     int bIndex;
 
-    for (int i = 0; i < ac; i += 1)
+    for (int i = 1; i < ac; i += 1) // no need to check first index
     {
-        if (strncmp("-fn",args[i],3) == 0)
+        if (strncmp("-fn",args[i],3) == 0) // check if -fn flag is present
         {
             fn = true;
             fnIndex = i;
         }
-        if (strncmp("-b",args[i],2) == 0)
+        if (strncmp("-b",args[i],2) == 0) // check if -b flag is present
         {
             b = true;        
             bIndex = i;
         }
     }
     
-    if (fn && b)
+    if (fn && b) 
     {
-        int greater = fnIndex - bIndex >= 0 ? fnIndex : bIndex;
-        int lesser = fnIndex - bIndex >= 0 ? bIndex : fnIndex;
-        if (!(ac >= greater + 2)) // there must be at least one arg after the last flag
-            return false;
-        if (fnIndex - bIndex < 1 && bIndex - fnIndex < 1) // there must be at least one arg between flags
-            return false;
+        if (!(bIndex - fnIndex > 0)) // -fn must come before -b for now! 
+            valid =  false;
+        if (!(bIndex - fnIndex >= 1)) // there must be at least one arg between -fn flag and -b flag
+            valid =  false;
+        if (!(ac == bIndex + 2)) // there must be exactly one argument after the -b flag (+2 because ./basic_ai is always included in args)
+            valid =  false;
         
-        for (int i = lesser; i < greater; i += 1)
-        {
-            
-        }
-
     } else if (fn) {
 
         if (!(ac >= fnIndex + 2)) // there must be at least one arg after -fn flag
-            return false;
+            valid = false;
 
     } else if (b) {
         if (!(ac == bIndex + 2)) // there must be exactly one arg after -b flag
-            return false;
+            valid = false;
     }
 
-    return true;
+    return valid;
 }
 
 void playDFS(Game *game)
