@@ -6,7 +6,7 @@
 
 bool validateArgs(int numArgs, char **args);
 bool whichAlgorithms(int numArgs, char **args, bool algorithms[5]);
-bool useWeightedGrid(int ac, char **args);
+bool useWeightedGrid(int numArgs, char **args);
 
 void playUsingDFS(Game *game);
 void playUsingBFS(Game *game);
