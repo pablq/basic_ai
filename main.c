@@ -10,9 +10,9 @@ void playUsingUCS(Game *game);
 void playUsingGreedy(Game *game);
 void playUsingAstar(Game *game);
 
-bool validateArgs(int ac, char **arv);
+bool validateArgs(int numArgs, char **args);
 bool useWeightedGrid(int ac, char **args);
-bool *useFunctions(int ac, char **args, bool fns[5]);
+bool getAlgorithms(int numArgs, char **args, bool algorithms[5]);
 
 int main (int argc, char *argv[])
 {
@@ -22,11 +22,11 @@ int main (int argc, char *argv[])
         return 1;
     }
     
-    // get functions to use. default is all.
-    bool fns[5];
-    bool *functionsToUse = useFunctions(argc, argv, fns);
-    if (functionsToUse == NULL)
-    {
+    bool algorithms[5];
+    if (!getAlgorithms(argc, argv, algorithms)) // getAlgorthms populates an array with bools for algorithms that
+                                                // should be run on the game. it returns true if it was able to populate
+    {                                           // the array and false if it was unable. the algorithms are associated with
+                                                // specific indexes in the array of bools. (see function implementation)
         printf("USAGE: ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]\n");
         return 1;
     }
@@ -37,15 +37,15 @@ int main (int argc, char *argv[])
     // and now, game time.
     Game *game = newGame(weighted);
     
-    if (functionsToUse[0])
+    if (algorithms[0])
         playUsingDFS(game);
-    if (functionsToUse[1])
+    if (algorithms[1])
         playUsingBFS(game);
-    if (functionsToUse[2])
+    if (algorithms[2])
         playUsingUCS(game);
-    if (functionsToUse[3])
+    if (algorithms[3])
         playUsingGreedy(game);
-    if (functionsToUse[4])
+    if (algorithms[4])
         playUsingAstar(game);
 
     deleteGame(game);
@@ -53,11 +53,11 @@ int main (int argc, char *argv[])
     return 0;
 }
 
-bool dontUseWeightedGrid(int ac, char **args) // searches argv for -w flag. returns true if it's present
+bool useWeightedGrid(int numArgs, char **args) // searches argv for -w flag. returns true if it's present
 {
     bool weighted = false;
 
-    for (int i = 1; i < ac; i += 1) // no need to check first arg as it's always ./basic_ai
+    for (int i = 1; i < numArgs; i += 1) // no need to check first arg as it's always ./basic_ai
     {
         if (strncmp("-w", args[i], 2) == 0)
         {
@@ -68,21 +68,23 @@ bool dontUseWeightedGrid(int ac, char **args) // searches argv for -w flag. retu
 }
 
 /*
-Index Map:
+
+The following function accepts a list of arguments and an array to populate with bools.
+It determines which of the algorithms should be run, and marks the appropriate index
+of an array accordingly.
+
+Index Map for algorithms in bool array:
 0 -> dfs
 1 -> bfs
 2 -> ucs
 3 -> greedy
 4 -> astar
 
-I WILL HAVE TO WORK OUT THIS FUNCTION A BIT BETTER. I WOULD LIKE SOME FEEDBACK TO DO SO EFFICIENTLY
-RIGHT NOW I AM FED AN ARRAY OF 5 BOOLS WITH SPECIFICALLY DESIGNATED INDEXES FOR DIFFERENT FUNCTIONS.
-
 */
-bool *useFunctions(int ac, char **args, bool fns[5])
+bool getAlgorithms(int numArgs, char **args, bool algorithms[5])
 {
     bool fn = false;
-    for (int i = 1; i < ac; i += 1)
+    for (int i = 1; i < numArgs; i += 1)
     {
         if (strncmp("-fn", args[i], 3) == 0)
         {
@@ -95,101 +97,108 @@ bool *useFunctions(int ac, char **args, bool fns[5])
     {
         for (int i = 0; i < 5; i += 1) // set all functions to false as we'll activate them individually
         {
-            fns[i] = false;
+            algorithms[i] = false;
         }
 
-        for (int i = 2; i < ac; i += 1) // no need to check second arg as it's either -fn or -w
+        for (int i = 2; i < numArgs; i += 1) // no need to check second arg as it's either -fn or -w
         {
             if (strcmp("dfs", args[i]) == 0)
             {
-                fns[0] = true;
+                algorithms[0] = true;
                 total += 1;
 
             } else if (strcmp("bfs", args[i]) == 0) {
-                fns[1] = true;
+
+                algorithms[1] = true;
                 total += 1;
+
             } else if (strcmp("ucs", args[i]) == 0) {
-                fns[2] = true;
+
+                algorithms[2] = true;
                 total += 1;
+
             } else if (strcmp("greedy", args[i]) == 0) {
-                fns[3] = true;
+
+                algorithms[3] = true;
                 total += 1;
+
             } else if (strcmp("astar", args[i]) == 0) {
-                fns[4] = true;
+
+                algorithms[4] = true;
                 total += 1;
             }
         }
+
     } else {
 
         total = 5;
         for (int i = 0; i < 5; i += 1) // default is all functions active
         {
-            fns[i] = true;
+            algorithms[i] = true;
         }
     }
 
     if (total == 0)
-        return NULL;
+        return false;
     else
-        return fns;
+        return true;
 }
 
 // valid usage:
 // ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]
 
-bool validateArgs(int ac, char **args)
+bool validateArgs(int numArgs, char **args)
 {
-    bool valid = true;
+    bool valid = true,
+         fn = false,
+         w = false; 
 
-    bool fn = false;
-    int fnIndex;
-    bool w = false; 
-    int wIndex;
+    int fnIndex,
+        wIndex;
 
-    for (int i = 1; i < ac; i += 1) // no need to check first index
+    for (int i = 1; i < numArgs; i += 1) // no need to check first index
     {
-        if (strncmp("-fn",args[i],3) == 0) // check if -fn flag is present
+        if (strncmp("-fn", args[i], 3) == 0) // check if -fn flag is present
         {
             fn = true;
             fnIndex = i;
         }
-        if (strncmp("-w",args[i],2) == 0) // check if -w flag is present
+        if (strncmp("-w", args[i], 2) == 0) // check if -w flag is present
         {
             w = true;        
             wIndex = i;
         }
     }
 
-    if (ac > 1 && !(fn || w)) // if at least one argument is passed one of them MUST be -fn or -w
+    if (numArgs > 1 && !(fn || w)) // if at least one argument is passed one of them MUST be -fn or -w
         valid = false;
 
-    
     if (fn && w) 
     {
         if (!(wIndex ==  1 || fnIndex == 1)) // either -w or -fn must be the first argument after ./basic_ai
             valid = false;
         if (!(wIndex - fnIndex >= 1) && !(fnIndex - wIndex == 1)) // if wIndex is after fnIndex there must be at least one arg between them.
             valid = false;                                        // but if fnIndex is after wIndex then there must be no args between them.
-        if ((wIndex > fnIndex) && !(ac == wIndex + 1)) // if wIndex is after fnIndex, -w must be the last arg
+        if ((wIndex > fnIndex) && !(numArgs == wIndex + 1)) // if wIndex is after fnIndex, -w must be the last arg
             valid = false;
-        if ((fnIndex > wIndex) && !(ac > fnIndex + 1)) // if fnIndex is after wIndex, there must be at least one arg after -fn
+        if ((fnIndex > wIndex) && !(numArgs > fnIndex + 1)) // if fnIndex is after wIndex, there must be at least one arg after -fn
             valid = false;
         
     } else if (fn) {
 
         if (fnIndex != 1) // -fn must be the first argument after ./basic_ai
             valid = false;
-        if (!(ac >= fnIndex + 2)) // there must be at least one arg after -fn flag
+        if (!(numArgs >= fnIndex + 2)) // there must be at least one arg after -fn flag
             valid = false;
 
     } else if (w) {
 
-        if (ac != 2) // -w must be the only argument after ./basic_ai
+        if (numArgs != 2) // -w must be the only argument after ./basic_ai
             valid = false;
 
     } else if (!fn && !w) {
 
-        if (ac > 1)
+        if (numArgs > 1)
             valid = false;
     }
     
