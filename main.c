@@ -5,7 +5,7 @@
 #include "search.h"
 
 bool validateArgs(int numArgs, char **args);
-bool getAlgorithms(int numArgs, char **args, bool algorithms[5]);
+bool whichAlgorithms(int numArgs, char **args, bool algorithms[5]);
 bool useWeightedGrid(int ac, char **args);
 
 void playUsingDFS(Game *game);
@@ -23,7 +23,7 @@ int main (int argc, char *argv[])
     }
     
     bool algorithms[5];
-    if (!getAlgorithms(argc, argv, algorithms)) // getAlgorthms populates an array with bools for algorithms that
+    if (!whichAlgorithms(argc, argv, algorithms)) // getAlgorthms populates an array with bools for algorithms that
                                                 // should be run on the game. it returns true if it was able to populate
     {                                           // the array and false if it was unable. the algorithms are associated with
                                                 // specific indexes in the array of bools. (see function implementation)
@@ -55,12 +55,11 @@ int main (int argc, char *argv[])
 
 bool validateArgs(int numArgs, char **args)
 {
-    bool valid = true,
-         fn = false,
+    bool valid = true, 
+         fn = false, 
          w = false; 
 
-    int fnIndex,
-        wIndex;
+    int fnIndex, wIndex;
 
     for (int i = 1; i < numArgs; i += 1) // no need to check first index
     {
@@ -113,10 +112,10 @@ bool validateArgs(int numArgs, char **args)
 
 /*
 
-getAlgorithms accepts an array of arguments and a bool array 'algorithms' to populate.
+whichAlgorithms accepts an array of arguments and a bool array 'algorithms' to populate.
 It determines which of the algorithms should be run from the arguments passed and 
 populates the algorithms array accordingly. Upon successfully populating algorithms 
-getAlgorithms returns true, else it returns false.
+whichAlgorithms returns true, else it returns false.
 
 Index Map for algorithms in bool array:
 0 -> dfs
@@ -126,7 +125,7 @@ Index Map for algorithms in bool array:
 4 -> astar
 
 */
-bool getAlgorithms(int numArgs, char **args, bool algorithms[5])
+bool whichAlgorithms(int numArgs, char **args, bool algorithms[5])
 {
     bool fn = false;
     for (int i = 1; i < numArgs; i += 1)
