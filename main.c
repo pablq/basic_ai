@@ -4,15 +4,15 @@
 #include "game.h"
 #include "search.h"
 
+bool validateArgs(int numArgs, char **args);
+bool getAlgorithms(int numArgs, char **args, bool algorithms[5]);
+bool useWeightedGrid(int ac, char **args);
+
 void playUsingDFS(Game *game);
 void playUsingBFS(Game *game);
 void playUsingUCS(Game *game);
 void playUsingGreedy(Game *game);
 void playUsingAstar(Game *game);
-
-bool validateArgs(int numArgs, char **args);
-bool useWeightedGrid(int ac, char **args);
-bool getAlgorithms(int numArgs, char **args, bool algorithms[5]);
 
 int main (int argc, char *argv[])
 {
@@ -53,25 +53,70 @@ int main (int argc, char *argv[])
     return 0;
 }
 
-bool useWeightedGrid(int numArgs, char **args) // searches argv for -w flag. returns true if it's present
+bool validateArgs(int numArgs, char **args)
 {
-    bool weighted = false;
+    bool valid = true,
+         fn = false,
+         w = false; 
 
-    for (int i = 1; i < numArgs; i += 1) // no need to check first arg as it's always ./basic_ai
+    int fnIndex,
+        wIndex;
+
+    for (int i = 1; i < numArgs; i += 1) // no need to check first index
     {
-        if (strncmp("-w", args[i], 2) == 0)
+        if (strncmp("-fn", args[i], 3) == 0) // check if -fn flag is present
         {
-            weighted = true;
+            fn = true;
+            fnIndex = i;
+        }
+        if (strncmp("-w", args[i], 2) == 0) // check if -w flag is present
+        {
+            w = true;        
+            wIndex = i;
         }
     }
-    return weighted;
+
+    if (numArgs > 1 && !(fn || w)) // if at least one argument is passed one of them MUST be -fn or -w
+        valid = false;
+
+    if (fn && w) 
+    {
+        if (!(wIndex ==  1 || fnIndex == 1)) // either -w or -fn must be the first argument after ./basic_ai
+            valid = false;
+        if (!(wIndex - fnIndex >= 1) && !(fnIndex - wIndex == 1)) // if wIndex is after fnIndex there must be at least one arg between them.
+            valid = false;                                        // but if fnIndex is after wIndex then there must be no args between them.
+        if ((wIndex > fnIndex) && !(numArgs == wIndex + 1)) // if wIndex is after fnIndex, -w must be the last arg
+            valid = false;
+        if ((fnIndex > wIndex) && !(numArgs > fnIndex + 1)) // if fnIndex is after wIndex, there must be at least one arg after -fn
+            valid = false;
+        
+    } else if (fn) {
+
+        if (fnIndex != 1) // -fn must be the first argument after ./basic_ai
+            valid = false;
+        if (!(numArgs >= fnIndex + 2)) // there must be at least one arg after -fn flag
+            valid = false;
+
+    } else if (w) {
+
+        if (numArgs != 2) // -w must be the only argument after ./basic_ai
+            valid = false;
+
+    } else if (!fn && !w) {
+
+        if (numArgs > 1)
+            valid = false;
+    }
+    
+    return valid;
 }
 
 /*
 
-The following function accepts a list of arguments and an array to populate with bools.
-It determines which of the algorithms should be run, and marks the appropriate index
-of an array accordingly.
+getAlgorithms accepts an array of arguments and a bool array 'algorithms' to populate.
+It determines which of the algorithms should be run from the arguments passed and 
+populates the algorithms array accordingly. Upon successfully populating algorithms 
+getAlgorithms returns true, else it returns false.
 
 Index Map for algorithms in bool array:
 0 -> dfs
@@ -144,65 +189,18 @@ bool getAlgorithms(int numArgs, char **args, bool algorithms[5])
         return true;
 }
 
-// valid usage:
-// ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]
-
-bool validateArgs(int numArgs, char **args)
+bool useWeightedGrid(int numArgs, char **args) // searches argv for -w flag. returns true if it's present
 {
-    bool valid = true,
-         fn = false,
-         w = false; 
+    bool weighted = false;
 
-    int fnIndex,
-        wIndex;
-
-    for (int i = 1; i < numArgs; i += 1) // no need to check first index
+    for (int i = 1; i < numArgs; i += 1) // no need to check first arg as it's always ./basic_ai
     {
-        if (strncmp("-fn", args[i], 3) == 0) // check if -fn flag is present
+        if (strncmp("-w", args[i], 2) == 0)
         {
-            fn = true;
-            fnIndex = i;
-        }
-        if (strncmp("-w", args[i], 2) == 0) // check if -w flag is present
-        {
-            w = true;        
-            wIndex = i;
+            weighted = true;
         }
     }
-
-    if (numArgs > 1 && !(fn || w)) // if at least one argument is passed one of them MUST be -fn or -w
-        valid = false;
-
-    if (fn && w) 
-    {
-        if (!(wIndex ==  1 || fnIndex == 1)) // either -w or -fn must be the first argument after ./basic_ai
-            valid = false;
-        if (!(wIndex - fnIndex >= 1) && !(fnIndex - wIndex == 1)) // if wIndex is after fnIndex there must be at least one arg between them.
-            valid = false;                                        // but if fnIndex is after wIndex then there must be no args between them.
-        if ((wIndex > fnIndex) && !(numArgs == wIndex + 1)) // if wIndex is after fnIndex, -w must be the last arg
-            valid = false;
-        if ((fnIndex > wIndex) && !(numArgs > fnIndex + 1)) // if fnIndex is after wIndex, there must be at least one arg after -fn
-            valid = false;
-        
-    } else if (fn) {
-
-        if (fnIndex != 1) // -fn must be the first argument after ./basic_ai
-            valid = false;
-        if (!(numArgs >= fnIndex + 2)) // there must be at least one arg after -fn flag
-            valid = false;
-
-    } else if (w) {
-
-        if (numArgs != 2) // -w must be the only argument after ./basic_ai
-            valid = false;
-
-    } else if (!fn && !w) {
-
-        if (numArgs > 1)
-            valid = false;
-    }
-    
-    return valid;
+    return weighted;
 }
 
 void playUsingDFS(Game *game)
