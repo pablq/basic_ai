@@ -22,11 +22,10 @@ int main (int argc, char *argv[])
         return 1;
     }
     
+    // determine which algorithms to run. if no algorithms can be determined, exit.
     bool algorithms[5];
-    if (!whichAlgorithms(argc, argv, algorithms)) // getAlgorthms populates an array with bools for algorithms that
-                                                // should be run on the game. it returns true if it was able to populate
-    {                                           // the array and false if it was unable. the algorithms are associated with
-                                                // specific indexes in the array of bools. (see function implementation)
+    if (!whichAlgorithms(argc, argv, algorithms))
+    {
         printf("USAGE: ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]\n");
         return 1;
     }

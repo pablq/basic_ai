@@ -16,7 +16,7 @@ The following information is presented for each algorithm:
 
 *All algorithm implementations make use of a closed set to avoid re-checking gamestates
 
-to build: make
+to build with gcc: make
 to run: ./basic_ai [-fn <dfs> <bfs> <ucs> <greedy> <astar>] [-w]
 
 -w flag tells the program to use a weighted grid which creates varied movement costs. this is recommended. (default is no)
