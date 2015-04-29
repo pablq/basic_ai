@@ -60,52 +60,51 @@ bool validateArgs(int numArgs, char **args)
 
     int fnIndex, wIndex;
 
-    for (int i = 1; i < numArgs; i += 1) // no need to check first index
+    for (int i = 1; i < numArgs; i += 1)     // no need to check first index
     {
         if (strncmp("-fn", args[i], 3) == 0) // check if -fn flag is present
         {
             fn = true;
             fnIndex = i;
         }
-        if (strncmp("-w", args[i], 2) == 0) // check if -w flag is present
+        if (strncmp("-w", args[i], 2) == 0)  // check if -w flag is present
         {
             w = true;        
             wIndex = i;
         }
     }
 
-    if (numArgs > 1 && !(fn || w)) // if at least one argument is passed one of them MUST be -fn or -w
+    if (numArgs > 1 && !(fn || w))           // if at least one argument is passed one of them MUST be -fn or -w
         valid = false;
 
     if (fn && w) 
     {
-        if (!(wIndex ==  1 || fnIndex == 1)) // either -w or -fn must be the first argument after ./basic_ai
+        if (!(wIndex ==  1 || fnIndex == 1))                      // either -w or -fn must be the first argument after ./basic_ai
             valid = false;
         if (!(wIndex - fnIndex >= 1) && !(fnIndex - wIndex == 1)) // if wIndex is after fnIndex there must be at least one arg between them.
             valid = false;                                        // but if fnIndex is after wIndex then there must be no args between them.
-        if ((wIndex > fnIndex) && !(numArgs == wIndex + 1)) // if wIndex is after fnIndex, -w must be the last arg
+        if ((wIndex > fnIndex) && !(numArgs == wIndex + 1))       // if wIndex is after fnIndex, -w must be the last arg
             valid = false;
-        if ((fnIndex > wIndex) && !(numArgs > fnIndex + 1)) // if fnIndex is after wIndex, there must be at least one arg after -fn
+        if ((fnIndex > wIndex) && !(numArgs > fnIndex + 1))       // if fnIndex is after wIndex, there must be at least one arg after -fn
             valid = false;
         
     } else if (fn) {
 
-        if (fnIndex != 1) // -fn must be the first argument after ./basic_ai
+        if (fnIndex != 1)                    // -fn must be the first argument after ./basic_ai
             valid = false;
-        if (!(numArgs >= fnIndex + 2)) // there must be at least one arg after -fn flag
+        if (!(numArgs >= fnIndex + 2))       // there must be at least one arg after -fn flag
             valid = false;
 
     } else if (w) {
 
-        if (numArgs != 2) // -w must be the only argument after ./basic_ai
+        if (numArgs != 2)                    // -w must be the only argument after ./basic_ai
             valid = false;
 
     } else if (!fn && !w) {
 
-        if (numArgs > 1)
+        if (numArgs > 1)                     // if no flags are found, there shouldn't be any args beyond "./basic_ai"
             valid = false;
     }
-    
     return valid;
 }
 
@@ -138,7 +137,7 @@ bool whichAlgorithms(int numArgs, char **args, bool algorithms[5])
     int total = 0;
     if (fn)
     {
-        for (int i = 0; i < 5; i += 1) // set all functions to false as we'll activate them individually
+        for (int i = 0; i < 5; i += 1)       // set all functions to false as we'll activate them individually
         {
             algorithms[i] = false;
         }
@@ -175,7 +174,7 @@ bool whichAlgorithms(int numArgs, char **args, bool algorithms[5])
     } else {
 
         total = 5;
-        for (int i = 0; i < 5; i += 1) // default is all functions active
+        for (int i = 0; i < 5; i += 1)       // default is all functions active
         {
             algorithms[i] = true;
         }
@@ -191,7 +190,7 @@ bool useWeightedGrid(int numArgs, char **args) // searches argv for -w flag. ret
 {
     bool weighted = false;
 
-    for (int i = 1; i < numArgs; i += 1) // no need to check first arg as it's always ./basic_ai
+    for (int i = 1; i < numArgs; i += 1)       // no need to check first arg as it's always ./basic_ai
     {
         if (strncmp("-w", args[i], 2) == 0)
         {
