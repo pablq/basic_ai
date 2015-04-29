@@ -6,7 +6,7 @@
 
 #define TABLE_LENGTH 75
 
-unsigned int getHashTableIndex(char *str);
+unsigned int getHashTableIndex(char *value);
 
 HashTable *newHashTable (void)
 {
