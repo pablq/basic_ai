@@ -8,6 +8,7 @@ typedef struct HashTableNode
 {
     char *value;
     struct HashTableNode* next;
+
 } HashTableNode;
 
 typedef HashTableNode *HashTable;

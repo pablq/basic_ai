@@ -10,10 +10,10 @@ char *getLegalActions(Location *loc, Grid board)
     int x = loc-> x;
     int y = loc-> y; 
 
-    bool n = isLegal(x, y - 1, board);
-    bool s = isLegal(x, y + 1, board);
-    bool e = isLegal(x + 1, y, board);
-    bool w = isLegal(x - 1, y, board);
+    bool n = isLegal(x,y - 1, board);
+    bool s = isLegal(x,y + 1, board);
+    bool e = isLegal(x + 1,y, board);
+    bool w = isLegal(x - 1,y, board);
 
     // max length is 4 actions.
     char *actions = malloc(sizeof(char) * 5);
@@ -117,8 +117,7 @@ List *getSuccessorStateNodes(StateNode *parent, Grid board)
         i += 1;
         successors->nItems = i;
     }
-    
     free(actions);
-    
+
     return successors;
 }

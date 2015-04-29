@@ -18,7 +18,7 @@ HashTable *newHashTable (void)
     return ht; 
 }
 
-HashTableNode *newHashTableNode ()
+HashTableNode *newHashTableNode()
 {
     HashTableNode *htn = malloc(sizeof(HashTableNode)); 
     htn->value = NULL;
@@ -26,9 +26,9 @@ HashTableNode *newHashTableNode ()
     return htn;
 }
 
-bool inHashTable(char *str, HashTable *ht)
+bool inHashTable(char *value, HashTable *ht)
 {
-    int index = getHashTableIndex(str);
+    int index = getHashTableIndex(value);
 
     HashTableNode *last = ht[index];
 
@@ -41,7 +41,7 @@ bool inHashTable(char *str, HashTable *ht)
 
         HashTableNode *next = last->next;
 
-        if (strcmp(str,last->value) == 0)
+        if (strcmp(value, last->value) == 0)
         {
             return true;
         }
@@ -53,24 +53,28 @@ bool inHashTable(char *str, HashTable *ht)
     return false;    
 }
 
-void insertToHashTable(char *val, HashTable *ht)
+void insertToHashTable(char *value, HashTable *ht)
 {
-    int index = getHashTableIndex(val);
+    int index = getHashTableIndex(value);
     
     HashTableNode *htn = newHashTableNode();
-    htn->value = val;
+    htn->value = value;
     
     HashTableNode *last = ht[index];
     if (last == NULL)
     {
         ht[index] = htn;
+
     } else {
+
         HashTableNode *next = last->next;
+
         while (next != NULL)
         {
             last = next;
             next = next->next;
         }
+
         last->next = htn;
     }
 }
@@ -101,16 +105,15 @@ void deleteHashTable(HashTable *ht)
 unsigned long hash(char *str)
 {
     unsigned long hash = 5381;
-    int c;
-    
-    int i = 0;
+    int c,
+        i = 0;
+
     while (str[i] != '\0')
     {
         c = str[i]; 
         hash = ((hash << 5) + hash) + c; /* hash * 33 + x */
         i += 1;
     }
-
     return hash;
 }
 

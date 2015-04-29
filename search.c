@@ -41,11 +41,11 @@ char *dfs (Game *game)
     pushToStack(first, fringe);
 
     // variables for book-keeping
-    int expanded = 0;
-    int maxInFringe = 1; // for first Node we just added
+    int expanded = 0,
+        maxInFringe = 1; // for first Node we just added
     
     // let's get goin!
-    while(true)
+    while (true)
     {
         // book-keeping
         maxInFringe = max(maxInFringe, fringe->nItems);
@@ -164,12 +164,12 @@ char *bfs(Game *game)
     pushToQueue(first, &fringe);
 
     // variables for book-keeping
-    int expanded = 0;
-    int nItemsInFringe = 1; // for the first FringeNode
-    int maxInFringe = 1;
+    int expanded = 0,
+        nItemsInFringe = 1, // for the first FringeNode
+        maxInFringe = 1;
     
     // let's get goin!
-    while(true)
+    while (true)
     {
         // book-keeping
         maxInFringe = max(maxInFringe, nItemsInFringe);
@@ -292,12 +292,12 @@ char *ucs(Game *game)
     pushToQueueByCost(first, &fringe);
 
     // for book-keeping
-    int expanded = 0;
-    int nItemsInFringe = 1; // for the first FringeNode
-    int maxInFringe = 1;
+    int expanded = 0,
+        nItemsInFringe = 1, // for the first FringeNode
+        maxInFringe = 1;
     
     // let's get goin!
-    while(true)
+    while (true)
     {
         // book-keeping
         maxInFringe = max(maxInFringe, nItemsInFringe);
@@ -430,12 +430,12 @@ char *greedy(Game *game)
     pushToQueueByHeuristic(first, heur, &fringe);
 
     // variables for book-keeping
-    int expanded = 0;
-    int nItemsInFringe = 1; // for the first FringeNode
-    int maxInFringe = 1;
+    int expanded = 0,
+        nItemsInFringe = 1, // for the first FringeNode
+        maxInFringe = 1;
     
     // let's get goin!
-    while(true)
+    while (true)
     {
         // book-keeping
         maxInFringe = max(maxInFringe, nItemsInFringe);
@@ -576,12 +576,12 @@ char *astar(Game *game)
     pushToQueueByHeuristic(first, heur, &fringe);
 
     // variables for book-keeping
-    int expanded = 0;
-    int nItemsInFringe = 1; // for the first FringeNode
-    int maxInFringe = 1;
+    int expanded = 0,
+        nItemsInFringe = 1, // for the first FringeNode
+        maxInFringe = 1;
     
     // let's get goin!
-    while(true)
+    while (true)
     {
         // book-keeping
         maxInFringe = max(maxInFringe, nItemsInFringe);

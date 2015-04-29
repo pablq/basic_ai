@@ -7,17 +7,11 @@
 #include "game.h"
 
 bool moveAgent(char action, Game *game);
-
 bool isWin(Game *game);
-
 void drawMove(char move, Game *game);
-
 void placeStart(Location *start, Game *game);
-
 void placeGoal(Location *goal, Game *game);
-
 Grid newDisplay(Grid board);
-
 Grid newBoard(void);
 
 Game *newGame(bool weighted)
@@ -64,9 +58,8 @@ void playGame(char *actions, Game *game)
             winner = true;
             break;
         }
-        
-        drawMove(action, game);
 
+        drawMove(action, game);
         i += 1;
     }
 
@@ -78,9 +71,9 @@ void playGame(char *actions, Game *game)
         printf("FAIL\n");
 }
 
-Game *resetGame(Game *game) // agh this function is a bit rushed.
+Game *resetGame(Game *game)
 {
-    // get us a new display and draw start/goal
+    // delete display and re-make it from gameboard
     deleteGrid(game->display);
     game->display = newDisplay(game->board);
     writeCharToGrid('G',game->goal->x,game->goal->y,game->display);
@@ -132,9 +125,9 @@ bool moveAgent(char action, Game *game)
             return false;
     }
 
-    if (!isLegal(newX, newY, game->board)) 
+    if (!isLegal(newX,newY, game->board)) 
     {
-        printf("ILLEGAL MOVE: (%d,%d)->(%d,%d) with action '%c'.\n",x,y,newX,newY,action);
+        printf("ILLEGAL MOVE: (%d,%d)->(%d,%d) with action '%c'.\n", x,y, newX,newY, action);
         return false;
     }
 
@@ -146,7 +139,12 @@ bool moveAgent(char action, Game *game)
 
 bool isWin(Game *game)
 {
-    return sameLocation(game->agent->x, game->agent->y, game->goal->x, game->goal->y);
+    int aX = game->agent->x,
+        aY = game->agent->y,
+        gX = game->goal->x,
+        gY = game->goal->y;
+
+    return sameLocation(aX,aY, gX,gY);
 }
 
 // returns a new grid that will be the game's display (the thing printed);
@@ -212,9 +210,9 @@ void drawMove(char move, Game *game)
             break;
     }
 
-    if (isLegal(x,y,game->board))
+    if (isLegal(x,y, game->board))
     {
-        writeCharToGrid(mark,x,y,game->display);
+        writeCharToGrid(mark, x,y, game->display);
     }
 }
 
@@ -224,12 +222,12 @@ void placeStart(Location *start, Game *game)
     bool placed = false;
     while (!placed)
     {
-        int x = randInRange(0,GRID_WIDTH - 1);
-        int y = randInRange(0,GRID_HEIGHT - 1);
+        int x = randInRange(0, GRID_WIDTH - 1);
+        int y = randInRange(0, GRID_HEIGHT - 1);
 
-        if (isLegal(x,y,game->board) && game->display[x][y] != 'G')
+        if (isLegal(x,y, game->board) && game->display[x][y] != 'G')
         {
-            writeCharToGrid('S',x,y,game->display);
+            writeCharToGrid('S', x,y, game->display);
             start->x = x;
             start->y = y;
             placed = true;
@@ -243,12 +241,12 @@ void placeGoal(Location *goal, Game *game)
     bool placed = false;
     while (!placed)
     {
-        int x = randInRange(0,GRID_WIDTH - 1);
-        int y = randInRange(0,GRID_HEIGHT - 1);
+        int x = randInRange(0, GRID_WIDTH - 1);
+        int y = randInRange(0, GRID_HEIGHT - 1);
 
         if (isLegal(x,y, game->board) && game->display[x][y] != 'S')
         {
-            writeCharToGrid('G',x,y,game->display);
+            writeCharToGrid('G', x,y, game->display);
             goal->x = x;
             goal->y = y;
             placed = true;

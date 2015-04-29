@@ -8,7 +8,6 @@ int randInRange(int low, int high) // INCLUSIVE
 
     offset = rand();
     srand(time(NULL) + offset);
-
     r = rand();
 
     return low + (r % (high + 1 - low));

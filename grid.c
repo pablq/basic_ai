@@ -37,11 +37,11 @@ Grid newWeightedGrid(void)
 // sets 9 sections with cost of either 1, 2, or 4
 void setCostAreas(Grid grid)
 {
-    int thirdWidth = GRID_WIDTH / 3;
-    int thirdHeight = GRID_HEIGHT / 3;
-
+    int thirdWidth = GRID_WIDTH / 3,
+        thirdHeight = GRID_HEIGHT / 3;
     int vals[] = { 1, 1, 1, 2, 2, 4 };
     int sectionVals[9];
+
     for (int i = 0; i < 9; i += 1)
     {
         int valIndex = randInRange(0,5);
@@ -82,7 +82,7 @@ void setCostAreas(Grid grid)
                 thisVal = sectionVals[7];
             if (is9)
                 thisVal = sectionVals[8];
-            if (isLegal(x,y,grid))
+            if (isLegal(x,y, grid))
                 grid[x][y] = thisVal;
         }
     }
@@ -118,11 +118,7 @@ bool inBounds(int x, int y)
 
 bool isLegal(int x, int y, Grid grid) // mega important method. used throughout program (especially game)
 {
-    if (!inBounds(x,y))
-    {
-        return false;
-    }
-    if (grid[x][y] == 0) 
+    if (!inBounds(x,y) || grid[x][y] == 0)
     {
         return false;
     }
@@ -160,10 +156,10 @@ void buildLayout(Grid grid)
     {
         for (int y = 0; y < GRID_HEIGHT; y += 1) 
         {
-            bool leftBorder = (x == 0);
-            bool rightBorder = (x == GRID_WIDTH - 1);
-            bool topBorder = (y == 0);
-            bool bottomBorder = (y == GRID_HEIGHT - 1);
+            bool leftBorder = (x == 0),
+                 rightBorder = (x == GRID_WIDTH - 1),
+                 topBorder = (y == 0),
+                 bottomBorder = (y == GRID_HEIGHT - 1);
 
             if (leftBorder || rightBorder || topBorder || bottomBorder)
             {
@@ -179,15 +175,15 @@ void buildLayout(Grid grid)
     }
 
     // Now add some interior walls
-    int numWalls = randInRange(15,30);
+    int numWalls = randInRange(15, 30);
     for (int i = 0; i < numWalls; i += 1)
     {
         // give walls varied lengths
-        int len = randInRange(3,10);
-        int x, y;
+        int len = randInRange(3, 10),
+            x, y;
 
         // decide whether wall will be horizontal or vertical.
-        int isHoriz = randInRange(0,1);
+        int isHoriz = randInRange(0, 1);
 
         // pick the starting point of the wall:
         // horizontal =  left->right, vertical = top->down 
@@ -205,13 +201,12 @@ void buildLayout(Grid grid)
         // here we actually draw the wall
         for (int w = 0; w < len; w += 1)
         {
-            bool isFirst = (w == 0);
-            bool isLast = (w == len - 1);
-
-            bool rightIsOpen = isLegal(x+1, y, grid);
-            bool leftIsOpen = isLegal(x-1, y, grid);
-            bool aboveIsOpen = isLegal(x, y-1, grid);
-            bool belowIsOpen = isLegal(x, y+1, grid); 
+            bool isFirst = (w == 0),
+                 isLast  = (w == len - 1),
+                 rightIsOpen = isLegal(x + 1,y, grid),
+                 leftIsOpen  = isLegal(x - 1,y, grid),
+                 aboveIsOpen = isLegal(x,y - 1, grid),
+                 belowIsOpen = isLegal(x,y + 1, grid); 
 
             grid[x][y] = 0;
             if (isHoriz) {
@@ -238,7 +233,7 @@ void buildLayout(Grid grid)
 
 bool writeCharToGrid(char c, int x, int y, Grid grid)
 {
-    if (isLegal(x, y, grid))
+    if (isLegal(x,y, grid))
     {
         grid[x][y] = c;
         return true;
