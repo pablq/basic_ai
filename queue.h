@@ -7,6 +7,7 @@ typedef struct Heuristic
 {
     void *data;
     int (*heurfn)(FringeNode *fn, void *data);    
+
 } Heuristic;
 
 FringeNode *newQueue(void);
